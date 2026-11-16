@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SketchNote Pro Studio | استوديو تصميم الكشكول التعليمي المتكامل</title>
+    <!-- Bootstrap 5.3 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts: Arabic & English Handwritten and Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800&family=Architects+Daughter&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@500;700;800;900&family=Caveat:wght@600;700&family=Comic+Neue:wght@700&family=Fredoka:wght@600;700&family=Lalezar&family=Marhey:wght@500;600;700&family=Patrick+Hand&family=Readex+Pro:wght@400;600;700&family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --studio-bg: #0b1120;
+            --panel-bg: #111827;
+            --card-bg: #1f2937;
+            --border-color: #374151;
+            --ink-primary: #1e3a8a;
+            --ink-accent: #dc2626;
+            --title-font-ar: 'Marhey', cursive;
+            --body-font-ar: 'Cairo', sans-serif;
+            --font-en: 'Patrick Hand', cursive;
+            --font-scale: 1;
+        }
+
+        body {
+            background-color: var(--studio-bg);
+            color: #f3f4f6;
+            font-family: 'Alexandria', sans-serif;
+            overflow-x: hidden;
+            
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Studio Layout */
+        .studio-navbar {
+            background: rgba(17, 24, 39, 0.95);
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            z-index: 1030;
+        }
+
+        .control-panel {
+            background-color: var(--panel-bg);
+            border-left: 1px solid var(--border-color);
+            height: calc(100vh - 62px);
+            overflow-y: auto;
+        }
+
+        .preview-stage {
+            background-color: #090d16;
+            background-image: radial-gradient(#1e293b 1px, transparent 1px);
+            background-size: 20px 20px;
+            height: calc(100vh - 62px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1.5rem 1rem 4rem 1rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .control-panel, .preview-stage {
+                height: auto;
+                overflow-y: visible;
+            }
+        }
+
+        /* Form Inputs Dark Theme */
+        .form-control-dark, .form-select-dark {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            font-size: 0.82rem;
+            border-radius: 0.6rem;
+        }
+        .form-control-dark:focus, .form-select-dark:focus {
+            background-color: #0f172a;
+            border-color: #f59e0b;
+            color: #fff;
+            box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.2);
+        }
+
+        .nav-pills-studio .nav-link {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border-radius: 0.65rem;
+            padding: 0.55rem 0.75rem;
+            transition: all 0.2s;
+        }
+        .nav-pills-studio .nav-link.active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #0f172a;
+        }
+
+        .editor-card {
+            background-color: rgba(31, 41, 55, 0.75);
+            border: 1px solid #374151;
+            border-radius: 0.9rem;
+            padding: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .editor-card:hover {
+            border-color: #4b5563;
+        }
+
+        /* =========================================================
+           NOTEBOOK CANVAS & PAPER THEMES
+           ========================================================= */
+        #notebookCanvas {
+            width: 100%;
+            max-width: 640px;
+            min-height: 780px;
+            position: relative;
+            border-radius: 14px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255,255,255,0.1);
+            color: #0f172a;
+            transition: all 0.25s ease;
+            overflow: hidden;
+          
+        }
+
+        #notebookCanvas.size-square {
+            max-width: 660px;
+            min-height: 660px;
+        }
+        #notebookCanvas.size-a4 {
+            max-width: 680px;
+            min-height: 940px;
+        }
+
+        /* Paper Theme 1: Classic Lined Notebook */
+        .paper-classic {
+            background-color: #fcfbf7;
+            background-image:
+                linear-gradient(90deg, transparent 42px, rgba(239, 68, 68, 0.35) 42px, rgba(239, 68, 68, 0.35) 44px, transparent 44px),
+                repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, rgba(59, 130, 246, 0.16) 28px);
+            background-size: 100% 100%, 100% 28px;
+          
+        }
+
+        /* Paper Theme 2: Engineering Grid */
+        .paper-grid {
+            background-color: #f8fafc;
+            background-image:
+                linear-gradient(to right, rgba(14, 165, 233, 0.13) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(14, 165, 233, 0.13) 1px, transparent 1px);
+            background-size: 22px 22px;
+        }
+
+        /* Paper Theme 3: Dotted Bullet Journal */
+        .paper-dots {
+            background-color: #fffdf9;
+            background-image: radial-gradient(#94a3b8 1.25px, transparent 1.25px);
+            background-size: 20px 20px;
+        }
+
+        /* Paper Theme 4: Warm Cream Kraft */
+        .paper-cream {
+            background-color: #f5efe0;
+            background-image:
+                linear-gradient(90deg, transparent 42px, rgba(180, 83, 9, 0.25) 42px, rgba(180, 83, 9, 0.25) 44px, transparent 44px),
+                repeating-linear-gradient(to bottom, transparent 0px, transparent 27px, rgba(120, 53, 15, 0.12) 28px);
+            background-size: 100% 100%, 100% 28px;
+        }
+
+        /* Paper Theme 5: Clean Whiteboard */
+        .paper-whiteboard {
+            background-color: #ffffff;
+            background-image: radial-gradient(circle at top right, rgba(241, 245, 249, 0.8), transparent 60%);
+        }
+
+        /* Spiral Binding Rings */
+        .spiral-binding {
+            position: absolute;
+            top: 16px;
+            bottom: 16px;
+            left: 8px;
+            width: 26px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 20;
+            pointer-events: none;
+        }
+        .spiral-ring {
+            width: 26px;
+            height: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .spiral-hole {
+            width: 11px;
+            height: 11px;
+            background: #1e293b;
+            border-radius: 50%;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.8);
+            margin-left: 12px;
+        }
+        .spiral-wire {
+            position: absolute;
+            left: -5px;
+            width: 21px;
+            height: 5px;
+            background: linear-gradient(180deg, #cbd5e1 0%, #475569 50%, #0f172a 100%);
+            border-radius: 4px;
+            transform: rotate(-8deg);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.35);
+        }
+
+        /* Organic Hand-Drawn Borders */
+        .sketch-border-solid {
+            border: 2.5px solid var(--ink-primary);
+            border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            background: rgba(255, 255, 255, 0.65);
+        }
+        .sketch-border-dashed {
+            border: 2.3px dashed var(--ink-accent);
+            border-radius: 22px 14px 26px 12px / 12px 26px 14px 22px;
+            background: rgba(255, 255, 255, 0.55);
+        }
+        .sketch-border-double {
+            border: 3px double var(--ink-primary);
+            border-radius: 18px 240px 16px 220px / 220px 16px 240px 18px;
+            background: rgba(255, 255, 255, 0.72);
+        }
+        .sketch-border-accent {
+            border: 2.5px solid var(--ink-accent);
+            border-radius: 220px 16px 240px 14px / 14px 240px 16px 220px;
+            background: rgba(255, 255, 255, 0.72);
+        }
+
+        /* Realistic Angled Marker Highlighter Strokes */
+        .marker-hl {
+            padding: 2px 14px;
+            border-radius: 10px 18px 12px 16px;
+            display: inline-block;
+            position: relative;
+        }
+        .hl-yellow { background: linear-gradient(104deg, rgba(254,240,138,0) 1%, rgba(253,224,71,0.92) 3%, rgba(254,240,138,0.82) 94%, rgba(254,240,138,0) 99%); }
+        .hl-blue { background: linear-gradient(104deg, rgba(186,230,253,0) 1%, rgba(125,211,252,0.85) 3%, rgba(186,230,253,0.78) 94%, rgba(186,230,253,0) 99%); }
+        .hl-pink { background: linear-gradient(104deg, rgba(251,207,232,0) 1%, rgba(244,114,182,0.38) 3%, rgba(251,207,232,0.88) 94%, rgba(251,207,232,0) 99%); }
+        .hl-green { background: linear-gradient(104deg, rgba(187,247,208,0) 1%, rgba(134,239,172,0.85) 3%, rgba(187,247,208,0.78) 94%, rgba(187,247,208,0) 99%); }
+        .hl-orange { background: linear-gradient(104deg, rgba(254,215,170,0) 1%, rgba(253,186,116,0.85) 3%, rgba(254,215,170,0.78) 94%, rgba(254,215,170,0) 99%); }
+        .hl-purple { background: linear-gradient(104deg, rgba(221,214,254,0) 1%, rgba(196,181,253,0.85) 3%, rgba(221,214,254,0.78) 94%, rgba(221,214,254,0) 99%); }
+        .hl-none { background: transparent; padding: 0 4px; }
+
+        /* Hand-drawn Underline */
+        .sketch-underline {
+            position: relative;
+            display: inline-block;
+        }
+        .sketch-underline::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            right: -4px;
+            bottom: -5px;
+            height: 4px;
+            background: var(--ink-accent);
+            border-radius: 50% 20% 40% 30%;
+            transform: rotate(-0.8deg);
+        }
+
+        /* Typography Classes Inside Canvas */
+        .canvas-title-text {
+            font-family: var(--title-font-ar), var(--font-en), cursive;
+        }
+        .canvas-body-text {
+            font-family: var(--body-font-ar), var(--font-en), sans-serif;
+            font-size: calc(0.92rem * var(--font-scale));
+        }
+        .canvas-en-text {
+            font-family: var(--font-en), cursive;
+        }
+
+        /* Hand-Drawn Table Styling */
+        .sketch-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 2.2px solid var(--ink-primary);
+            border-radius: 14px 8px 16px 10px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.8);
+        }
+        .sketch-table th {
+            padding: 8px 10px;
+            font-weight: 800;
+            border-bottom: 2.2px solid var(--ink-primary);
+            border-left: 1.8px solid var(--ink-primary);
+            text-align: center;
+        }
+        .sketch-table th:last-child, .sketch-table td:last-child {
+            border-left: none;
+        }
+        .sketch-table td {
+            padding: 7px 10px;
+            border-bottom: 1.5px solid rgba(30, 58, 138, 0.35);
+            border-left: 1.8px solid rgba(30, 58, 138, 0.45);
+            text-align: center;
+            font-weight: 700;
+        }
+        .sketch-table tr:last-child td {
+            border-bottom: none;
+        }
+        .sketch-table.striped tbody tr:nth-child(even) {
+            background-color: rgba(241, 245, 249, 0.75);
+        }
+
+        /* Keyboard Shortcut Keycap Pill */
+        .keycap-pill {
+            display: inline-block;
+            background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+            border: 2px solid #0f172a;
+            border-bottom-width: 4px;
+            border-radius: 8px;
+            padding: 2px 9px;
+            font-family: var(--font-en), monospace;
+            font-weight: 800;
+            color: #0f172a;
+            box-shadow: 0 2px 0 rgba(0,0,0,0.15);
+        }
+
+        /* Interactive Section Hover in Preview */
+        .preview-section-wrapper {
+            position: relative;
+            border-radius: 12px;
+            transition: outline 0.15s ease;
+            cursor: pointer;
+        }
+        .preview-section-wrapper:hover {
+            outline: 2px dashed rgba(245, 158, 11, 0.75);
+            outline-offset: 3px;
+        }
+        .preview-section-wrapper:hover::before {
+            content: '✏️ اضغط للتعديل';
+            position: absolute;
+            top: -12px;
+            right: 8px;
+            background: #f59e0b;
+            color: #0f172a;
+            font-family: 'Alexandria', sans-serif;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 1px 7px;
+            border-radius: 6px;
+            z-index: 30;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+        }
+        /* Hide hover helpers during export */
+        .exporting-mode .preview-section-wrapper:hover {
+            outline: none !important;
+        }
+        .exporting-mode .preview-section-wrapper:hover::before {
+            display: none !important;
+        }
+
+        /* Sketch Image Filter */
+        .img-sketch-filter {
+            filter: contrast(1.15) saturate(1.1);
+            border: 2px solid var(--ink-primary);
+            border-radius: 14px 8px 16px 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Studio Navbar -->
+    <nav class="studio-navbar sticky-top px-3 py-2">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <!-- Brand -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-3 d-flex align-items-center justify-content-center fw-bold text-dark shadow-sm" style="width:38px;height:38px;background:linear-gradient(135deg,#fbbf24,#f97316);font-size:1.2rem;">
+                    ✏️
+                </div>
+                <div>
+                    <div class="fw-bold text-white lh-1" style="font-size:0.95rem;">SketchNote Pro Studio</div>
+                    <small class="text-secondary" style="font-size:0.7rem;">استوديو الإنفوجرافيك والكشكول التعليمي</small>
+                </div>
+            </div>
+
+            <!-- Presets Bar -->
+            <div class="d-flex flex-wrap align-items-center gap-1">
+                <span class="text-secondary small d-none d-xl-inline ms-1">قوالب سريعة:</span>
+                <button onclick="loadPreset('ram_ssd')" class="btn btn-sm btn-dark border-secondary text-warning fw-semibold" style="font-size:0.74rem;">
+                    💻 مقارنة RAM/SSD
+                </button>
+                <button onclick="loadPreset('english_detective')" class="btn btn-sm btn-dark border-secondary text-info fw-semibold" style="font-size:0.74rem;">
+                    🕵️ قواعد الإنجليزي
+                </button>
+                <button onclick="loadPreset('data_viz')" class="btn btn-sm btn-dark border-secondary text-success fw-semibold" style="font-size:0.74rem;">
+                    📊 عرض البيانات (جدول)
+                </button>
+                <button onclick="loadPreset('shortcuts')" class="btn btn-sm btn-dark border-secondary text-light fw-semibold" style="font-size:0.74rem;">
+                    ⌨️ خطوات واختصارات
+                </button>
+                <button onclick="loadPreset('blank')" class="btn btn-sm btn-outline-secondary text-light" style="font-size:0.74rem;">
+                    📄 ورقة فاضية
+                </button>
+            </div>
+
+            <!-- Export & Project Actions -->
+            <div class="d-flex align-items-center gap-1">
+                <button onclick="exportJSON()" class="btn btn-sm btn-dark border-secondary text-light" title="حفظ ملف المشروع JSON">
+                    <i class="bi bi-filetype-json"></i>
+                </button>
+                <label class="btn btn-sm btn-dark border-secondary text-light mb-0" title="استيراد مشروع JSON" style="cursor:pointer;">
+                    <i class="bi bi-upload"></i>
+                    <input type="file" accept=".json" onchange="importJSON(event)" hidden>
+                </label>
+                <button id="exportPngBtn" onclick="exportPNG()" class="btn btn-sm btn-success fw-bold px-3 d-flex align-items-center gap-1 shadow-sm">
+                    <i class="bi bi-download"></i>
+                    <span>تحميل PNG</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating Toast Alert -->
+    <div id="studioToast" class="position-fixed bottom-0 end-0 m-3 p-3 rounded-3 bg-dark border border-warning text-white shadow-lg d-none align-items-center gap-2" style="z-index:2000;font-size:0.85rem;">
+        <span id="toastIcon">✅</span>
+        <span id="toastText">تم بنجاح!</span>
+    </div>
+
+    <!-- Main Split Workspace -->
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            
+            <!-- RIGHT SIDE: Studio Control Panel -->
+            <div class="col-lg-5 control-panel p-3">
+                
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-pills nav-pills-studio nav-fill bg-dark p-1 rounded-3 border border-secondary mb-3" id="studioTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active w-100" id="tab-sections-btn" data-bs-toggle="pill" data-bs-target="#tab-sections" type="button" role="tab">
+                            <i class="bi bi-layers-fill ms-1"></i> 1. الأقسام والمحتوى
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100" id="tab-branding-btn" data-bs-toggle="pill" data-bs-target="#tab-branding" type="button" role="tab">
+                            <i class="bi bi-award-fill ms-1"></i> 2. اللوجو والترويسة
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link w-100" id="tab-style-btn" data-bs-toggle="pill" data-bs-target="#tab-style" type="button" role="tab">
+                            <i class="bi bi-palette-fill ms-1"></i> 3. الخطوط والألوان
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tabs Content -->
+                <div class="tab-content" id="studioTabsContent">
+                    
+                    <!-- ==========================================
+                         TAB 1: DYNAMIC SECTION BUILDER
+                         ========================================== -->
+                    <div class="tab-pane fade show active" id="tab-sections" role="tabpanel">
+                        
+                        <!-- Add New Section Toolbar -->
+                        <div class="editor-card mb-3">
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fw-bold text-warning small"><i class="bi bi-plus-circle-fill ms-1"></i> إضافة قسم جديد للتصميم:</span>
+                                <span class="badge bg-secondary" id="sectionCountBadge">0 أقسام</span>
+                            </div>
+                            <div class="row g-1.5">
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('cards')" class="btn btn-sm btn-outline-info w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        🗂️ كروت مقارنة/شرح
+                                    </button>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('table')" class="btn btn-sm btn-outline-warning w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        📊 جدول بيانات
+                                    </button>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('hero_image')" class="btn btn-sm btn-outline-success w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        🖼️ صورة / رسم كبير
+                                    </button>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('steps')" class="btn btn-sm btn-outline-primary w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        🔢 خطوات / اختصارات
+                                    </button>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('quiz')" class="btn btn-sm btn-outline-danger w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        ❓ تحدي / أسئلة
+                                    </button>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <button onclick="addSection('callout')" class="btn btn-sm btn-outline-light w-100 text-end fw-semibold" style="font-size:0.74rem;">
+                                        💡 ملاحظة / نصيحة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Sections List -->
+                        <div id="sectionsEditorContainer" class="d-flex flex-column gap-3 pb-4">
+                            <!-- Sections rendered dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB 2: HEADER, LOGO & FOOTER BRANDING
+                         ========================================== -->
+                    <div class="tab-pane fade" id="tab-branding" role="tabpanel">
+                        
+                        <!-- Top-Left Logo Settings -->
+                        <div class="editor-card mb-3">
+                            <h6 class="fw-bold text-warning mb-2 small"><i class="bi bi-image ms-1"></i> إعدادات اللوجو (أعلى يسار التصميم)</h6>
+                            
+                            <div class="row g-2 align-items-center mb-2">
+                                <div class="col-8">
+                                    <label class="form-label text-secondary small mb-1">رفع صورة اللوجو (PNG/JPG)</label>
+                                    <input type="file" accept="image/*" onchange="handleLogoUpload(event)" class="form-control form-control-sm form-control-dark">
+                                </div>
+                                <div class="col-4 text-end">
+                                    <label class="form-label text-secondary small mb-1 d-block">&nbsp;</label>
+                                    <button onclick="clearLogo()" class="btn btn-sm btn-outline-danger w-100" style="font-size:0.74rem;">حذف الصورة</button>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 mb-2">
+                                <div class="col-4">
+                                    <label class="form-label text-secondary small mb-1">شكل اللوجو</label>
+                                    <select id="inpLogoShape" onchange="updateHeader('logoShape', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="circle">دائري (Circle)</option>
+                                        <option value="rounded">مربع بحواف</option>
+                                        <option value="none">حر بدون إطار</option>
+                                    </select>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label text-secondary small mb-1">حجم اللوجو (<span id="logoSizeVal">56</span>px)</label>
+                                    <input type="range" id="inpLogoSize" min="36" max="96" value="56" oninput="updateHeader('logoSize', this.value); document.getElementById('logoSizeVal').textContent=this.value;" class="form-range mt-1">
+                                </div>
+                                <div class="col-4 d-flex align-items-end">
+                                    <div class="form-check form-switch mb-1">
+                                        <input class="form-check-input" type="checkbox" id="inpLogoBorder" checked onchange="updateHeader('logoBorder', this.checked)">
+                                        <label class="form-check-label small text-light" for="inpLogoBorder">إطار مرسوم</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">نص بجانب/أسفل اللوجو</label>
+                                    <input type="text" id="inpLogoText" oninput="updateHeader('logoText', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: خطوة تك">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">شعار فرعي صغير</label>
+                                    <input type="text" id="inpLogoSubtext" oninput="updateHeader('logoSubtext', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: Small Steps">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main & Sub Titles -->
+                        <div class="editor-card mb-3">
+                            <h6 class="fw-bold text-info mb-2 small"><i class="bi bi-type-h1 ms-1"></i> العناوين والتاجات العلوية</h6>
+                            
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">التاج الأيمن (رقم/تصنيف)</label>
+                                    <input type="text" id="inpTopRightTag" oninput="updateHeader('topRightTag', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: 4/8 أو أساسيات الكمبيوتر">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">ملاحظة جانبية علوية</label>
+                                    <input type="text" id="inpTopNote" oninput="updateHeader('topNote', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: معلومة تهمك 💡">
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <label class="form-label text-secondary small mb-1">العنوان الرئيسي (عربي أو إنجليزي)</label>
+                                <input type="text" id="inpMainTitle" oninput="updateHeader('mainTitle', this.value)" class="form-control form-control-sm form-control-dark fw-bold">
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <label class="form-label text-secondary small mb-1">العنوان الفرعي البارز</label>
+                                    <input type="text" id="inpSubTitle" oninput="updateHeader('subTitle', this.value)" class="form-control form-control-sm form-control-dark">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label text-secondary small mb-1">هايلايتر العنوان</label>
+                                    <select id="inpSubHighlight" onchange="updateHeader('subHighlight', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="hl-pink">بينك</option>
+                                        <option value="hl-yellow">أصفر</option>
+                                        <option value="hl-blue">لبني</option>
+                                        <option value="hl-green">أخضر</option>
+                                        <option value="hl-orange">برتقالي</option>
+                                        <option value="hl-purple">بنفسجي</option>
+                                        <option value="hl-none">بدون</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Branding -->
+                        <div class="editor-card mb-4">
+                            <h6 class="fw-bold text-success mb-2 small"><i class="bi bi-person-badge ms-1"></i> التذييل وحقوق الملكية (Footer)</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">اسم المحاضر / الصفحة</label>
+                                    <input type="text" id="inpFooterAuthor" oninput="updateFooter('author', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: محمود منصور | خطوة تك">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">عبارة ختامية / Swipe</label>
+                                    <input type="text" id="inpFooterQuote" oninput="updateFooter('quote', this.value)" class="form-control form-control-sm form-control-dark" placeholder="مثال: Small Steps, Big Knowledge ♥">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ==========================================
+                         TAB 3: TYPOGRAPHY, COLORS & PAPER THEME
+                         ========================================== -->
+                    <div class="tab-pane fade" id="tab-style" role="tabpanel">
+                        
+                        <!-- Fonts Selection -->
+                        <div class="editor-card mb-3">
+                            <h6 class="fw-bold text-warning mb-2 small"><i class="bi bi-fonts ms-1"></i> مجموعة الخطوط العربية والإنجليزية</h6>
+                            
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">خط العناوين العربية</label>
+                                    <select id="inpTitleFontAr" onchange="updateTheme('titleFontAr', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="'Marhey', cursive">Marhey (فلوماستر مرح)</option>
+                                        <option value="'Lalezar', cursive">Lalezar (عريض بارز)</option>
+                                        <option value="'Aref Ruqaa', serif">Aref Ruqaa (خط رقعة يدوي)</option>
+                                        <option value="'Cairo', sans-serif">Cairo (عصري قوي)</option>
+                                        <option value="'Alexandria', sans-serif">Alexandria (هندسي أنيق)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">خط النصوص والشرح</label>
+                                    <select id="inpBodyFontAr" onchange="updateTheme('bodyFontAr', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="'Cairo', sans-serif">Cairo (واضح ومقروء)</option>
+                                        <option value="'Readex Pro', sans-serif">Readex Pro (ناعم حديث)</option>
+                                        <option value="'Tajawal', sans-serif">Tajawal (بسيط ومريح)</option>
+                                        <option value="'Alexandria', sans-serif">Alexandria (متوازن)</option>
+                                        <option value="'Marhey', cursive">Marhey (يدوي بالكامل)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row g-2 align-items-center">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">الخط الإنجليزي اليدوي</label>
+                                    <select id="inpFontEn" onchange="updateTheme('fontEn', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="'Patrick Hand', cursive">Patrick Hand (كشكول طبيعي)</option>
+                                        <option value="'Architects Daughter', cursive">Architects Daughter (هندسي)</option>
+                                        <option value="'Caveat', cursive">Caveat (قلم سريع)</option>
+                                        <option value="'Fredoka', sans-serif">Fredoka (كرتوني مبهج)</option>
+                                        <option value="'Comic Neue', cursive">Comic Neue (كوميكس)</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">حجم الخط العام (<span id="fontScaleVal">100</span>%)</label>
+                                    <input type="range" id="inpFontScale" min="0.85" max="1.2" step="0.05" value="1" oninput="updateTheme('fontScale', this.value); document.getElementById('fontScaleVal').textContent=Math.round(this.value*100);" class="form-range mt-1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paper Background & Canvas Size -->
+                        <div class="editor-card mb-3">
+                            <h6 class="fw-bold text-info mb-2 small"><i class="bi bi-journal-richtext ms-1"></i> خامة الورقة ومقاس التصميم</h6>
+                            
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">خلفية الورقة</label>
+                                    <select id="inpPaperTheme" onchange="updateTheme('paperTheme', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="paper-classic">كشكول مسطر + هامش أحمر</option>
+                                        <option value="paper-grid">ورق مربعات هندسي (Grid)</option>
+                                        <option value="paper-dots">ورق منقط (Bullet Journal)</option>
+                                        <option value="paper-cream">ورق كرافت دافئ (Cream)</option>
+                                        <option value="paper-whiteboard">سبورة بيضاء نظيفة</option>
+                                    </select>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">مقاس الورقة</label>
+                                    <select id="inpCanvasSize" onchange="updateTheme('canvasSize', this.value)" class="form-select form-select-sm form-select-dark">
+                                        <option value="portrait">بورتريه سوشيال (4:5 مرن)</option>
+                                        <option value="square">مربع إنستجرام (1:1)</option>
+                                        <option value="a4">صفحة كاملة مطولة (A4)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-wrap gap-3 pt-1">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="inpShowSpiral" checked onchange="updateTheme('showSpiral', this.checked)">
+                                    <label class="form-check-label small text-light" for="inpShowSpiral">سلك الكشكول (Spiral)</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="inpShowDoodles" checked onchange="updateTheme('showDoodles', this.checked)">
+                                    <label class="form-check-label small text-light" for="inpShowDoodles">شُرط ونجوم الرسم اليدوي</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ink Colors Palette -->
+                        <div class="editor-card mb-4">
+                            <h6 class="fw-bold text-success mb-2 small"><i class="bi bi-droplet-fill ms-1"></i> ألوان الحبر والإطارات</h6>
+                            
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">لون الحبر الأساسي (الإطارات)</label>
+                                    <div class="d-flex gap-1.5 align-items-center">
+                                        <input type="color" id="inpInkPrimary" value="#1e3a8a" onchange="updateTheme('inkPrimary', this.value)" class="form-control form-control-color form-control-dark p-1" style="width:42px;height:32px;">
+                                        <button onclick="setInkPreset('#1e3a8a', '#dc2626')" class="btn btn-xs btn-dark border-secondary text-light" style="font-size:0.7rem;">أزرق/أحمر</button>
+                                        <button onclick="setInkPreset('#0f172a', '#d97706')" class="btn btn-xs btn-dark border-secondary text-light" style="font-size:0.7rem;">أسود/ذهبي</button>
+                                        <button onclick="setInkPreset('#4c1d95', '#0d9488')" class="btn btn-xs btn-dark border-secondary text-light" style="font-size:0.7rem;">بنفسجي</button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label text-secondary small mb-1">لون التمييز (العناوين والخطوط)</label>
+                                    <div class="d-flex gap-1.5 align-items-center">
+                                        <input type="color" id="inpInkAccent" value="#dc2626" onchange="updateTheme('inkAccent', this.value)" class="form-control form-control-color form-control-dark p-1" style="width:42px;height:32px;">
+                                        <button onclick="setInkPreset('#065f46', '#ea580c')" class="btn btn-xs btn-dark border-secondary text-light" style="font-size:0.7rem;">أخضر غامق</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- LEFT SIDE: Live Interactive Notebook Canvas -->
+            <div class="col-lg-7 preview-stage">
+                
+                <div class="d-flex align-items-center justify-content-between w-100 mb-2 px-1" style="max-width:640px;">
+                    <span class="text-secondary small d-flex align-items-center gap-1">
+                        <span class="badge rounded-pill bg-success" style="width:8px;height:8px;padding:0;"></span>
+                        معاينة حية (اضغط على أي قسم للتعديل السريع)
+                    </span>
+                    <span class="text-secondary small" id="canvasDimensionLabel">640px • Ready for HD Export</span>
+                </div>
+
+                <!-- THE EXPORTABLE NOTEBOOK CANVAS -->
+                <div id="notebookCanvas" class="paper-classic p-4 sm:p-5 d-flex flex-column justify-content-between">
+                    
+                    <!-- Spiral Binding -->
+                    <div id="spiralBindingContainer" class="spiral-binding"></div>
+
+                    <!-- Inner Content Wrapper -->
+                    <div id="canvasInnerWrapper" class="ps-4 d-flex flex-column gap-3 flex-grow-1">
+                        
+                        <!-- HEADER AREA: Top-Right Badge + Center Title + Top-Left Logo -->
+                        <header class="d-flex align-items-start justify-content-between gap-2 pt-1">
+                            
+                            <!-- Top-Right Info & Note -->
+                            <div class="d-flex flex-column align-items-start" style="min-width: 110px;">
+                                <span id="viewTopRightTag" class="canvas-en-text fw-bold px-2 py-0.5 rounded-2" style="color: var(--ink-primary); font-size: 1.05rem; border-bottom: 2px solid var(--ink-primary);">
+                                    4/8 • Computer Basics
+                                </span>
+                                <div id="viewTopNoteBox" class="d-flex align-items-center gap-1 mt-1">
+                                    <span class="fs-6">💡</span>
+                                    <span id="viewTopNote" class="canvas-body-text fw-bold text-secondary" style="font-size: 0.78rem;">معلومة بفرق</span>
+                                </div>
+                            </div>
+
+                            <!-- Center Main Title & Subtitle -->
+                            <div class="text-center flex-grow-1 px-1">
+                                <h1 id="viewMainTitle" class="canvas-title-text fw-bold sketch-underline mb-2" style="color: var(--ink-accent); font-size: 2.15rem; line-height: 1.25;">
+                                    Memory & Storage
+                                </h1>
+                                <div id="viewSubTitleBox" class="mt-1">
+                                    <span class="doodle-item fw-bold" style="color: var(--ink-primary);">ミ </span>
+                                    <span id="viewSubTitle" class="marker-hl hl-pink canvas-title-text fw-bold" style="color: var(--ink-primary); font-size: 1.25rem;">
+                                        الرام مش هي الهارد!
+                                    </span>
+                                    <span class="doodle-item fw-bold" style="color: var(--ink-primary);"> 彡</span>
+                                </div>
+                            </div>
+
+                            <!-- Top-Left Custom Logo Slot -->
+                            <div id="viewLogoSlot" class="d-flex flex-column align-items-center text-center" style="min-width: 85px;">
+                                <div id="viewLogoImgWrapper" class="d-flex align-items-center justify-content-center overflow-hidden bg-white shadow-sm" style="width: 56px; height: 56px; border-radius: 50%; border: 2.5px solid var(--ink-primary);">
+                                    <img id="viewLogoImg" src="" alt="Logo" class="w-100 h-100 object-fit-cover d-none">
+                                    <span id="viewLogoPlaceholder" class="canvas-en-text fw-bold" style="color: var(--ink-primary); font-size: 0.85rem;">LOGO</span>
+                                </div>
+                                <span id="viewLogoText" class="canvas-title-text fw-bold mt-1 lh-1" style="color: var(--ink-primary); font-size: 0.82rem;">خطوة تك</span>
+                                <span id="viewLogoSubtext" class="canvas-en-text text-secondary lh-1 mt-0.5" style="font-size: 0.72rem;">Khatwa Tech</span>
+                            </div>
+
+                        </header>
+
+                        <!-- DYNAMIC SECTIONS CONTAINER -->
+                        <main id="viewSectionsContainer" class="d-flex flex-column gap-3 my-auto">
+                            <!-- Modular sections rendered here -->
+                        </main>
+
+                        <!-- FOOTER AREA -->
+                        <footer class="d-flex align-items-end justify-content-between pt-2 mt-2" style="border-top: 1.5px dashed rgba(30, 58, 138, 0.35);">
+                            <div id="viewFooterAuthor" class="canvas-title-text fw-bold" style="color: var(--ink-primary); font-size: 0.95rem; border-bottom: 2px solid var(--ink-accent);">
+                                محمود منصور | خطوة تك
+                            </div>
+                            <div id="viewFooterQuote" class="canvas-en-text fw-bold" style="color: var(--ink-primary); font-size: 1.05rem; transform: rotate(-1.5deg);">
+                                Small Steps, Big Knowledge ♥
+                            </div>
+                        </footer>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // =========================================================
+        // 1. EXPANDED HAND-DRAWN SVG ILLUSTRATION LIBRARY
+        // =========================================================
+        const SVG_LIBRARY = {
+            none: { name: 'بدون رسمة', svg: '' },
+            ram: {
+                name: 'شريحة RAM',
+                svg: `<svg width="110" height="58" viewBox="0 0 140 70" fill="none">
+                    <g transform="rotate(-10 70 35)">
+                        <rect x="14" y="18" width="112" height="32" rx="3" fill="#16a34a" stroke="#0f172a" stroke-width="2.5"/>
+                        <rect x="22" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="42" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="62" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="82" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <rect x="102" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M20 50v5M26 50v5M32 50v5M38 50v5M44 50v5M50 50v5M56 50v5M68 50v5M74 50v5M80 50v5M86 50v5M92 50v5M98 50v5M104 50v5M110 50v5M116 50v5" stroke="#eab308" stroke-width="2.5"/>
+                    </g>
+                </svg>`
+            },
+            ssd: {
+                name: 'هارد SSD / HDD',
+                svg: `<svg width="115" height="58" viewBox="0 0 140 70" fill="none">
+                    <rect x="16" y="14" width="44" height="46" rx="4" transform="rotate(-10 16 14)" fill="#475569" stroke="#0f172a" stroke-width="2.5"/>
+                    <text x="25" y="40" transform="rotate(-10 25 40)" fill="#f8fafc" font-family="Patrick Hand, sans-serif" font-size="13" font-weight="bold">SSD</text>
+                    <rect x="70" y="8" width="48" height="54" rx="4" transform="rotate(8 70 8)" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.5"/>
+                    <circle cx="92" cy="30" r="13" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/>
+                    <circle cx="92" cy="30" r="4" fill="#64748b" stroke="#0f172a" stroke-width="1.5"/>
+                    <path d="M82 52L94 36" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/>
+                </svg>`
+            },
+            cpu: {
+                name: 'معالج CPU',
+                svg: `<svg width="85" height="58" viewBox="0 0 90 70" fill="none">
+                    <rect x="22" y="12" width="46" height="46" rx="5" fill="#22c55e" stroke="#0f172a" stroke-width="2.5"/>
+                    <rect x="30" y="20" width="30" height="30" rx="2" fill="#e2e8f0" stroke="#0f172a" stroke-width="2"/>
+                    <text x="34" y="39" fill="#0f172a" font-family="Patrick Hand, sans-serif" font-size="13" font-weight="bold">CPU</text>
+                    <path d="M28 6v6M38 6v6M48 6v6M58 6v6M28 58v6M38 58v6M48 58v6M58 58v6M16 20h6M16 30h6M16 40h6M16 50h6M68 20h6M68 30h6M68 40h6M68 50h6" stroke="#eab308" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`
+            },
+            gpu: {
+                name: 'كارت شاشة GPU',
+                svg: `<svg width="115" height="58" viewBox="0 0 130 70" fill="none">
+                    <rect x="14" y="16" width="102" height="38" rx="5" fill="#1e293b" stroke="#0f172a" stroke-width="2.5"/>
+                    <circle cx="44" cy="35" r="14" fill="#334155" stroke="#ef4444" stroke-width="2.5"/>
+                    <circle cx="84" cy="35" r="14" fill="#334155" stroke="#ef4444" stroke-width="2.5"/>
+                    <circle cx="44" cy="35" r="4" fill="#ef4444"/><circle cx="84" cy="35" r="4" fill="#ef4444"/>
+                    <path d="M24 54v5h45v-5" stroke="#eab308" stroke-width="3"/>
+                </svg>`
+            },
+            router: {
+                name: 'شبكة محلية LAN',
+                svg: `<svg width="115" height="58" viewBox="0 0 140 70" fill="none">
+                    <path d="M25 32L70 10L115 32" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round"/>
+                    <rect x="54" y="22" width="32" height="10" rx="2" fill="#1e3a8a" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M60 22V14M80 22V14" stroke="#0f172a" stroke-width="2"/>
+                    <rect x="22" y="45" width="22" height="15" rx="2" fill="#93c5fd" stroke="#0f172a" stroke-width="2"/>
+                    <rect x="59" y="45" width="22" height="15" rx="2" fill="#93c5fd" stroke="#0f172a" stroke-width="2"/>
+                    <rect x="96" y="45" width="22" height="15" rx="2" fill="#93c5fd" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M70 32V45M70 37H33V45M70 37H107V45" stroke="#2563eb" stroke-width="1.8"/>
+                </svg>`
+            },
+            globe: {
+                name: 'إنترنت عالمي WAN',
+                svg: `<svg width="115" height="58" viewBox="0 0 140 70" fill="none">
+                    <path d="M48 44H92C99 44 104 39 104 33C104 27 99 22 93 22C91 14 83 9 74 9C66 9 59 13 56 20C49 20 43 26 43 33C43 39 45 44 48 44Z" fill="#e0f2fe" stroke="#1e3a8a" stroke-width="2.5"/>
+                    <text x="53" y="32" fill="#1e3a8a" font-family="Patrick Hand, sans-serif" font-size="13" font-weight="bold">Internet</text>
+                    <rect x="14" y="14" width="18" height="24" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8"/>
+                    <rect x="108" y="14" width="18" height="24" fill="#cbd5e1" stroke="#0f172a" stroke-width="1.8"/>
+                    <path d="M32 28H43M97 28H108" stroke="#dc2626" stroke-width="2" stroke-dasharray="3 2"/>
+                </svg>`
+            },
+            chart: {
+                name: 'رسم بياني أعمدة',
+                svg: `<svg width="105" height="58" viewBox="0 0 110 65" fill="none">
+                    <path d="M15 10V55H98" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+                    <rect x="24" y="34" width="12" height="21" fill="#60a5fa" stroke="#0f172a" stroke-width="2"/>
+                    <rect x="44" y="24" width="12" height="31" fill="#f87171" stroke="#0f172a" stroke-width="2"/>
+                    <rect x="64" y="15" width="12" height="40" fill="#facc15" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M26 26L48 16L74 8" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`
+            },
+            detective: {
+                name: 'عدسة محقق Clue',
+                svg: `<svg width="85" height="58" viewBox="0 0 85 65" fill="none">
+                    <circle cx="36" cy="28" r="17" fill="#e0f2fe" stroke="#0f172a" stroke-width="3"/>
+                    <path d="M48 40L64 56" stroke="#78350f" stroke-width="6" stroke-linecap="round"/>
+                    <path d="M29 23C31 19 37 18 41 20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`
+            },
+            book: {
+                name: 'كتاب مفتوح',
+                svg: `<svg width="95" height="58" viewBox="0 0 100 65" fill="none">
+                    <path d="M12 16C25 12 42 15 50 22C58 15 75 12 88 16V52C75 48 58 51 50 58C42 51 25 48 12 52V16Z" fill="#fff" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M50 22V58" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M20 25H42M20 33H42M58 25H80M58 33H80" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                </svg>`
+            },
+            clock: {
+                name: 'ساعة وقت',
+                svg: `<svg width="80" height="58" viewBox="0 0 80 65" fill="none">
+                    <circle cx="40" cy="33" r="23" fill="#60a5fa" stroke="#0f172a" stroke-width="2.5"/>
+                    <circle cx="40" cy="33" r="17" fill="#fff" stroke="#0f172a" stroke-width="2"/>
+                    <path d="M40 20V33L49 33" stroke="#dc2626" stroke-width="2.8" stroke-linecap="round"/>
+                </svg>`
+            },
+            keyboard: {
+                name: 'اختصار كيبورد',
+                svg: `<svg width="110" height="58" viewBox="0 0 130 65" fill="none">
+                    <rect x="14" y="14" width="42" height="36" rx="7" fill="#e2e8f0" stroke="#0f172a" stroke-width="2.5"/>
+                    <text x="22" y="37" fill="#0f172a" font-family="Patrick Hand, sans-serif" font-size="16" font-weight="bold">Ctrl</text>
+                    <text x="61" y="38" fill="#dc2626" font-family="Patrick Hand, sans-serif" font-size="22" font-weight="bold">+</text>
+                    <rect x="76" y="14" width="38" height="36" rx="7" fill="#fef08a" stroke="#0f172a" stroke-width="2.5"/>
+                    <text x="90" y="37" fill="#0f172a" font-family="Patrick Hand, sans-serif" font-size="17" font-weight="bold">C</text>
+                </svg>`
+            },
+            folder: {
+                name: 'مجلد ملفات',
+                svg: `<svg width="85" height="58" viewBox="0 0 90 65" fill="none">
+                    <path d="M14 18H36L42 24H76V52H14V18Z" fill="#facc15" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M14 28H76" stroke="#0f172a" stroke-width="2"/>
+                </svg>`
+            }
+        };
+
+        // =========================================================
+        // 2. APPLICATION STATE ARCHITECTURE
+        // =========================================================
+        let state = {
+            theme: {
+                paperTheme: 'paper-classic',
+                canvasSize: 'portrait',
+                showSpiral: true,
+                showDoodles: true,
+                titleFontAr: "'Marhey', cursive",
+                bodyFontAr: "'Cairo', sans-serif",
+                fontEn: "'Patrick Hand', cursive",
+                fontScale: 1,
+                inkPrimary: '#1e3a8a',
+                inkAccent: '#dc2626'
+            },
+            header: {
+                logoImg: '',
+                logoShape: 'circle',
+                logoSize: 56,
+                logoBorder: true,
+                logoText: 'خطوة تك',
+                logoSubtext: 'Khatwa Tech',
+                topRightTag: '4/8 • Computer Basics',
+                topNote: 'معلومة بفرق',
+                mainTitle: 'Memory & Storage',
+                subTitle: 'الرام مش هي الهارد!',
+                subHighlight: 'hl-pink'
+            },
+            footer: {
+                author: 'محمود منصور | خطوة تك',
+                quote: 'Small Steps, Big Knowledge ♥'
+            },
+            sections: []
+        };
+
+        // =========================================================
+        // 3. RICH PRESETS (INSPIRED BY USER'S REFERENCE IMAGES)
+        // =========================================================
+        const PRESETS = {
+            ram_ssd: {
+                theme: {
+                    paperTheme: 'paper-classic', canvasSize: 'portrait', showSpiral: true, showDoodles: true,
+                    titleFontAr: "'Marhey', cursive", bodyFontAr: "'Cairo', sans-serif", fontEn: "'Patrick Hand', cursive",
+                    fontScale: 1, inkPrimary: '#1e3a8a', inkAccent: '#dc2626'
+                },
+                header: {
+                    logoImg: '', logoShape: 'circle', logoSize: 54, logoBorder: true,
+                    logoText: 'خطوة تك', logoSubtext: 'Khatwa Tech',
+                    topRightTag: '4/8 • Computer Basics', topNote: 'معلومة بفرق',
+                    mainTitle: 'Memory & Storage', subTitle: 'الرام مش هي الهارد!', subHighlight: 'hl-pink'
+                },
+                footer: { author: 'محمود منصور', quote: 'Small Steps, Big Knowledge ♥' },
+                sections: [
+                    {
+                        id: 'sec_1',
+                        type: 'cards',
+                        columns: 2,
+                        cards: [
+                            {
+                                title: 'RAM', badge: '', highlight: 'hl-blue', border: 'sketch-border-solid', icon: 'ram', customImg: '',
+                                bullets: ['سريعة ومؤقتة.', 'بتحتفظ ببيانات البرامج أثناء تشغيلها.', 'محتواها بيضيع لما الكهرباء تتقطع.']
+                            },
+                            {
+                                title: 'SSD / HDD', badge: '', highlight: 'hl-blue', border: 'sketch-border-solid', icon: 'ssd', customImg: '',
+                                bullets: ['لتخزين ملفاتك وبرامجك.', 'البيانات بتفضل محفوظة من غير كهرباء.']
+                            }
+                        ]
+                    },
+                    {
+                        id: 'sec_2',
+                        type: 'callout',
+                        icon: '💡',
+                        highlight: 'hl-yellow',
+                        border: 'sketch-border-dashed',
+                        text: 'مساحة شغلك = RAM   |   دولاب ملفاتك = Storage'
+                    },
+                    {
+                        id: 'sec_3',
+                        type: 'callout',
+                        icon: '🧠',
+                        highlight: 'hl-green',
+                        border: 'sketch-border-double',
+                        text: 'ROM — ذاكرة غير متطايرة؛ بتحتفظ بمحتواها بدون كهرباء.'
+                    }
+                ]
+            },
+
+            english_detective: {
+                theme: {
+                    paperTheme: 'paper-whiteboard', canvasSize: 'portrait', showSpiral: true, showDoodles: true,
+                    titleFontAr: "'Marhey', cursive", bodyFontAr: "'Cairo', sans-serif", fontEn: "'Fredoka', sans-serif",
+                    fontScale: 0.95, inkPrimary: '#1e3a8a', inkAccent: '#0284c7'
+                },
+                header: {
+                    logoImg: '', logoShape: 'circle', logoSize: 56, logoBorder: true,
+                    logoText: 'مستر السيد يوسف', logoSubtext: 'English Expert',
+                    topRightTag: 'English Detective 🔍', topNote: 'اكتشف الدليل واختار الصح',
+                    mainTitle: 'Find the Clue!', subTitle: 'قواعد أساسية في الإنجليزية', subHighlight: 'hl-yellow'
+                },
+                footer: { author: 'مستر السيد محمد يوسف | خبير اللغة الإنجليزية', quote: 'Better English, Brighter Future ★' },
+                sections: [
+                    {
+                        id: 'sec_en_1',
+                        type: 'cards',
+                        columns: 2,
+                        cards: [
+                            {
+                                title: 'Case 1: I + have', badge: '1', highlight: 'hl-purple', border: 'sketch-border-solid', icon: 'detective', customImg: '',
+                                bullets: ['مع الضمير I نستخدم have.', '✅ I have an apple.', '❌ I has an apple.']
+                            },
+                            {
+                                title: 'Case 2: Yesterday', badge: '2', highlight: 'hl-blue', border: 'sketch-border-accent', icon: 'clock', customImg: '',
+                                bullets: ['Yesterday تدل على الماضي.', '✅ She was at school yesterday.', '❌ She is at school yesterday.']
+                            },
+                            {
+                                title: 'Case 3: Singular (is)', badge: '3', highlight: 'hl-pink', border: 'sketch-border-solid', icon: 'book', customImg: '',
+                                bullets: ['المفرد يأخذ is.', '✅ The cat is under the table.', '❌ The cat are under the table.']
+                            },
+                            {
+                                title: 'Case 4: Plural (are)', badge: '4', highlight: 'hl-green', border: 'sketch-border-accent', icon: 'folder', customImg: '',
+                                bullets: ['الجمع يأخذ are.', '✅ There are two books.', '❌ There is two books.']
+                            }
+                        ]
+                    },
+                    {
+                        id: 'sec_en_2',
+                        type: 'quiz',
+                        title: 'تحدي المحقق السريع 🕵️‍♂️',
+                        highlight: 'hl-pink',
+                        questions: [
+                            '1) She _____ happy. (is / are)',
+                            '2) There _____ three pens. (is / are)',
+                            '3) Can I _____ your ruler? (borrow / borrows)'
+                        ],
+                        answerKey: 'الإجابات: 1. is  |  2. are  |  3. borrow'
+                    }
+                ]
+            },
+
+            data_viz: {
+                theme: {
+                    paperTheme: 'paper-classic', canvasSize: 'portrait', showSpiral: true, showDoodles: true,
+                    titleFontAr: "'Marhey', cursive", bodyFontAr: "'Cairo', sans-serif", fontEn: "'Patrick Hand', cursive",
+                    fontScale: 1, inkPrimary: '#1e3a8a', inkAccent: '#dc2626'
+                },
+                header: {
+                    logoImg: '', logoShape: 'circle', logoSize: 54, logoBorder: true,
+                    logoText: 'khatwa.tech', logoSubtext: 'Data Basics',
+                    topRightTag: 'أساسيات البيانات 📊', topNote: 'فهم + تنظيم + مقارنة',
+                    mainTitle: 'يعني إيه عرض البيانات؟', subTitle: 'تحويل الأرقام المتناثرة لشكل واضح وسهل', subHighlight: 'hl-yellow'
+                },
+                footer: { author: 'khatwa.tech | Mahmoud Mansour', quote: 'Data Made Simple ★' },
+                sections: [
+                    {
+                        id: 'sec_dv_1',
+                        type: 'callout',
+                        icon: '🤔',
+                        highlight: 'hl-pink',
+                        border: 'sketch-border-solid',
+                        text: 'البيانات الخام: أرقام ومعلومات متناثرة فهمها صعب (12, 7, 25, 8, 19, 30...)'
+                    },
+                    {
+                        id: 'sec_dv_2',
+                        type: 'table',
+                        title: 'جدول التكرار (بعد تنظيم البيانات)',
+                        headerColor: '#bae6fd',
+                        striped: true,
+                        headers: ['الفئة (Range)', 'التكرار (Frequency)', 'النسبة المئوية'],
+                        rows: [
+                            ['0 - 10', '5 طلاب', '33%'],
+                            ['11 - 20', '4 طلاب', '27%'],
+                            ['21 - 30', '6 طلاب', '40%']
+                        ]
+                    },
+                    {
+                        id: 'sec_dv_3',
+                        type: 'cards',
+                        columns: 3,
+                        cards: [
+                            { title: '1. الفهم السريع', badge: '1', highlight: 'hl-pink', border: 'sketch-border-dashed', icon: 'clock', customImg: '', bullets: ['نستوعب المعلومة في ثواني.'] },
+                            { title: '2. المقارنة', badge: '2', highlight: 'hl-blue', border: 'sketch-border-solid', icon: 'chart', customImg: '', bullets: ['نقارن بين القيم بسهولة.'] },
+                            { title: '3. الأنماط', badge: '3', highlight: 'hl-green', border: 'sketch-border-accent', icon: 'detective', customImg: '', bullets: ['نلاحظ الاتجاهات والزيادة.'] }
+                        ]
+                    }
+                ]
+            },
+
+            shortcuts: {
+                theme: {
+                    paperTheme: 'paper-grid', canvasSize: 'portrait', showSpiral: false, showDoodles: true,
+                    titleFontAr: "'Marhey', cursive", bodyFontAr: "'Cairo', sans-serif", fontEn: "'Patrick Hand', cursive",
+                    fontScale: 0.96, inkPrimary: '#0f172a', inkAccent: '#dc2626'
+                },
+                header: {
+                    logoImg: '', logoShape: 'rounded', logoSize: 52, logoBorder: true,
+                    logoText: 'خطوة تك', logoSubtext: '6/10',
+                    topRightTag: 'أساسيات الكمبيوتر للمبتدئين', topNote: 'وفر وقتك ⌨️',
+                    mainTitle: 'أهم اختصارات الكيبورد', subTitle: 'التعامل السريع مع الملفات والنصوص', subHighlight: 'hl-yellow'
+                },
+                footer: { author: 'محمود منصور | خطوة تك', quote: 'Work Smarter, Not Harder ⚡' },
+                sections: [
+                    {
+                        id: 'sec_sh_1',
+                        type: 'table',
+                        title: 'اختصارات النسخ واللصق الأساسية',
+                        headerColor: '#fef08a',
+                        striped: true,
+                        headers: ['الاختصار (Shortcut)', 'الوظيفة والاستخدام'],
+                        rows: [
+                            ['Ctrl + C', 'نسخ العنصر أو النص المحدد'],
+                            ['Ctrl + V', 'لصق ما تم نسخه في المكان الجديد'],
+                            ['Ctrl + X', 'قص (نقل) العنصر من مكانه'],
+                            ['Ctrl + Z', 'التراجع عن آخر خطوة قمت بها'],
+                            ['Ctrl + S', 'حفظ التعديلات فوراً']
+                        ]
+                    },
+                    {
+                        id: 'sec_sh_2',
+                        type: 'steps',
+                        title: 'مثال عملي: عايز تنسخ ملف من مجلد لمجلد؟',
+                        highlight: 'hl-blue',
+                        steps: [
+                            { num: '1', label: 'حدد الملف', desc: 'اضغط على الملف المطلوب' },
+                            { num: '2', label: 'Ctrl + C', desc: 'اضغط لنسخ الملف' },
+                            { num: '3', label: 'افتح المجلد', desc: 'اذهب للمجلد الآخر' },
+                            { num: '4', label: 'Ctrl + V', desc: 'اضغط للصق الملف' }
+                        ]
+                    }
+                ]
+            },
+
+            blank: {
+                theme: {
+                    paperTheme: 'paper-classic', canvasSize: 'portrait', showSpiral: true, showDoodles: true,
+                    titleFontAr: "'Marhey', cursive", bodyFontAr: "'Cairo', sans-serif", fontEn: "'Patrick Hand', cursive",
+                    fontScale: 1, inkPrimary: '#1e3a8a', inkAccent: '#dc2626'
+                },
+                header: {
+                    logoImg: '', logoShape: 'circle', logoSize: 54, logoBorder: true,
+                    logoText: 'اسم قناتك', logoSubtext: 'Your Brand',
+                    topRightTag: '1/5 • عنوان السلسلة', topNote: 'ملاحظة سريعة',
+                    mainTitle: 'عنوان الدرس الرئيسي', subTitle: 'اكتب هنا العنوان الفرعي المميز', subHighlight: 'hl-yellow'
+                },
+                footer: { author: 'اسمك أو صفحتك هنا', quote: 'Keep Learning ★' },
+                sections: [
+                    {
+                        id: 'sec_blank_1',
+                        type: 'cards',
+                        columns: 2,
+                        cards: [
+                            { title: 'العنصر الأول', badge: '1', highlight: 'hl-blue', border: 'sketch-border-solid', icon: 'book', customImg: '', bullets: ['اكتب هنا الشرح الأول.', 'أضف نقطة ثانية هنا.'] },
+                            { title: 'العنصر الثاني', badge: '2', highlight: 'hl-green', border: 'sketch-border-accent', icon: 'chart', customImg: '', bullets: ['اكتب هنا الشرح المقابل.', 'أضف مثالاً توضيحياً.'] }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        // =========================================================
+        // 4. UTILITY & NOTIFICATION FUNCTIONS
+        // =========================================================
+        function notify(msg, icon = '✅') {
+            const el = document.getElementById('studioToast');
+            document.getElementById('toastText').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            el.classList.remove('d-none');
+            el.classList.add('d-flex');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                el.classList.add('d-none');
+                el.classList.remove('d-flex');
+            }, 3000);
+        }
+
+        function escapeAttr(str) {
+            return String(str || '').replace(/"/g, '&quot;');
+        }
+
+        // =========================================================
+        // 5. STATE MUTATORS (HEADER, FOOTER, THEME, LOGO)
+        // =========================================================
+        function updateHeader(key, val) {
+            state.header[key] = val;
+            renderCanvas();
+        }
+
+        function updateFooter(key, val) {
+            state.footer[key] = val;
+            renderCanvas();
+        }
+
+        function updateTheme(key, val) {
+            state.theme[key] = val;
+            renderCanvas();
+        }
+
+        function setInkPreset(primary, accent) {
+            state.theme.inkPrimary = primary;
+            state.theme.inkAccent = accent;
+            document.getElementById('inpInkPrimary').value = primary;
+            document.getElementById('inpInkAccent').value = accent;
+            renderCanvas();
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.header.logoImg = e.target.result;
+                renderCanvas();
+                notify('تم إضافة اللوجو أعلى يسار التصميم!', '🖼️');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearLogo() {
+            state.header.logoImg = '';
+            renderCanvas();
+            notify('تم حذف صورة اللوجو', '🗑️');
+        }
+
+        function loadPreset(key) {
+            state = JSON.parse(JSON.stringify(PRESETS[key]));
+            syncControlsFromState();
+            renderSectionsEditor();
+            renderCanvas();
+            notify('تم تحميل القالب بنجاح!', '🎨');
+        }
+
+        function syncControlsFromState() {
+            // Theme
+            document.getElementById('inpPaperTheme').value = state.theme.paperTheme;
+            document.getElementById('inpCanvasSize').value = state.theme.canvasSize;
+            document.getElementById('inpShowSpiral').checked = state.theme.showSpiral;
+            document.getElementById('inpShowDoodles').checked = state.theme.showDoodles;
+            document.getElementById('inpTitleFontAr').value = state.theme.titleFontAr;
+            document.getElementById('inpBodyFontAr').value = state.theme.bodyFontAr;
+            document.getElementById('inpFontEn').value = state.theme.fontEn;
+            document.getElementById('inpFontScale').value = state.theme.fontScale;
+            document.getElementById('fontScaleVal').textContent = Math.round(state.theme.fontScale * 100);
+            document.getElementById('inpInkPrimary').value = state.theme.inkPrimary;
+            document.getElementById('inpInkAccent').value = state.theme.inkAccent;
+
+            // Header
+            document.getElementById('inpLogoShape').value = state.header.logoShape;
+            document.getElementById('inpLogoSize').value = state.header.logoSize;
+            document.getElementById('logoSizeVal').textContent = state.header.logoSize;
+            document.getElementById('inpLogoBorder').checked = state.header.logoBorder;
+            document.getElementById('inpLogoText').value = state.header.logoText;
+            document.getElementById('inpLogoSubtext').value = state.header.logoSubtext;
+            document.getElementById('inpTopRightTag').value = state.header.topRightTag;
+            document.getElementById('inpTopNote').value = state.header.topNote;
+            document.getElementById('inpMainTitle').value = state.header.mainTitle;
+            document.getElementById('inpSubTitle').value = state.header.subTitle;
+            document.getElementById('inpSubHighlight').value = state.header.subHighlight;
+
+            // Footer
+            document.getElementById('inpFooterAuthor').value = state.footer.author;
+            document.getElementById('inpFooterQuote').value = state.footer.quote;
+        }
+
+        // =========================================================
+        // 6. MODULAR SECTIONS CRUD (ADD, MOVE, DUPLICATE, DELETE)
+        // =========================================================
+        function addSection(type) {
+            const id = 'sec_' + Date.now();
+            let newSec = { id, type };
+
+            if (type === 'cards') {
+                newSec = {
+                    ...newSec,
+                    columns: 2,
+                    cards: [
+                        { title: 'عنوان الكارت 1', badge: '1', highlight: 'hl-blue', border: 'sketch-border-solid', icon: 'book', customImg: '', bullets: ['نقطة شرح أولى.', 'نقطة شرح ثانية.'] },
+                        { title: 'عنوان الكارت 2', badge: '2', highlight: 'hl-yellow', border: 'sketch-border-accent', icon: 'chart', customImg: '', bullets: ['نقطة شرح مقابلة.'] }
+                    ]
+                };
+            } else if (type === 'table') {
+                newSec = {
+                    ...newSec,
+                    title: 'جدول مقارنة / بيانات',
+                    headerColor: '#bae6fd',
+                    striped: true,
+                    headers: ['العنصر', 'الوصف', 'ملاحظات'],
+                    rows: [
+                        ['الصف الأول', 'تفاصيل العنصر الأول', 'ممتاز'],
+                        ['الصف الثاني', 'تفاصيل العنصر الثاني', 'سريع']
+                    ]
+                };
+            } else if (type === 'hero_image') {
+                newSec = {
+                    ...newSec,
+                    title: 'رسم توضيحي / مخطط',
+                    highlight: 'hl-green',
+                    icon: 'router',
+                    customImg: '',
+                    sketchBorder: true,
+                    caption: 'شرح مختصر للصورة أو المخطط التوضيحي هنا.'
+                };
+            } else if (type === 'steps') {
+                newSec = {
+                    ...newSec,
+                    title: 'خطوات التنفيذ بالترتيب:',
+                    highlight: 'hl-yellow',
+                    steps: [
+                        { num: '1', label: 'الخطوة 1', desc: 'ابدأ بتحديد الهدف' },
+                        { num: '2', label: 'الخطوة 2', desc: 'نفّذ الإجراء المطلوب' },
+                        { num: '3', label: 'الخطوة 3', desc: 'احفظ النتيجة النهائية' }
+                    ]
+                };
+            } else if (type === 'quiz') {
+                newSec = {
+                    ...newSec,
+                    title: 'تحدي سريع للمراجعة ❓',
+                    highlight: 'hl-pink',
+                    questions: [
+                        '1) اكتب السؤال الأول هنا؟',
+                        '2) اكتب السؤال الثاني هنا؟'
+                    ],
+                    answerKey: 'الإجابات: 1. ...  |  2. ...'
+                };
+            } else if (type === 'callout') {
+                newSec = {
+                    ...newSec,
+                    icon: '💡',
+                    highlight: 'hl-yellow',
+                    border: 'sketch-border-dashed',
+                    text: 'خلي بالك: اكتب هنا أهم قاعدة أو خلاصة الدرس!'
+                };
+            }
+
+            state.sections.push(newSec);
+            renderSectionsEditor();
+            renderCanvas();
+            notify('تم إضافة القسم الجديد!', '➕');
+        }
+
+        function moveSection(index, dir) {
+            const target = index + dir;
+            if (target < 0 || target >= state.sections.length) return;
+            const temp = state.sections[index];
+            state.sections[index] = state.sections[target];
+            state.sections[target] = temp;
+            renderSectionsEditor();
+            renderCanvas();
+        }
+
+        function duplicateSection(index) {
+            const copy = JSON.parse(JSON.stringify(state.sections[index]));
+            copy.id = 'sec_' + Date.now();
+            state.sections.splice(index + 1, 0, copy);
+            renderSectionsEditor();
+            renderCanvas();
+            notify('تم تكرار القسم', '📋');
+        }
+
+        function deleteSection(index) {
+            state.sections.splice(index, 1);
+            renderSectionsEditor();
+            renderCanvas();
+            notify('تم حذف القسم', '🗑️');
+        }
+
+        function focusSectionEditor(secId) {
+            // Switch to tab 1
+            const tabBtn = document.getElementById('tab-sections-btn');
+            bootstrap.Tab.getOrCreateInstance(tabBtn).show();
+            setTimeout(() => {
+                const el = document.getElementById('editor_' + secId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    el.style.borderColor = '#f59e0b';
+                    setTimeout(() => { el.style.borderColor = ''; }, 1500);
+                }
+            }, 150);
+        }
+
+        // =========================================================
+        // 7. SECTION-SPECIFIC EDITORS RENDERER
+        // =========================================================
+        function renderSectionsEditor() {
+            const container = document.getElementById('sectionsEditorContainer');
+            document.getElementById('sectionCountBadge').textContent = `${state.sections.length} أقسام`;
+            container.innerHTML = '';
+
+            const typeLabels = {
+                cards: '🗂️ شبكة كروت',
+                table: '📊 جدول بيانات',
+                hero_image: '🖼️ صورة / رسم كبير',
+                steps: '🔢 خطوات / اختصارات',
+                quiz: '❓ تحدي وأسئلة',
+                callout: '💡 ملاحظة / خلاصة'
+            };
+
+            state.sections.forEach((sec, sIdx) => {
+                let bodyHtml = '';
+
+                // --- A. CARDS EDITOR ---
+                if (sec.type === 'cards') {
+                    const cardsHtml = sec.cards.map((c, cIdx) => {
+                        const iconOpts = Object.entries(SVG_LIBRARY).map(([k, v]) =>
+                            `<option value="${k}" ${c.icon === k ? 'selected' : ''}>${v.name}</option>`
+                        ).join('');
+
+                        const bulletsHtml = c.bullets.map((b, bIdx) => `
+                            <div class="input-group input-group-sm mb-1">
+                                <input type="text" value="${escapeAttr(b)}" oninput="state.sections[${sIdx}].cards[${cIdx}].bullets[${bIdx}]=this.value; renderCanvas();" class="form-control form-control-dark">
+                                <button onclick="state.sections[${sIdx}].cards[${cIdx}].bullets.splice(${bIdx},1); renderSectionsEditor(); renderCanvas();" class="btn btn-outline-danger px-2">✕</button>
+                            </div>
+                        `).join('');
+
+                        return `
+                            <div class="p-2 rounded-3 bg-dark border border-secondary mb-2">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="badge bg-info text-dark">كارت #${cIdx + 1}</span>
+                                    <button onclick="if(state.sections[${sIdx}].cards.length>1){state.sections[${sIdx}].cards.splice(${cIdx},1); renderSectionsEditor(); renderCanvas();}" class="btn btn-link btn-sm text-danger p-0 text-decoration-none" style="font-size:0.72rem;">حذف الكارت</button>
+                                </div>
+                                <div class="row g-1 mb-1">
+                                    <div class="col-6">
+                                        <input type="text" value="${escapeAttr(c.title)}" oninput="state.sections[${sIdx}].cards[${cIdx}].title=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark" placeholder="عنوان الكارت">
+                                    </div>
+                                    <div class="col-3">
+                                        <input type="text" value="${escapeAttr(c.badge)}" oninput="state.sections[${sIdx}].cards[${cIdx}].badge=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark" placeholder="رقم/شارة">
+                                    </div>
+                                    <div class="col-3">
+                                        <select onchange="state.sections[${sIdx}].cards[${cIdx}].highlight=this.value; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                            <option value="hl-blue" ${c.highlight==='hl-blue'?'selected':''}>لبني</option>
+                                            <option value="hl-yellow" ${c.highlight==='hl-yellow'?'selected':''}>أصفر</option>
+                                            <option value="hl-pink" ${c.highlight==='hl-pink'?'selected':''}>بينك</option>
+                                            <option value="hl-green" ${c.highlight==='hl-green'?'selected':''}>أخضر</option>
+                                            <option value="hl-orange" ${c.highlight==='hl-orange'?'selected':''}>برتقالي</option>
+                                            <option value="hl-purple" ${c.highlight==='hl-purple'?'selected':''}>بنفسجي</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row g-1 mb-2">
+                                    <div class="col-4">
+                                        <select onchange="state.sections[${sIdx}].cards[${cIdx}].border=this.value; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                            <option value="sketch-border-solid" ${c.border==='sketch-border-solid'?'selected':''}>إطار أساسي</option>
+                                            <option value="sketch-border-accent" ${c.border==='sketch-border-accent'?'selected':''}>إطار مميز</option>
+                                            <option value="sketch-border-dashed" ${c.border==='sketch-border-dashed'?'selected':''}>إطار متقطع</option>
+                                            <option value="sketch-border-double" ${c.border==='sketch-border-double'?'selected':''}>إطار مزدوج</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <select onchange="state.sections[${sIdx}].cards[${cIdx}].icon=this.value; state.sections[${sIdx}].cards[${cIdx}].customImg=''; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                            ${iconOpts}
+                                        </select>
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="btn btn-sm btn-outline-warning w-100 mb-0 text-truncate" style="font-size:0.7rem;cursor:pointer;">
+                                            📷 صورة
+                                            <input type="file" accept="image/*" onchange="uploadCardImg(${sIdx}, ${cIdx}, event)" hidden>
+                                        </label>
+                                    </div>
+                                </div>
+                                ${bulletsHtml}
+                                <button onclick="state.sections[${sIdx}].cards[${cIdx}].bullets.push('نقطة جديدة...'); renderSectionsEditor(); renderCanvas();" class="btn btn-sm btn-link text-success p-0 text-decoration-none" style="font-size:0.74rem;">+ إضافة نقطة شرح</button>
+                            </div>
+                        `;
+                    }).join('');
+
+                    bodyHtml = `
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="small text-secondary">الأعمدة:</span>
+                                <select onchange="state.sections[${sIdx}].columns=Number(this.value); renderCanvas();" class="form-select form-select-sm form-select-dark" style="width:95px;">
+                                    <option value="1" ${sec.columns===1?'selected':''}>1 عمود</option>
+                                    <option value="2" ${sec.columns===2?'selected':''}>2 عمود</option>
+                                    <option value="3" ${sec.columns===3?'selected':''}>3 أعمدة</option>
+                                </select>
+                            </div>
+                            <button onclick="state.sections[${sIdx}].cards.push({title:'كارت جديد',badge:'',highlight:'hl-yellow',border:'sketch-border-solid',icon:'book',customImg:'',bullets:['نقطة شرح.']}); renderSectionsEditor(); renderCanvas();" class="btn btn-sm btn-info fw-bold" style="font-size:0.72rem;">+ كارت</button>
+                        </div>
+                        ${cardsHtml}
+                    `;
+                }
+
+                // --- B. TABLE EDITOR ---
+                else if (sec.type === 'table') {
+                    const headersInputs = sec.headers.map((h, hIdx) => `
+                        <div class="col">
+                            <input type="text" value="${escapeAttr(h)}" oninput="state.sections[${sIdx}].headers[${hIdx}]=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark fw-bold text-warning">
+                        </div>
+                    `).join('');
+
+                    const rowsHtml = sec.rows.map((row, rIdx) => `
+                        <div class="d-flex gap-1 mb-1 align-items-center">
+                            ${row.map((cell, cIdx) => `
+                                <input type="text" value="${escapeAttr(cell)}" oninput="state.sections[${sIdx}].rows[${rIdx}][${cIdx}]=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark">
+                            `).join('')}
+                            <button onclick="state.sections[${sIdx}].rows.splice(${rIdx},1); renderSectionsEditor(); renderCanvas();" class="btn btn-sm btn-outline-danger px-2">✕</button>
+                        </div>
+                    `).join('');
+
+                    bodyHtml = `
+                        <div class="row g-1 mb-2">
+                            <div class="col-7">
+                                <input type="text" value="${escapeAttr(sec.title)}" oninput="state.sections[${sIdx}].title=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark" placeholder="عنوان الجدول">
+                            </div>
+                            <div class="col-5">
+                                <select onchange="state.sections[${sIdx}].headerColor=this.value; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                    <option value="#bae6fd" ${sec.headerColor==='#bae6fd'?'selected':''}>رأس لبني</option>
+                                    <option value="#fef08a" ${sec.headerColor==='#fef08a'?'selected':''}>رأس أصفر</option>
+                                    <option value="#fbcfe8" ${sec.headerColor==='#fbcfe8'?'selected':''}>رأس بينك</option>
+                                    <option value="#bbf7d0" ${sec.headerColor==='#bbf7d0'?'selected':''}>رأس أخضر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-1 mb-2">
+                            <button onclick="addTableCol(${sIdx})" class="btn btn-xs btn-outline-info" style="font-size:0.7rem;">+ عمود</button>
+                            <button onclick="removeTableCol(${sIdx})" class="btn btn-xs btn-outline-secondary" style="font-size:0.7rem;">- عمود</button>
+                            <button onclick="addTableRow(${sIdx})" class="btn btn-xs btn-outline-success" style="font-size:0.7rem;">+ صف جديد</button>
+                        </div>
+                        <div class="row g-1 mb-1">${headersInputs}</div>
+                        ${rowsHtml}
+                    `;
+                }
+
+                // --- C. HERO IMAGE / DIAGRAM EDITOR ---
+                else if (sec.type === 'hero_image') {
+                    const iconOpts = Object.entries(SVG_LIBRARY).map(([k, v]) =>
+                        `<option value="${k}" ${sec.icon === k ? 'selected' : ''}>${v.name}</option>`
+                    ).join('');
+
+                    bodyHtml = `
+                        <div class="row g-1 mb-2">
+                            <div class="col-8">
+                                <input type="text" value="${escapeAttr(sec.title)}" oninput="state.sections[${sIdx}].title=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark" placeholder="عنوان الصورة / الرسم">
+                            </div>
+                            <div class="col-4">
+                                <select onchange="state.sections[${sIdx}].icon=this.value; state.sections[${sIdx}].customImg=''; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                    ${iconOpts}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="btn btn-sm btn-outline-success w-100" style="cursor:pointer;font-size:0.74rem;">
+                                📤 رفع صورة توضيحية من جهازك
+                                <input type="file" accept="image/*" onchange="uploadHeroImg(${sIdx}, event)" hidden>
+                            </label>
+                        </div>
+                        <input type="text" value="${escapeAttr(sec.caption)}" oninput="state.sections[${sIdx}].caption=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark" placeholder="تعليق أو شرح أسفل الصورة">
+                    `;
+                }
+
+                // --- D. STEPS / SHORTCUTS EDITOR ---
+                else if (sec.type === 'steps') {
+                    const stepsHtml = sec.steps.map((st, stIdx) => `
+                        <div class="row g-1 mb-1 align-items-center">
+                            <div class="col-2">
+                                <input type="text" value="${escapeAttr(st.num)}" oninput="state.sections[${sIdx}].steps[${stIdx}].num=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark text-center">
+                            </div>
+                            <div class="col-4">
+                                <input type="text" value="${escapeAttr(st.label)}" oninput="state.sections[${sIdx}].steps[${stIdx}].label=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark fw-bold">
+                            </div>
+                            <div class="col-5">
+                                <input type="text" value="${escapeAttr(st.desc)}" oninput="state.sections[${sIdx}].steps[${stIdx}].desc=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark">
+                            </div>
+                            <div class="col-1">
+                                <button onclick="state.sections[${sIdx}].steps.splice(${stIdx},1); renderSectionsEditor(); renderCanvas();" class="btn btn-sm text-danger p-0">✕</button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    bodyHtml = `
+                        <input type="text" value="${escapeAttr(sec.title)}" oninput="state.sections[${sIdx}].title=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark mb-2" placeholder="عنوان الخطوات">
+                        ${stepsHtml}
+                        <button onclick="state.sections[${sIdx}].steps.push({num:String(state.sections[${sIdx}].steps.length+1),label:'خطوة',desc:'وصف الخطوة'}); renderSectionsEditor(); renderCanvas();" class="btn btn-sm btn-link text-info p-0 text-decoration-none" style="font-size:0.74rem;">+ إضافة خطوة</button>
+                    `;
+                }
+
+                // --- E. QUIZ / CHALLENGE EDITOR ---
+                else if (sec.type === 'quiz') {
+                    const qHtml = sec.questions.map((q, qIdx) => `
+                        <div class="input-group input-group-sm mb-1">
+                            <input type="text" value="${escapeAttr(q)}" oninput="state.sections[${sIdx}].questions[${qIdx}]=this.value; renderCanvas();" class="form-control form-control-dark">
+                            <button onclick="state.sections[${sIdx}].questions.splice(${qIdx},1); renderSectionsEditor(); renderCanvas();" class="btn btn-outline-danger px-2">✕</button>
+                        </div>
+                    `).join('');
+
+                    bodyHtml = `
+                        <input type="text" value="${escapeAttr(sec.title)}" oninput="state.sections[${sIdx}].title=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark mb-2" placeholder="عنوان التحدي">
+                        ${qHtml}
+                        <button onclick="state.sections[${sIdx}].questions.push('سؤال جديد؟'); renderSectionsEditor(); renderCanvas();" class="btn btn-sm btn-link text-warning p-0 text-decoration-none mb-2 d-block" style="font-size:0.74rem;">+ إضافة سؤال</button>
+                        <input type="text" value="${escapeAttr(sec.answerKey)}" oninput="state.sections[${sIdx}].answerKey=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark text-success" placeholder="مفتاح الإجابات (اختياري)">
+                    `;
+                }
+
+                // --- F. CALLOUT / TIP EDITOR ---
+                else if (sec.type === 'callout') {
+                    bodyHtml = `
+                        <div class="row g-1 mb-1">
+                            <div class="col-3">
+                                <input type="text" value="${escapeAttr(sec.icon)}" oninput="state.sections[${sIdx}].icon=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark text-center" placeholder="أيقونة">
+                            </div>
+                            <div class="col-4">
+                                <select onchange="state.sections[${sIdx}].highlight=this.value; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                    <option value="hl-yellow" ${sec.highlight==='hl-yellow'?'selected':''}>أصفر</option>
+                                    <option value="hl-pink" ${sec.highlight==='hl-pink'?'selected':''}>بينك</option>
+                                    <option value="hl-blue" ${sec.highlight==='hl-blue'?'selected':''}>لبني</option>
+                                    <option value="hl-green" ${sec.highlight==='hl-green'?'selected':''}>أخضر</option>
+                                    <option value="hl-none" ${sec.highlight==='hl-none'?'selected':''}>بدون</option>
+                                </select>
+                            </div>
+                            <div class="col-5">
+                                <select onchange="state.sections[${sIdx}].border=this.value; renderCanvas();" class="form-select form-select-sm form-select-dark">
+                                    <option value="sketch-border-dashed" ${sec.border==='sketch-border-dashed'?'selected':''}>متقطع</option>
+                                    <option value="sketch-border-solid" ${sec.border==='sketch-border-solid'?'selected':''}>أساسي</option>
+                                    <option value="sketch-border-double" ${sec.border==='sketch-border-double'?'selected':''}>مزدوج</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea rows="2" oninput="state.sections[${sIdx}].text=this.value; renderCanvas();" class="form-control form-control-sm form-control-dark">${sec.text}</textarea>
+                    `;
+                }
+
+                // Wrapper Card with Reorder / Duplicate / Delete Buttons
+                const secWrapper = `
+                    <div class="editor-card" id="editor_${sec.id}">
+                        <div class="d-flex align-items-center justify-content-between border-bottom border-secondary pb-2 mb-2">
+                            <span class="fw-bold small text-light">${typeLabels[sec.type]}</span>
+                            <div class="btn-group btn-group-sm">
+                                <button onclick="moveSection(${sIdx}, -1)" class="btn btn-dark border-secondary text-light" title="تحريك لأعلى"><i class="bi bi-arrow-up"></i></button>
+                                <button onclick="moveSection(${sIdx}, 1)" class="btn btn-dark border-secondary text-light" title="تحريك لأسفل"><i class="bi bi-arrow-down"></i></button>
+                                <button onclick="duplicateSection(${sIdx})" class="btn btn-dark border-secondary text-info" title="تكرار"><i class="bi bi-copy"></i></button>
+                                <button onclick="deleteSection(${sIdx})" class="btn btn-dark border-secondary text-danger" title="حذف"><i class="bi bi-trash"></i></button>
+                            </div>
+                        </div>
+                        ${bodyHtml}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', secWrapper);
+            });
+        }
+
+        // Table & Image Helpers
+        function addTableCol(sIdx) {
+            const sec = state.sections[sIdx];
+            if (sec.headers.length >= 5) return;
+            sec.headers.push('عمود جديد');
+            sec.rows.forEach(r => r.push('-'));
+            renderSectionsEditor();
+            renderCanvas();
+        }
+        function removeTableCol(sIdx) {
+            const sec = state.sections[sIdx];
+            if (sec.headers.length <= 2) return;
+            sec.headers.pop();
+            sec.rows.forEach(r => r.pop());
+            renderSectionsEditor();
+            renderCanvas();
+        }
+        function addTableRow(sIdx) {
+            const sec = state.sections[sIdx];
+            sec.rows.push(new Array(sec.headers.length).fill('بيانات'));
+            renderSectionsEditor();
+            renderCanvas();
+        }
+        function uploadCardImg(sIdx, cIdx, event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.sections[sIdx].cards[cIdx].customImg = e.target.result;
+                renderCanvas();
+                notify('تم رفع صورة الكارت!', '🖼️');
+            };
+            reader.readAsDataURL(file);
+        }
+        function uploadHeroImg(sIdx, event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                state.sections[sIdx].customImg = e.target.result;
+                renderCanvas();
+                notify('تم رفع الصورة التوضيحية!', '🖼️');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // =========================================================
+        // 8. LIVE CANVAS RENDERER
+        // =========================================================
+        function renderCanvas() {
+            const canvas = document.getElementById('notebookCanvas');
+            const root = document.documentElement;
+
+            // Apply CSS Variables
+            root.style.setProperty('--title-font-ar', state.theme.titleFontAr);
+            root.style.setProperty('--body-font-ar', state.theme.bodyFontAr);
+            root.style.setProperty('--font-en', state.theme.fontEn);
+            root.style.setProperty('--font-scale', state.theme.fontScale);
+            root.style.setProperty('--ink-primary', state.theme.inkPrimary);
+            root.style.setProperty('--ink-accent', state.theme.inkAccent);
+
+            // Paper Theme & Size
+            const sizeClass = state.theme.canvasSize === 'square' ? 'size-square' : (state.theme.canvasSize === 'a4' ? 'size-a4' : '');
+            canvas.className = `${state.theme.paperTheme} ${sizeClass} p-4 sm:p-5 d-flex flex-column justify-content-between`;
+
+            // Spiral Rings
+            const spiralEl = document.getElementById('spiralBindingContainer');
+            const innerWrap = document.getElementById('canvasInnerWrapper');
+            if (state.theme.showSpiral) {
+                spiralEl.style.display = 'flex';
+                innerWrap.classList.add('ps-4');
+                const ringCount = state.theme.canvasSize === 'a4' ? 28 : 22;
+                let rings = '';
+                for (let i = 0; i < ringCount; i++) {
+                    rings += `<div class="spiral-ring"><div class="spiral-wire"></div><div class="spiral-hole"></div></div>`;
+                }
+                spiralEl.innerHTML = rings;
+            } else {
+                spiralEl.style.display = 'none';
+                innerWrap.classList.remove('ps-4');
+            }
+
+            // Doodles visibility
+            document.querySelectorAll('.doodle-item').forEach(el => {
+                el.style.display = state.theme.showDoodles ? 'inline' : 'none';
+            });
+
+            // Header Info
+            document.getElementById('viewTopRightTag').textContent = state.header.topRightTag;
+            const topNoteBox = document.getElementById('viewTopNoteBox');
+            topNoteBox.style.display = state.header.topNote.trim() ? 'flex' : 'none';
+            document.getElementById('viewTopNote').textContent = state.header.topNote;
+
+            document.getElementById('viewMainTitle').textContent = state.header.mainTitle;
+            const subBox = document.getElementById('viewSubTitleBox');
+            const subEl = document.getElementById('viewSubTitle');
+            if (state.header.subTitle.trim()) {
+                subBox.style.display = 'block';
+                subEl.textContent = state.header.subTitle;
+                subEl.className = `marker-hl ${state.header.subHighlight} canvas-title-text fw-bold`;
+            } else {
+                subBox.style.display = 'none';
+            }
+
+            // Top-Left Logo Slot
+            const logoWrap = document.getElementById('viewLogoImgWrapper');
+            const logoImg = document.getElementById('viewLogoImg');
+            const logoPh = document.getElementById('viewLogoPlaceholder');
+            const sz = state.header.logoSize + 'px';
+            logoWrap.style.width = sz;
+            logoWrap.style.height = sz;
+            logoWrap.style.borderRadius = state.header.logoShape === 'circle' ? '50%' : (state.header.logoShape === 'rounded' ? '14px' : '0px');
+            logoWrap.style.border = state.header.logoBorder ? `2.5px solid ${state.theme.inkPrimary}` : 'none';
+            logoWrap.style.background = state.header.logoShape === 'none' ? 'transparent' : '#ffffff';
+            logoWrap.classList.toggle('shadow-sm', state.header.logoShape !== 'none');
+
+            if (state.header.logoImg) {
+                logoImg.src = state.header.logoImg;
+                logoImg.classList.remove('d-none');
+                logoPh.classList.add('d-none');
+            } else {
+                logoImg.classList.add('d-none');
+                logoPh.classList.remove('d-none');
+            }
+            document.getElementById('viewLogoText').textContent = state.header.logoText;
+            document.getElementById('viewLogoSubtext').textContent = state.header.logoSubtext;
+
+            // Footer
+            document.getElementById('viewFooterAuthor').textContent = state.footer.author;
+            document.getElementById('viewFooterQuote').textContent = state.footer.quote;
+
+            // Render Modular Sections
+            const secContainer = document.getElementById('viewSectionsContainer');
+            secContainer.innerHTML = '';
+
+            state.sections.forEach(sec => {
+                let secHtml = '';
+
+                // 1. CARDS SECTION
+                if (sec.type === 'cards') {
+                    const colClass = sec.columns === 1 ? 'row-cols-1' : (sec.columns === 3 ? 'row-cols-1 row-cols-sm-3' : 'row-cols-1 row-cols-sm-2');
+                    const cardsMarkup = sec.cards.map(c => {
+                        const visual = c.customImg
+                            ? `<img src="${c.customImg}" class="img-fluid mx-auto d-block rounded-3 my-1" style="max-height:85px;object-fit:contain;">`
+                            : (SVG_LIBRARY[c.icon] && SVG_LIBRARY[c.icon].svg ? `<div class="my-1 text-center">${SVG_LIBRARY[c.icon].svg}</div>` : '');
+
+                        const badgeHtml = c.badge
+                            ? `<span class="badge rounded-circle bg-warning text-dark border border-dark ms-1" style="font-size:0.75rem;">${c.badge}</span>`
+                            : '';
+
+                        const bulletsMarkup = c.bullets.map(b => `
+                            <li class="d-flex align-items-start gap-1.5 mb-1">
+                                <span class="fw-bold" style="color:var(--ink-accent);">•</span>
+                                <span class="canvas-body-text fw-bold text-dark lh-sm">${b}</span>
+                            </li>
+                        `).join('');
+
+                        return `
+                            <div class="col">
+                                <div class="${c.border} p-2.5 h-100 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="text-center mb-1">
+                                            ${badgeHtml}
+                                            <span class="marker-hl ${c.highlight} canvas-title-text fw-bold" style="color:var(--ink-accent);font-size:1.15rem;">
+                                                ${c.title}
+                                            </span>
+                                        </div>
+                                        ${visual}
+                                        <ul class="list-unstyled mb-0 mt-1 pe-1">
+                                            ${bulletsMarkup}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    secHtml = `<div class="row ${colClass} g-2.5">${cardsMarkup}</div>`;
+                }
+
+                // 2. TABLE SECTION
+                else if (sec.type === 'table') {
+                    const thMarkup = sec.headers.map(h => `<th class="canvas-title-text" style="background:${sec.headerColor};color:#0f172a;font-size:0.95rem;">${h}</th>`).join('');
+                    const trMarkup = sec.rows.map(row => `
+                        <tr>
+                            ${row.map(cell => `<td class="canvas-body-text text-dark">${cell}</td>`).join('')}
+                        </tr>
+                    `).join('');
+
+                    secHtml = `
+                        <div>
+                            ${sec.title ? `<div class="text-center mb-1.5"><span class="marker-hl hl-yellow canvas-title-text fw-bold" style="color:var(--ink-primary);font-size:1.05rem;">${sec.title}</span></div>` : ''}
+                            <table class="sketch-table ${sec.striped ? 'striped' : ''}">
+                                <thead><tr>${thMarkup}</tr></thead>
+                                <tbody>${trMarkup}</tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
+                // 3. HERO IMAGE / DIAGRAM SECTION
+                else if (sec.type === 'hero_image') {
+                    const visual = sec.customImg
+                        ? `<img src="${sec.customImg}" class="img-fluid mx-auto d-block img-sketch-filter" style="max-height:210px;object-fit:contain;">`
+                        : (SVG_LIBRARY[sec.icon] ? `<div class="py-2 text-center" style="transform:scale(1.45);">${SVG_LIBRARY[sec.icon].svg}</div>` : '');
+
+                    secHtml = `
+                        <div class="sketch-border-solid p-3 text-center">
+                            ${sec.title ? `<div class="mb-2"><span class="marker-hl ${sec.highlight} canvas-title-text fw-bold" style="color:var(--ink-primary);font-size:1.1rem;">${sec.title}</span></div>` : ''}
+                            ${visual}
+                            ${sec.caption ? `<p class="canvas-body-text fw-bold text-secondary mb-0 mt-2">${sec.caption}</p>` : ''}
+                        </div>
+                    `;
+                }
+
+                // 4. STEPS / SHORTCUTS SECTION
+                else if (sec.type === 'steps') {
+                    const stepsMarkup = sec.steps.map((st, idx) => `
+                        <div class="col">
+                            <div class="sketch-border-solid p-2 text-center h-100 position-relative">
+                                <span class="badge rounded-circle bg-warning text-dark border border-dark mb-1">${st.num}</span>
+                                <div class="mb-1"><span class="keycap-pill" style="font-size:0.85rem;">${st.label}</span></div>
+                                <div class="canvas-body-text fw-bold text-dark lh-sm" style="font-size:0.8rem;">${st.desc}</div>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    secHtml = `
+                        <div class="p-2.5 rounded-4" style="background:rgba(254,242,242,0.65);border:2px dashed var(--ink-accent);">
+                            ${sec.title ? `<div class="text-center mb-2"><span class="marker-hl ${sec.highlight} canvas-title-text fw-bold" style="color:var(--ink-primary);font-size:1.05rem;">${sec.title}</span></div>` : ''}
+                            <div class="row row-cols-2 row-cols-sm-${Math.min(sec.steps.length, 4)} g-2">
+                                ${stepsMarkup}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // 5. QUIZ / CHALLENGE SECTION
+                else if (sec.type === 'quiz') {
+                    const qMarkup = sec.questions.map(q => `
+                        <div class="canvas-body-text fw-bold text-dark mb-1" dir="auto">${q}</div>
+                    `).join('');
+
+                    secHtml = `
+                        <div class="sketch-border-double p-3">
+                            <div class="text-center mb-2">
+                                <span class="marker-hl ${sec.highlight} canvas-title-text fw-bold" style="color:var(--ink-accent);font-size:1.15rem;">
+                                    ${sec.title}
+                                </span>
+                            </div>
+                            <div class="px-2">${qMarkup}</div>
+                            ${sec.answerKey ? `<div class="mt-2 pt-1.5 text-center border-top border-secondary-subtle"><span class="badge bg-success-subtle text-success-emphasis border border-success px-2 py-1 canvas-body-text" style="font-size:0.78rem;">${sec.answerKey}</span></div>` : ''}
+                        </div>
+                    `;
+                }
+
+                // 6. CALLOUT / TIP BANNER
+                else if (sec.type === 'callout') {
+                    secHtml = `
+                        <div class="${sec.border} px-3 py-2 text-center d-flex align-items-center justify-content-center gap-2">
+                            <span class="fs-5">${sec.icon}</span>
+                            <span class="marker-hl ${sec.highlight} canvas-title-text fw-bold text-dark" style="font-size:1.05rem;">
+                                ${sec.text}
+                            </span>
+                        </div>
+                    `;
+                }
+
+                const wrapper = `<div class="preview-section-wrapper" onclick="focusSectionEditor('${sec.id}')">${secHtml}</div>`;
+                secContainer.insertAdjacentHTML('beforeend', wrapper);
+            });
+        }
+
+        // =========================================================
+        // 9. EXPORT PNG & SAVE/LOAD JSON PROJECT
+        // =========================================================
+        async function exportPNG() {
+            const btn = document.getElementById('exportPngBtn');
+            const origHtml = btn.innerHTML;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm"></span> <span>جاري التصدير...</span>`;
+            btn.disabled = true;
+
+            const canvasEl = document.getElementById('notebookCanvas');
+            canvasEl.classList.add('exporting-mode');
+
+            try {
+                const rendered = await html2canvas(canvasEl, {
+                    scale: 2.5,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+
+                const link = document.createElement('a');
+                const cleanTitle = (state.header.mainTitle || 'SketchNote').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_');
+                link.download = `${cleanTitle}_HD.png`;
+                link.href = rendered.toDataURL('image/png');
+                link.click();
+
+                notify('تم تصدير الصورة بجودة عالية (PNG)!', '🎉');
+            } catch (err) {
+                console.error(err);
+                notify('حدث خطأ أثناء التصدير', '❌');
+            } finally {
+                canvasEl.classList.remove('exporting-mode');
+                btn.innerHTML = origHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function exportJSON() {
+            const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(state, null, 2));
+            const link = document.createElement('a');
+            link.href = dataStr;
+            link.download = 'SketchNote_Project.json';
+            link.click();
+            notify('تم حفظ ملف المشروع (JSON) على جهازك!', '💾');
+        }
+
+        function importJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const loaded = JSON.parse(e.target.result);
+                    if (loaded && loaded.sections && loaded.header) {
+                        state = loaded;
+                        syncControlsFromState();
+                        renderSectionsEditor();
+                        renderCanvas();
+                        notify('تم استيراد المشروع بنجاح!', '📂');
+                    } else {
+                        notify('ملف المشروع غير صالح', '⚠️');
+                    }
+                } catch (err) {
+                    notify('تعذر قراءة ملف JSON', '❌');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // =========================================================
+        // 10. INITIALIZATION
+        // =========================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPreset('ram_ssd');
+        });
+    </script>
+</body>
+</html>

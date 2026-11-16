@@ -1,0 +1,778 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مركز أدوات العمل</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0d1117;
+      --card: rgba(255,255,255,.055);
+      --card-hover: rgba(255,255,255,.09);
+      --border: rgba(255,255,255,.09);
+      --text: #f1f5f9;
+      --muted: #929eae;
+      --accent: #38bdf8;
+      --input: #161e29;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(14,165,233,.10), transparent 30%),
+        radial-gradient(circle at 90% 20%, rgba(139,92,246,.10), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font-family: 'Cairo', sans-serif;
+      padding: 25px 14px 50px;
+    }
+
+    .container-main {
+      max-width: 780px;
+      margin: auto;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px 0 25px;
+    }
+
+    .header-icon {
+      width: 65px;
+      height: 65px;
+      margin: 0 auto 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 20px;
+      color: #38bdf8;
+      background: rgba(56,189,248,.12);
+      border: 1px solid rgba(56,189,248,.2);
+      font-size: 27px;
+    }
+
+    .header h1 {
+      font-size: 25px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 18px;
+    }
+
+    .search-box i {
+      position: absolute;
+      right: 17px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #7f8da0;
+    }
+
+    .search-box input {
+      width: 100%;
+      height: 49px;
+      padding: 10px 45px 10px 15px;
+      border-radius: 15px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .search-box input:focus {
+      border-color: rgba(56,189,248,.55);
+    }
+
+    .search-box input::placeholder { color: #788596; }
+
+    .category {
+      margin-top: 24px;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #e5edf7;
+    }
+
+    .category-title i {
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .menu-card {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-height: 78px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      background: var(--card);
+      text-decoration: none;
+      color: var(--text);
+      transition: .2s ease;
+      position: relative;
+    }
+
+    .menu-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(56,189,248,.3);
+      transform: translateY(-2px);
+      color: white;
+    }
+
+    .icon-box {
+      width: 49px;
+      height: 49px;
+      flex-shrink: 0;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+    }
+
+    .content-box {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .content-box h3 {
+      font-size: 14px;
+      font-weight: 800;
+      margin: 0 0 3px;
+    }
+
+    .content-box p {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.7;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-shrink: 0;
+    }
+
+    .action-btn {
+      width: 30px;
+      height: 30px;
+      border: 0;
+      border-radius: 9px;
+      background: rgba(255,255,255,.07);
+      color: #aebaca;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .action-btn:hover {
+      background: rgba(255,255,255,.15);
+      color: white;
+    }
+
+    .arrow {
+      color: #657386;
+      font-size: 13px;
+      margin-left: 2px;
+    }
+
+    .add-button {
+      width: 100%;
+      border: 1px dashed rgba(56,189,248,.45);
+      background: rgba(56,189,248,.07);
+      color: #38bdf8;
+      border-radius: 15px;
+      padding: 13px;
+      font-family: inherit;
+      font-weight: 800;
+      margin-top: 25px;
+      transition: .2s;
+    }
+
+    .add-button:hover {
+      background: rgba(56,189,248,.14);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 25px 10px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      color: #667386;
+      font-size: 11px;
+      margin-top: 30px;
+    }
+
+    /* نافذة الإضافة والتعديل */
+    .modal-content {
+      background: #151d28;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+    }
+
+    .modal-header, .modal-footer {
+      border-color: var(--border);
+    }
+
+    .modal-title { font-weight: 800; }
+
+    .btn-close {
+      filter: invert(1);
+    }
+
+    .form-label {
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 700;
+    }
+
+    .form-control, .form-select {
+      background: var(--input);
+      color: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 11px;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    .form-control:focus, .form-select:focus {
+      background: var(--input);
+      color: white;
+      border-color: #38bdf8;
+      box-shadow: none;
+    }
+
+    .form-select option {
+      background: #151d28;
+      color: white;
+    }
+
+    .hint {
+      font-size: 10px;
+      color: #8290a2;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 12px 11px 35px; }
+      .header h1 { font-size: 22px; }
+      .menu-card { min-height: 74px; gap: 10px; padding: 11px; }
+      .icon-box { width: 44px; height: 44px; font-size: 19px; }
+      .content-box h3 { font-size: 13px; }
+      .content-box p { font-size: 10px; }
+      .card-actions { gap: 4px; }
+      .action-btn { width: 27px; height: 27px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container-main">
+
+  <header class="header">
+    <div class="header-icon">
+      <i class="fa-solid fa-layer-group"></i>
+    </div>
+    <h1>مركز أدوات العمل</h1>
+    <p>جميع صفحات وأدوات العمل في مكان واحد</p>
+  </header>
+
+  <div class="search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="searchInput" placeholder="ابحث عن أداة أو صفحة...">
+  </div>
+
+  <div id="toolsContainer"></div>
+
+  <div class="empty" id="emptyMessage">
+    <i class="fa-solid fa-folder-open fa-2x mb-2"></i>
+    <div>لا توجد صفحات مطابقة للبحث</div>
+  </div>
+
+  <button class="add-button" onclick="openAddModal()">
+    <i class="fa-solid fa-plus"></i>
+    إضافة صفحة جديدة
+  </button>
+
+  <div class="footer">
+    مركز أدوات العمل © 2026
+  </div>
+
+</div>
+
+<!-- نافذة الإضافة والتعديل -->
+<div class="modal fade" id="toolModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">إضافة صفحة جديدة</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <input type="hidden" id="editId">
+
+        <div class="mb-3">
+          <label class="form-label">اسم الصفحة</label>
+          <input type="text" class="form-control" id="toolName"
+                 placeholder="مثال: تصميم المذكرات">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">وصف مختصر</label>
+          <input type="text" class="form-control" id="toolDescription"
+                 placeholder="اكتب وصف الصفحة">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">اسم ملف الصفحة</label>
+          <input type="text" class="form-control" id="toolHref"
+                 placeholder="مثال: design-notes.html"
+                 dir="ltr">
+          <div class="hint">
+            اكتب اسم الملف فقط، لأن جميع الصفحات موجودة في نفس المجلد.
+            مثال: design-notes.html
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">التصنيف</label>
+          <select class="form-select" id="toolCategory">
+            <option value="الأسئلة والاختبارات">الأسئلة والاختبارات</option>
+            <option value="المذكرات التعليمية">المذكرات التعليمية</option>
+            <option value="الأكواد والبرمجة">الأكواد والبرمجة</option>
+            <option value="التصميم والمحتوى">التصميم والمحتوى</option>
+            <option value="أدوات أخرى">أدوات أخرى</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">أيقونة Font Awesome</label>
+          <input type="text" class="form-control" id="toolIcon"
+                 placeholder="مثال: fa-file-code" dir="ltr">
+          <div class="hint">اكتب اسم الأيقونة بدون fa-solid، مثل fa-book</div>
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label">لون الأيقونة</label>
+          <select class="form-select" id="toolColor">
+            <option value="blue">أزرق</option>
+            <option value="green">أخضر</option>
+            <option value="purple">بنفسجي</option>
+            <option value="orange">برتقالي</option>
+            <option value="red">أحمر</option>
+            <option value="cyan">سماوي</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">إلغاء</button>
+        <button class="btn btn-primary btn-sm" onclick="saveTool()">
+          <i class="fa-solid fa-floppy-disk"></i>
+          حفظ الصفحة
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  const STORAGE_KEY = "work_center_tools_v2";
+
+  const defaultTools = [
+    {
+      id: 1,
+      name: "تصميم الأسئلة للنشر",
+      description: "إنشاء وتصميم أسئلة احترافية للنشر على فيسبوك",
+      href: "question.html",
+      category: "الأسئلة والاختبارات",
+      icon: "fa-images",
+      color: "purple"
+    },
+    {
+      id: 2,
+      name: "إنشاء الأسئلة بالإجابات",
+      description: "إضافة الأسئلة والاختيارات والإجابات الصحيحة",
+      href: "bank_question.html",
+      category: "الأسئلة والاختبارات",
+      icon: "fa-circle-question",
+      color: "green"
+    },
+    {
+      id: 3,
+      name: "تصميم المذكرات التعليمية",
+      description: "إعداد وتصميم المذكرات والمواد التعليمية",
+      href: "notebook_infographic.html",
+      category: "المذكرات التعليمية",
+      icon: "fa-book-open",
+      color: "orange"
+    },
+    {
+      id: 4,
+      name: "إنشاء الأكواد",
+      description: "إنشاء وإدارة أكواد المستخدمين والاشتراكات",
+      href: "dashkod.html",
+      category: "الأكواد والبرمجة",
+      icon: "fa-key",
+      color: "cyan"
+    },
+    {
+      id: 5,
+      name: "لوحة تحكم الأكواد",
+      description: "متابعة وإدارة الأكواد المسجلة",
+      href: "finance.html",
+      category: "الأكواد والبرمجة",
+      icon: "fa-gauge-high",
+      color: "blue"
+    },
+    {
+      id: 6,
+      name: "لوحة تحكم المنصة",
+      description: "إدارة ومتابعة المنصة التعليمية",
+      href: "platform-dashboard.html",
+      category: "أدوات أخرى",
+      icon: "fa-chart-line",
+      color: "red"
+    },
+        {
+      id: 7,
+      name: "2_تصميم المذكرات التعليمية",
+      description: "إعداد وتصميم المذكرات والمواد التعليمية",
+      href: "sketch_note_studio.html",
+      category: "المذكرات التعليمية",
+      icon: "fa-book-open",
+      color: "orange"
+    },
+        {
+      id: 8,
+      name: "3_تصميم المذكرات التعليمية",
+      description: "إعداد وتصميم المذكرات والمواد التعليمية",
+      href: "sketch_note_pro_studio.html",
+      category: "المذكرات التعليمية",
+      icon: "fa-book-open",
+      color: "orange"
+    },
+    {
+      id: 9,
+      name: "4_تصميم المذكرات التعليمية",
+      description: "إعداد وتصميم المذكرات والمواد التعليمية",
+      href: "creator.html",
+      category: "المذكرات التعليمية",
+      icon: "fa-book-open",
+      color: "orange"
+    }
+  ];
+
+  let tools = loadTools();
+
+  const modalElement = document.getElementById("toolModal");
+  const toolModal = new bootstrap.Modal(modalElement);
+
+  function loadTools() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [...defaultTools];
+    } catch (error) {
+      return [...defaultTools];
+    }
+  }
+
+  function saveToStorage() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tools));
+  }
+
+  const colors = {
+    blue:   { text: "#60a5fa", bg: "rgba(59,130,246,.14)" },
+    green:  { text: "#4ade80", bg: "rgba(34,197,94,.14)" },
+    purple: { text: "#c084fc", bg: "rgba(168,85,247,.14)" },
+    orange: { text: "#fb923c", bg: "rgba(249,115,22,.14)" },
+    red:    { text: "#f87171", bg: "rgba(239,68,68,.14)" },
+    cyan:   { text: "#22d3ee", bg: "rgba(6,182,212,.14)" }
+  };
+
+  const categoryIcons = {
+    "الأسئلة والاختبارات": "fa-clipboard-question",
+    "المذكرات التعليمية": "fa-book",
+    "الأكواد والبرمجة": "fa-code",
+    "التصميم والمحتوى": "fa-palette",
+    "أدوات أخرى": "fa-toolbox"
+  };
+
+  function safeFileName(value) {
+    let file = value.trim();
+
+    // السماح باسم ملف فقط، ومنع الروابط الخارجية والمسارات
+    file = file.replace(/^\.\/+/, "");
+
+    if (
+      !file ||
+      file.includes("/") ||
+      file.includes("\\") ||
+      file.includes("://") ||
+      file.includes("..") ||
+      file.startsWith("#") ||
+      file.startsWith("?")
+    ) {
+      return null;
+    }
+
+    return file;
+  }
+
+  function renderTools() {
+    const container = document.getElementById("toolsContainer");
+    const search = document.getElementById("searchInput").value.trim().toLowerCase();
+
+    container.innerHTML = "";
+
+    const categories = [
+      "الأسئلة والاختبارات",
+      "المذكرات التعليمية",
+      "الأكواد والبرمجة",
+      "التصميم والمحتوى",
+      "أدوات أخرى"
+    ];
+
+    let visibleCount = 0;
+
+    categories.forEach(category => {
+      const categoryTools = tools.filter(tool => {
+        const matchesCategory = tool.category === category;
+        const matchesSearch =
+          tool.name.toLowerCase().includes(search) ||
+          tool.description.toLowerCase().includes(search) ||
+          tool.href.toLowerCase().includes(search);
+
+        return matchesCategory && matchesSearch;
+      });
+
+      if (!categoryTools.length) return;
+
+      visibleCount += categoryTools.length;
+
+      const section = document.createElement("section");
+      section.className = "category";
+
+      const title = document.createElement("div");
+      title.className = "category-title";
+      title.innerHTML = `
+        <i class="fa-solid ${categoryIcons[category] || "fa-folder"}"></i>
+        <span>${escapeHTML(category)}</span>
+      `;
+
+      section.appendChild(title);
+
+      categoryTools.forEach(tool => {
+        const color = colors[tool.color] || colors.blue;
+
+        const card = document.createElement("div");
+        card.className = "menu-card";
+
+        const iconBox = document.createElement("div");
+        iconBox.className = "icon-box";
+        iconBox.style.color = color.text;
+        iconBox.style.background = color.bg;
+        iconBox.innerHTML = `<i class="fa-solid ${escapeHTML(tool.icon)}"></i>`;
+
+        const content = document.createElement("div");
+        content.className = "content-box";
+        content.innerHTML = `
+          <h3>${escapeHTML(tool.name)}</h3>
+          <p>${escapeHTML(tool.description)}</p>
+        `;
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+
+        const editButton = document.createElement("button");
+        editButton.className = "action-btn";
+        editButton.type = "button";
+        editButton.title = "تعديل";
+        editButton.innerHTML = '<i class="fa-solid fa-pen"></i>';
+        editButton.addEventListener("click", () => editTool(tool.id));
+
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "action-btn";
+        deleteButton.type = "button";
+        deleteButton.title = "حذف";
+        deleteButton.innerHTML = '<i class="fa-solid fa-trash"></i>';
+        deleteButton.addEventListener("click", () => deleteTool(tool.id));
+
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.innerHTML = '<i class="fa-solid fa-chevron-left"></i>';
+
+        actions.append(editButton, deleteButton, arrow);
+
+        const link = document.createElement("a");
+        link.className = "menu-card";
+        link.href = safeFileName(tool.href) || "#";
+        link.title = "فتح " + tool.name;
+
+        link.append(iconBox, content, actions);
+
+        // منع فتح الصفحة عند الضغط على التعديل أو الحذف
+        link.addEventListener("click", function(event) {
+          if (event.target.closest(".card-actions")) {
+            event.preventDefault();
+          }
+        });
+
+        section.appendChild(link);
+      });
+
+      container.appendChild(section);
+    });
+
+    document.getElementById("emptyMessage").style.display =
+      visibleCount ? "none" : "block";
+  }
+
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]);
+  }
+
+  function openAddModal() {
+    document.getElementById("modalTitle").textContent = "إضافة صفحة جديدة";
+    document.getElementById("editId").value = "";
+    document.getElementById("toolName").value = "";
+    document.getElementById("toolDescription").value = "";
+    document.getElementById("toolHref").value = "";
+    document.getElementById("toolCategory").value = "الأسئلة والاختبارات";
+    document.getElementById("toolIcon").value = "fa-file-lines";
+    document.getElementById("toolColor").value = "blue";
+
+    toolModal.show();
+  }
+
+  function editTool(id) {
+    const tool = tools.find(item => item.id === id);
+    if (!tool) return;
+
+    document.getElementById("modalTitle").textContent = "تعديل الصفحة";
+    document.getElementById("editId").value = tool.id;
+    document.getElementById("toolName").value = tool.name;
+    document.getElementById("toolDescription").value = tool.description;
+    document.getElementById("toolHref").value = tool.href;
+    document.getElementById("toolCategory").value = tool.category;
+    document.getElementById("toolIcon").value = tool.icon;
+    document.getElementById("toolColor").value = tool.color;
+
+    toolModal.show();
+  }
+
+  function saveTool() {
+    const id = document.getElementById("editId").value;
+
+    const name = document.getElementById("toolName").value.trim();
+    const description = document.getElementById("toolDescription").value.trim();
+    const href = safeFileName(document.getElementById("toolHref").value);
+    const category = document.getElementById("toolCategory").value;
+    let icon = document.getElementById("toolIcon").value.trim();
+    const color = document.getElementById("toolColor").value;
+
+    if (!name || !description || !href) {
+      alert("من فضلك أدخل اسم الصفحة والوصف واسم ملف صحيح.");
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_\u0600-\u06FF.-]+$/.test(href)) {
+      alert("اسم الملف غير صحيح. استخدم اسم الملف فقط مثل design-notes.html");
+      return;
+    }
+
+    icon = icon.replace(/^fa-solid\s+/, "").replace(/^fa-/, "fa-");
+
+    if (!icon) icon = "fa-file-lines";
+
+    const toolData = {
+      id: id ? Number(id) : Date.now(),
+      name,
+      description,
+      href,
+      category,
+      icon,
+      color
+    };
+
+    if (id) {
+      const index = tools.findIndex(item => item.id === Number(id));
+      if (index !== -1) tools[index] = toolData;
+    } else {
+      tools.push(toolData);
+    }
+
+    saveToStorage();
+    renderTools();
+    toolModal.hide();
+  }
+
+  function deleteTool(id) {
+    const tool = tools.find(item => item.id === id);
+    if (!tool) return;
+
+    if (confirm("هل أنت متأكد من حذف صفحة: " + tool.name + " ؟")) {
+      tools = tools.filter(item => item.id !== id);
+      saveToStorage();
+      renderTools();
+    }
+  }
+
+  document.getElementById("searchInput").addEventListener("input", renderTools);
+
+  renderTools();
+</script>
+
+</body>
+</html>

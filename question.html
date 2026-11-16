@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مولد أسئلة مسابقات التوظيف</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo',sans-serif;
+}
+body{
+background:#eef3f9;
+padding:20px;
+}
+.container{
+max-width:1000px;
+margin:auto;
+}
+
+/* المنطقة الرئيسية للمعاينة والتصوير */
+.preview{
+background:#f7f9fc;
+position:relative;
+padding:30px;
+overflow:hidden;
+width: 1000px; /* تثبيت العرض للحصول على جودة ممتازة عند التحميل */
+height: 800px; /* تثبيت الطول المتناسق مع أبعاد صورك */
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+/* الهيدر العلوي */
+.top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+/* اللوجو الدائري الكبير الأصفر - تم تعديله ليأخذ الصورة بالكامل دون نصوص أو هوامش */
+.logo-circle {
+    width: 160px;
+    height: 160px;
+    background: #FFC926;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 5;
+    overflow: hidden; /* يضمن قص اللوجو ليصبح دائرياً تماماً */
+    padding: 0; /* مسح الهوامش الداخلية لتملأ الصورة الدائرة بالكامل */
+}
+.logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* لملء المساحة الدائرية بالكامل دون أي تشوه للوجو الخاص بك */
+}
+
+/* مستطيل العنوان الرئيسي (الافتراضي: الأزرق الملكي) */
+.main-title-box {
+    background: #0d2344;
+    color: white;
+    flex: 1;
+    margin-right: -40px; /* يتداخل قليلاً خلف اللوجو ليحاكي التصميم المعتمد */
+    margin-left: 20px;
+    height: 75px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    font-weight: 800;
+    padding-right: 50px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    transition: background-color 0.2s ease;
+}
+
+/* منطقة الشارة الوسطى مع الخطوط الجانبية */
+.badge-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 100%;
+}
+.line-separator {
+    flex: 1;
+    height: 2px;
+    background: #0d2344;
+    position: relative;
+    margin: 0 20px;
+    transition: background-color 0.2s ease;
+}
+.line-separator::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #0d2344;
+    border-radius: 50%;
+    top: -3px;
+    transition: background-color 0.2s ease;
+}
+.line-separator.right::after { left: 0; }
+.line-separator.left::after { right: 0; }
+
+.badge-main {
+    background: #f3b31a;
+    color: #0d2344;
+    font-size: 30px;
+    font-weight: 800;
+    padding: 6px 50px;
+    border-radius: 12px;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+/* الصندوق الرئيسي المحيط بالأسئلة والإجابات */
+.quiz-card {
+    border: 3px solid #0d2344;
+    border-radius: 25px;
+    background: white;
+    padding: 40px 30px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    margin-bottom: 25px;
+    transition: border-color 0.2s ease;
+}
+
+/* نص السؤال الأساسي */
+.question-text {
+    font-size: 30px;
+    font-weight: 800;
+    color: #0d2344;
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    transition: color 0.2s ease;
+}
+
+/* شبكة الإجابات (2 في كل صف) */
+.answers-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+/* بلوك الإجابة الفردية */
+.answer-item {
+    border: 2px solid #0d2344;
+    border-radius: 20px;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: #fff;
+    min-height: 75px;
+    gap: 15px; /* مسافة تفصل الدائرة عن نص الإجابة */
+    transition: border-color 0.2s ease;
+}
+.answer-text {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0d2344;
+    flex: 1;
+    transition: color 0.2s ease;
+}
+
+/* الدائرة المكتوب فيها الحرف (أ، ب، ج، د) جهة اليمين */
+.letter-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #0d2344;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 800;
+    flex-shrink: 0;
+    transition: background-color 0.2s ease;
+}
+
+/* الفوتر السفلي المتموج */
+.footer-bar {
+    background: #0d2344;
+    height: 70px;
+    margin: 0 -30px -30px -30px; /* ليمتد لآخر أطراف الصورة */
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top: 6px solid #f3b31a; /* الشريط الأصفر المائل في الفوتر */
+    transition: background-color 0.2s ease;
+}
+.footer-text {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.footer-text::before, .footer-text::after {
+    content: '';
+    display: inline-block;
+    width: 60px;
+    height: 3px;
+    background: #f3b31a;
+}
+
+/* ========================================================
+   منظومة الألوان الموسعة والديناميكية (8 ثيمات مخصصة)
+======================================================== */
+
+/* 🟢 الثيم الأخضر العشبي */
+.theme-green .main-title-box, .theme-green .letter-circle, .theme-green .footer-bar {
+    background: #155724 !important;
+}
+.theme-green .quiz-card, .theme-green .answer-item {
+    border-color: #155724 !important;
+}
+.theme-green .line-separator {
+    background: #155724 !important;
+}
+.theme-green .line-separator::after {
+    background: #155724 !important;
+}
+.theme-green .question-text, .theme-green .answer-text, .theme-green .badge-main {
+    color: #155724 !important;
+}
+
+/* 🔴 الثيم الأحمر العنابي */
+.theme-red .main-title-box, .theme-red .letter-circle, .theme-red .footer-bar {
+    background: #721c24 !important;
+}
+.theme-red .quiz-card, .theme-red .answer-item {
+    border-color: #721c24 !important;
+}
+.theme-red .line-separator {
+    background: #721c24 !important;
+}
+.theme-red .line-separator::after {
+    background: #721c24 !important;
+}
+.theme-red .question-text, .theme-red .answer-text, .theme-red .badge-main {
+    color: #721c24 !important;
+}
+
+/* 🟣 الثيم البنفسجي الإبداعي */
+.theme-purple .main-title-box, .theme-purple .letter-circle, .theme-purple .footer-bar {
+    background: #5a2d82 !important;
+}
+.theme-purple .quiz-card, .theme-purple .answer-item {
+    border-color: #5a2d82 !important;
+}
+.theme-purple .line-separator {
+    background: #5a2d82 !important;
+}
+.theme-purple .line-separator::after {
+    background: #5a2d82 !important;
+}
+.theme-purple .question-text, .theme-purple .answer-text, .theme-purple .badge-main {
+    color: #5a2d82 !important;
+}
+
+/* 🟠 الثيم البرتقالي الدافئ */
+.theme-orange .main-title-box, .theme-orange .letter-circle, .theme-orange .footer-bar {
+    background: #c65102 !important;
+}
+.theme-orange .quiz-card, .theme-orange .answer-item {
+    border-color: #c65102 !important;
+}
+.theme-orange .line-separator {
+    background: #c65102 !important;
+}
+.theme-orange .line-separator::after {
+    background: #c65102 !important;
+}
+.theme-orange .question-text, .theme-orange .answer-text, .theme-orange .badge-main {
+    color: #c65102 !important;
+}
+
+/* 🟤 الثيم البني الكلاسيكي */
+.theme-brown .main-title-box, .theme-brown .letter-circle, .theme-brown .footer-bar {
+    background: #5c3a21 !important;
+}
+.theme-brown .quiz-card, .theme-brown .answer-item {
+    border-color: #5c3a21 !important;
+}
+.theme-brown .line-separator {
+    background: #5c3a21 !important;
+}
+.theme-brown .line-separator::after {
+    background: #5c3a21 !important;
+}
+.theme-brown .question-text, .theme-brown .answer-text, .theme-brown .badge-main {
+    color: #5c3a21 !important;
+}
+
+/* ⚫ الثيم الرمادي الداكن */
+.theme-dark .main-title-box, .theme-dark .letter-circle, .theme-dark .footer-bar {
+    background: #2b303a !important;
+}
+.theme-dark .quiz-card, .theme-dark .answer-item {
+    border-color: #2b303a !important;
+}
+.theme-dark .line-separator {
+    background: #2b303a !important;
+}
+.theme-dark .line-separator::after {
+    background: #2b303a !important;
+}
+.theme-dark .question-text, .theme-dark .answer-text, .theme-dark .badge-main {
+    color: #2b303a !important;
+}
+
+/* 🔵 الثيم الأزرق السماوي */
+.theme-cyan .main-title-box, .theme-cyan .letter-circle, .theme-cyan .footer-bar {
+    background: #016280 !important;
+}
+.theme-cyan .quiz-card, .theme-cyan .answer-item {
+    border-color: #016280 !important;
+}
+.theme-cyan .line-separator {
+    background: #016280 !important;
+}
+.theme-cyan .line-separator::after {
+    background: #016280 !important;
+}
+.theme-cyan .question-text, .theme-cyan .answer-text, .theme-cyan .badge-main {
+    color: #016280 !important;
+}
+
+
+/* لوحة التحكم الجانبية */
+.panel{
+margin-top:30px;
+background:#fff;
+border-radius:20px;
+padding:25px;
+box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+.panel h2{
+margin-bottom:15px;
+color:#0d2344;
+}
+label{
+display:block;
+margin-top:15px;
+margin-bottom:5px;
+font-weight:700;
+}
+input, textarea, select{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #ccc;
+font-size:18px;
+background: #fff;
+}
+textarea{
+height:90px;
+resize:none;
+}
+.btns{
+display:flex;
+gap:15px;
+margin-top:20px;
+flex-wrap:wrap;
+}
+button{
+flex:1;
+padding:15px;
+border:none;
+border-radius:12px;
+background:#0d2344;
+color:#fff;
+font-size:20px;
+font-weight:700;
+cursor:pointer;
+}
+button:hover{
+opacity:.9;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- منطقة التصميم والمعاينة -->
+  <div class="preview" id="capture">
+    
+    <!-- الهيدر العلوي -->
+    <div class="top-header">
+        <div class="main-title-box" id="title">
+            أسئلة الجهاز المركزي للتنظيم والإدارة
+        </div>
+        <!-- اللوجو الدائري المعدّل (خالي من أي نصوص ويأخذ الصورة بالكامل) -->
+        <div class="logo-circle">
+            <img id="logoImg" src="https://upload.wikimedia.org/wikipedia/commons/e/fe/Coat_of_arms_of_Egypt_%20%28Official%29.svg">
+        </div>
+    </div>
+    
+    <!-- شارة العنوان الفرعي والخطوط -->
+    <div class="badge-row">
+        <div class="line-separator right"></div>
+        <div class="badge-main" id="badge">اختبار ذكاء</div>
+        <div class="line-separator left"></div>
+    </div>
+    
+    <!-- الكارد الأبيض المحيط بالأسئلة -->
+    <div class="quiz-card">
+        <div class="question-text" id="question">
+            الجزء الذي يسعى لإشباع الحاجات والغرائز؟
+        </div>
+        
+        <div class="answers-container">
+            <!-- إجابة أ (الحرف في اليمين، الإجابة في اليسار) -->
+            <div class="answer-item">
+                <div class="letter-circle">أ</div>
+                <div class="answer-text" id="ans1">الهو</div>
+            </div>
+            <!-- إجابة ب -->
+            <div class="answer-item">
+                <div class="letter-circle">ب</div>
+                <div class="answer-text" id="ans2">الأنا</div>
+            </div>
+            <!-- إجابة ج -->
+            <div class="answer-item">
+                <div class="letter-circle">ج</div>
+                <div class="answer-text" id="ans3">الأنا الأعلى</div>
+            </div>
+            <!-- إجابة د -->
+            <div class="answer-item">
+                <div class="letter-circle">د</div>
+                <div class="answer-text" id="ans4">اللاشعور</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- الفوتر المذيل باسمك والخطوط الصفراء -->
+    <div class="footer-bar">
+        <div class="footer-text" id="footer">م. على عادل</div>
+    </div>
+    
+  </div>
+
+  <!-- لوحة التحكم بالتصميم -->
+  <div class="panel">
+    <h2>لوحة تحكم تعديل التصميم بالكامل</h2>
+    
+    <label>🎨 اختر لون المادة التعليمية</label>
+    <select id="themeInput" onchange="updateCard()">
+        <option value="blue">الأزرق الملكي (الافتراضي)</option>
+        <option value="green">الأخضر العشبي</option>
+        <option value="red">الأحمر العنابي</option>
+        <option value="purple">البنفسجي الإبداعي</option>
+        <option value="orange">البرتقالي الدافئ</option>
+        <option value="brown">البني الكلاسيكي</option>
+        <option value="dark">الرمادي الداكن</option>
+        <option value="cyan">الأزرق السماوي الهادئ</option>
+    </select>
+
+    <label>العنوان العلوي</label>
+    <input id="titleInput" value="أسئلة الجهاز المركزي للتنظيم والإدارة">
+    
+    <label>نص الشارة الوسطى</label>
+    <input id="badgeInput" value="اختبار ذكاء">
+    
+    <label>السؤال</label>
+    <textarea id="questionInput">الجزء الذي يسعى لإشباع الحاجات والغرائز؟</textarea>
+    
+    <label>الإجابة (أ)</label>
+    <input id="a1Input" value="الهو">
+    <label>الإجابة (ب)</label>
+    <input id="a2Input" value="الأنا">
+    <label>الإجابة (ج)</label>
+    <input id="a3Input" value="الأنا الأعلى">
+    <label>الإجابة (د)</label>
+    <input id="a4Input" value="اللاشعور">
+    
+    <label>رابط لوجو مخصص (اختياري)</label>
+    <input id="logoInput" placeholder="رابط صورة اللوجو هنا...">
+    
+    <label>اسم المصمم (الفوتر)</label>
+    <input id="footerInput" value="م. على عادل">
+    
+    <div class="btns">
+        <button onclick="updateCard()">تحديث التصميم الحالي</button>
+        <button onclick="downloadImage()" style="background: #f3b31a; color: #0d2344;">تحميل الصورة بدقة HD 🚀</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function updateCard(){
+document.getElementById("title").textContent = document.getElementById("titleInput").value;
+document.getElementById("badge").textContent = document.getElementById("badgeInput").value;
+document.getElementById("question").textContent = document.getElementById("questionInput").value;
+document.getElementById("ans1").textContent = document.getElementById("a1Input").value;
+document.getElementById("ans2").textContent = document.getElementById("a2Input").value;
+document.getElementById("ans3").textContent = document.getElementById("a3Input").value;
+document.getElementById("ans4").textContent = document.getElementById("a4Input").value;
+document.getElementById("footer").textContent = document.getElementById("footerInput").value;
+
+// آلية تغيير الألوان المتطورة
+const theme = document.getElementById("themeInput").value;
+const captureDiv = document.getElementById("capture");
+
+// إزالة فئات الألوان السابقة لتفادي التداخل
+captureDiv.className = "preview"; 
+
+// إضافة فئة اللون الجديد
+if(theme !== "blue") {
+    captureDiv.classList.add("theme-" + theme);
+}
+
+const logo = document.getElementById("logoInput").value.trim();
+if(logo != ""){
+    document.getElementById("logoImg").src = logo;
+}
+}
+
+// تشغيل التحديث التلقائي الفوري بمجرد الكتابة أو تغيير اللون
+const inputs = document.querySelectorAll("input, textarea, select");
+inputs.forEach(function(item){
+    item.addEventListener("input", updateCard);
+});
+
+// تحميل الصورة بشكل احترافي وبجودة عالية جداً
+function downloadImage(){
+    updateCard();
+    const panel = document.querySelector(".panel");
+    panel.style.display = "none";
+    
+    html2canvas(document.getElementById("capture"),{
+        scale: 3, // دقة ممتازة جداً لمواقع التواصل الاجتماعي والطباعة
+        useCORS: true,
+        backgroundColor: null,
+        allowTaint: true,
+        logging: false
+    }).then(function(canvas){
+        const link = document.createElement("a");
+        link.download = "Quiz_Design.png";
+        link.href = canvas.toDataURL("image/png", 1);
+        link.click();
+        panel.style.display = "block";
+    });
+}
+
+window.onload = function(){
+    updateCard();
+};
+</script>
+</body>
+</html>

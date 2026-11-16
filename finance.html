@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Ali | Finance Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --accent: #4facfe;
+            --success: #00e676;
+            --warning: #f1c40f;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+        body { background: radial-gradient(circle at top right, #1e293b, #0f172a); color: #e2e8f0; padding: 15px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        header { background: var(--glass); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 15px; padding: 15px; text-align: center; margin-bottom: 15px; }
+        h1 { font-size: 22px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* نموذج الإدخال */
+        .form-section { background: var(--glass); border: 1px solid var(--border); padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .full-width { grid-column: span 2; }
+        
+        label { display: block; font-size: 13px; margin-bottom: 5px; color: var(--accent); }
+        input, select { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: white; outline: none; font-size: 14px; }
+        
+        .btn-save { background: linear-gradient(45deg, var(--accent), var(--primary)); border: none; border-radius: 8px; padding: 12px; color: #0f172a; font-weight: bold; cursor: pointer; width: 100%; margin-top: 15px; transition: 0.3s; }
+        .btn-save:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        /* البحث والجدول */
+        .search-box { margin-bottom: 15px; }
+        .search-box input { border-radius: 20px; padding: 10px 20px; background: rgba(255,255,255,0.05); }
+
+        .table-container { background: var(--glass); border: 1px solid var(--border); border-radius: 15px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { background: rgba(79, 172, 254, 0.2); color: white; padding: 12px; font-size: 13px; text-align: center; }
+        td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-size: 13px; }
+
+        .btn-edit { background: none; border: 1px solid var(--warning); color: var(--warning); padding: 3px 8px; border-radius: 5px; cursor: pointer; }
+        
+        /* Toast */
+        #toast { visibility: hidden; min-width: 200px; background-color: var(--success); color: #000; text-align: center; border-radius: 10px; padding: 10px; position: fixed; z-index: 100; bottom: 30px; left: 50%; transform: translateX(-50%); font-weight: bold; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    </style>
+</head>
+<body>
+
+<div id="toast">تم حفظ البيانات بنجاح! ✅</div>
+
+<div class="container">
+    <header>
+        <h1>💰 الشؤون المالية وبيانات المشتركين فى البرنامج</h1>
+    </header>
+
+    <div class="form-section">
+        <div class="grid-inputs">
+            <div class="full-width">
+                <label>اختر الكود (المفعلين فقط)</label>
+                <select id="codeSelect">
+                    <option value="">-- اختر الكود لتعبئة بياناته --</option>
+                </select>
+            </div>
+            <div>
+                <label>ثمن الاشتراك</label>
+                <input type="number" id="price" placeholder="مثلاً: 500">
+            </div>
+            <div>
+                <label>المبلغ المدفوع</label>
+                <input type="number" id="paid" placeholder="مثلاً: 300">
+            </div>
+            <div>
+                <label>مادة التخصص</label>
+                <input type="text" id="subject" placeholder="مثلاً: كيمياء">
+            </div>
+            <div>
+                <label>تاريخ الاختبار</label>
+                <input type="date" id="examDate">
+            </div>
+        </div>
+        <button class="btn-save" onclick="saveData()">حفظ البيانات</button>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 ابحث بالاسم أو الكود...">
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>الكود / الاسم</th>
+                    <th>السعر</th>
+                    <th>المدفوع</th>
+                    <th>التخصص</th>
+                    <th>تاريخ الاختبار</th>
+                    <th>تاريخ التفعيل</th>
+                    <th>إجراء</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
+        apiKey: "AIzaSyBTgGaMFO0LfpEq_OZlx1UCJf-BprT6zAg",
+        authDomain: "sales-tools-39b23.firebaseapp.com",
+        databaseURL: "https://sales-tools-39b23.firebaseio.com",
+        projectId: "sales-tools-39b23",
+        storageBucket: "sales-tools-39b23.appspot.com",
+        messagingSenderId: "151741711178",
+        appId: "1:151741711178:web:d624c32354d26a35eb37b3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let allData = [];
+
+    // جلب البيانات وتحديث الصفحة
+    db.ref('Subscribers').on('value', (snapshot) => {
+        allData = [];
+        const select = document.getElementById('codeSelect');
+        select.innerHTML = '<option value="">-- اختر الكود لتعبئة بياناته --</option>';
+        
+        snapshot.forEach((child) => {
+            const val = child.val();
+            if(val.name) { // فقط الأكواد اللي تم تفعيلها باسم
+                allData.push({ key: child.key, ...val });
+                const option = document.createElement('option');
+                option.value = child.key;
+                option.text = `${val.name} (${child.key})`;
+                select.appendChild(option);
+            }
+        });
+        displayData(allData);
+    });
+
+    function saveData() {
+        const code = document.getElementById('codeSelect').value;
+        const price = document.getElementById('price').value;
+        const paid = document.getElementById('paid').value;
+        const subject = document.getElementById('subject').value;
+        const exam_date = document.getElementById('examDate').value;
+        const today = new Date().toISOString().split('T')[0];
+
+        if (!code) return alert("الرجاء اختيار طالب أولاً!");
+
+        db.ref('Subscribers/' + code).update({
+            price: price,
+            paid: paid,
+            subject: subject,
+            exam_date: exam_date,
+            activation_date: today // يتم التسجيل تلقائياً عند أول حفظ
+        }).then(() => {
+            showToast();
+            clearForm();
+        });
+    }
+
+    function displayData(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = "";
+        data.forEach(item => {
+            tbody.innerHTML += `
+                <tr>
+                    <td style="text-align:right">
+                        <strong>${item.name}</strong><br>
+                        <small style="color:var(--primary)">${item.key}</small>
+                    </td>
+                    <td>${item.price || '0'}</td>
+                    <td style="color:var(--success)">${item.paid || '0'}</td>
+                    <td>${item.subject || '---'}</td>
+                    <td>${item.exam_date || '---'}</td>
+                    <td style="font-size:11px; color:#94a3b8">${item.activation_date || '---'}</td>
+                    <td><button class="btn-edit" onclick="editRecord('${item.key}')">تعديل</button></td>
+                </tr>
+            `;
+        });
+    }
+
+    function editRecord(code) {
+        const record = allData.find(item => item.key === code);
+        if(record) {
+            document.getElementById('codeSelect').value = record.key;
+            document.getElementById('price').value = record.price || '';
+            document.getElementById('paid').value = record.paid || '';
+            document.getElementById('subject').value = record.subject || '';
+            document.getElementById('examDate').value = record.exam_date || '';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    function filterTable() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = allData.filter(s => 
+            s.name.toLowerCase().includes(q) || s.key.toLowerCase().includes(q)
+        );
+        displayData(filtered);
+    }
+
+    function clearForm() {
+        document.getElementById('price').value = '';
+        document.getElementById('paid').value = '';
+        document.getElementById('subject').value = '';
+        document.getElementById('examDate').value = '';
+    }
+
+    function showToast() {
+        const toast = document.getElementById("toast");
+        toast.className = "show";
+        setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
+    }
+</script>
+
+</body>
+</html>

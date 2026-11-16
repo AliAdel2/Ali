@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استوديو الكشكول التعليمي | SketchNote Infographic Builder</title>
+    <!-- html2canvas لتصدير التصميم كصورة عالية الجودة (يعمل محلياً أو بالنت) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700;800&family=Architects+Daughter&family=Cairo:wght@500;700;800&family=Caveat:wght@600;700&family=Marhey:wght@500;600;700&family=Patrick+Hand&family=Reem+Kufi:wght@600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS الصافي المكتمل - لا يعتمد على مكتبات خارجية لضمان عدم تلفه بدون إنترنت */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: 'Alexandria', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .font-ui { font-family: 'Alexandria', sans-serif; }
+        .font-ar-hand-title { font-family: 'Marhey', cursive; }
+        .font-ar-hand-body { font-family: 'Cairo', sans-serif; }
+        .font-ar-kufi { font-family: 'Reem Kufi', sans-serif; }
+        .font-en-hand { font-family: 'Patrick Hand', 'Architects Daughter', cursive; }
+        .font-en-note { font-family: 'Caveat', cursive; }
+
+        /* شريط علوي */
+        header {
+            background-color: rgba(15, 23, 42, 0.95);
+            border-bottom: 1px solid #1e293b;
+            padding: 12px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            backdrop-filter: blur(8px);
+        }
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-icon {
+            width: 40px; height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #fbbf24, #f97316);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.2);
+        }
+        .presets-bar {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+        }
+        .btn-preset {
+            padding: 6px 12px; border-radius: 8px; background: #1e293b;
+            border: 1px solid #334155; color: #cbd5e1; font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-preset:hover { background: #334155; color: #fff; }
+
+        .actions-bar { display: flex; align-items: center; gap: 8px; }
+        .btn-action {
+            padding: 8px 14px; border-radius: 12px; background: #1e293b;
+            border: 1px solid #334155; color: #e2e8f0; font-size: 13px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s;
+        }
+        .btn-action:hover { background: #334155; }
+        .btn-export {
+            background: linear-gradient(135deg, #10b981, #0d9488);
+            color: #fff; border: none; font-weight: bold;
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.25);
+        }
+        .btn-export:hover { background: linear-gradient(135deg, #059669, #0f766e); }
+
+        /* رسالة تنبيه Toast */
+        #toast {
+            position: fixed; bottom: 20px; right: 20px; z-index: 50;
+            transform: translateY(80px); opacity: 0; transition: 0.3s;
+            background: #1e293b; border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #fff; padding: 12px 16px; border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+            display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 600;
+        }
+
+        /* تخطيط رئيسي لتقسيم الشاشة */
+        main {
+            flex: 1; display: grid; grid-template-columns: 1fr;
+            overflow: hidden;
+        }
+        @media(min-width: 1024px) {
+            main { grid-template-columns: repeat(12, 1fr); }
+            .control-panel { grid-column: span 5; }
+            .preview-panel { grid-column: span 7; }
+        }
+
+        .control-panel {
+            background: #0f172a; border-left: 1px solid #1e293b;
+            padding: 16px; overflow-y: auto; max-height: calc(100vh - 65px);
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .preview-panel {
+            background: #020617; padding: 20px; overflow-y: auto;
+            max-height: calc(100vh - 65px); display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+        }
+
+        .control-card {
+            background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(51, 65, 85, 0.8);
+            border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .control-card h2 { font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 8px; }
+        
+        label { display: block; font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+        input[type="text"], select {
+            width: 100%; background: #020617; border: 1px solid #334155;
+            border-radius: 10px; padding: 8px 12px; font-size: 12px; color: #fff;
+            outline: none; font-family: inherit;
+        }
+        input[type="text"]:focus, select:focus { border-color: #f59e0b; }
+
+        .checkbox-label {
+            display: flex; align-items: center; gap: 8px; cursor: pointer;
+            font-size: 12px; color: #cbd5e1;
+        }
+
+        /* تصميم الكشكول والورقة */
+        .notebook-paper {
+            background-color: #fcfbf7;
+            background-image: 
+                linear-gradient(90deg, transparent calc(100% - 40px), rgba(239, 68, 68, 0.35) calc(100% - 40px), rgba(239, 68, 68, 0.35) calc(100% - 38px), transparent calc(100% - 38px)),
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px,
+                    transparent 27px,
+                    rgba(59, 130, 246, 0.16) 28px
+                );
+            background-size: 100% 100%, 100% 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0,0,0,0.08);
+            position: relative;
+            width: 100%; max-width: 620px;
+            border-radius: 12px; padding: 32px;
+            margin: 0 auto; color: #0f172a; user-select: none;
+        }
+
+        .notebook-paper-clean {
+            background-color: #ffffff;
+            background-image: 
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0px,
+                    transparent 27px,
+                    rgba(14, 165, 233, 0.14) 28px
+                );
+            background-size: 100% 28px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0,0,0,0.08);
+            position: relative;
+            width: 100%; max-width: 620px;
+            border-radius: 12px; padding: 32px;
+            margin: 0 auto; color: #0f172a; user-select: none;
+        }
+
+        /* سلك الكشكول جهة اليمين */
+        .spiral-binding {
+            position: absolute; top: 14px; bottom: 14px; right: 8px; width: 24px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            z-index: 20; pointer-events: none;
+        }
+        .spiral-ring { width: 24px; height: 12px; position: relative; display: flex; align-items: center; }
+        .spiral-hole {
+            width: 11px; height: 11px; background: #1e293b; border-radius: 50%;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.7); margin-right: 11px;
+        }
+        .spiral-wire {
+            position: absolute; right: -4px; width: 20px; height: 5px;
+            background: linear-gradient(180deg, #94a3b8 0%, #334155 50%, #0f172a 100%);
+            border-radius: 4px; transform: rotate(8deg); box-shadow: 0 2px 3px rgba(0,0,0,0.3);
+        }
+
+        .paper-inner { padding-right: 24px; display: flex; flex-direction: column; gap: 16px; }
+
+        /* إطارات مرسومة */
+        .hand-box {
+            border: 2.5px solid #1e3a8a; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+            background: rgba(255, 255, 255, 0.55); padding: 14px; position: relative;
+        }
+        .hand-box-purple {
+            border: 2.5px solid #6d28d9; border-radius: 18px 240px 14px 220px / 220px 14px 240px 18px;
+            background: rgba(255, 255, 255, 0.72); padding: 14px;
+        }
+        .hand-box-teal {
+            border: 2.5px solid #0d9488; border-radius: 220px 16px 240px 14px / 14px 240px 16px 220px;
+            background: rgba(255, 255, 255, 0.72); padding: 14px;
+        }
+        .hand-box-dashed {
+            border: 2.2px dashed #dc2626; border-radius: 24px 12px 28px 14px / 14px 28px 12px 24px;
+            background: rgba(255, 255, 255, 0.5); padding: 14px; text-align: center;
+        }
+        .hand-box-green {
+            border: 2.5px solid #15803d; border-radius: 16px 250px 16px 250px / 250px 16px 250px 16px;
+            background: rgba(240, 253, 244, 0.75); padding: 10px 14px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        /* الهايلايتر */
+        .hl-yellow { background: linear-gradient(104deg, rgba(254, 240, 138, 0) 0.9%, rgba(253, 224, 71, 0.95) 2.4%, rgba(254, 240, 138, 0.75) 5.8%, rgba(253, 224, 71, 0.85) 93%, rgba(253, 224, 71, 0.5) 98%, rgba(254, 240, 138, 0) 100%); padding: 2px 12px; border-radius: 8px 18px 10px 16px; display: inline-block; }
+        .hl-blue { background: linear-gradient(104deg, rgba(186, 230, 253, 0) 0.9%, rgba(125, 211, 252, 0.85) 2.4%, rgba(186, 230, 253, 0.7) 5.8%, rgba(125, 211, 252, 0.85) 93%, rgba(125, 211, 252, 0.4) 98%, rgba(186, 230, 253, 0) 100%); padding: 2px 12px; border-radius: 14px 8px 16px 10px; display: inline-block; }
+        .hl-pink { background: linear-gradient(104deg, rgba(251, 207, 232, 0) 0.9%, rgba(244, 114, 182, 0.35) 2.4%, rgba(251, 207, 232, 0.85) 5.8%, rgba(244, 114, 182, 0.4) 93%, rgba(251, 207, 232, 0.3) 98%, rgba(251, 207, 232, 0) 100%); padding: 2px 14px; border-radius: 12px 16px 8px 18px; display: inline-block; }
+        .hl-green { background: linear-gradient(104deg, rgba(187, 247, 208, 0) 0.9%, rgba(134, 239, 172, 0.85) 2.4%, rgba(187, 247, 208, 0.75) 5.8%, rgba(134, 239, 172, 0.85) 93%, rgba(187, 247, 208, 0.4) 98%, rgba(187, 247, 208, 0) 100%); padding: 2px 12px; border-radius: 10px 16px 12px 14px; display: inline-block; }
+        .hl-orange { background: linear-gradient(104deg, rgba(254, 215, 170, 0) 0.9%, rgba(253, 186, 116, 0.85) 2.4%, rgba(254, 215, 170, 0.75) 5.8%, rgba(253, 186, 116, 0.85) 93%, rgba(254, 215, 170, 0.4) 98%, rgba(254, 215, 170, 0) 100%); padding: 2px 12px; border-radius: 16px 10px 14px 8px; display: inline-block; }
+
+        .hand-underline { position: relative; }
+        .hand-underline::after {
+            content: ''; position: absolute; left: -4px; right: -4px; bottom: -4px; height: 4px;
+            background: #dc2626; border-radius: 50% 20% 40% 30%; transform: rotate(-0.8deg);
+        }
+
+        .cards-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .cards-grid-1 { display: grid; grid-template-columns: 1fr; gap: 14px; }
+
+        .bullet-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+        .bullet-dot { color: #dc2626; font-weight: 900; font-size: 16px; line-height: 1.2; }
+        .bullet-text { font-family: 'Cairo', sans-serif; font-weight: bold; color: #1e293b; font-size: 14px; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-box">
+            <div class="logo-icon">✏️</div>
+            <div>
+                <h1 style="font-size: 16px; font-weight: bold; color: #fff;">استوديو الكشكول التعليمي</h1>
+                <p style="font-size: 11px; color: #94a3b8;">يعمل بدون إنترنت تماماً</p>
+            </div>
+        </div>
+
+        <div class="presets-bar">
+            <span style="font-size: 11px; color: #94a3b8;">قوالب:</span>
+            <button onclick="loadPreset('ram_ssd')" class="btn-preset" style="color: #fde047;">💻 RAM vs SSD</button>
+            <button onclick="loadPreset('english_wh')" class="btn-preset" style="color: #7dd3fc;">🇬🇧 كلمات السؤال</button>
+            <button onclick="loadPreset('networks')" class="btn-preset" style="color: #6ee7b7;">🌐 الشبكات</button>
+        </div>
+
+        <div class="actions-bar">
+            <button onclick="saveToLocal()" class="btn-action">💾 حفظ</button>
+            <button id="exportBtn" onclick="exportImage()" class="btn-action btn-export">📥 تحميل PNG</button>
+        </div>
+    </header>
+
+    <div id="toast">
+        <span id="toastIcon">✅</span>
+        <span id="toastMsg">تم الحفظ بنجاح!</span>
+    </div>
+
+    <main>
+        <!-- لوحة التحكم -->
+        <section class="control-panel">
+            
+            <div class="control-card">
+                <h2 style="color: #fbbf24;">📒 1. إعدادات الورقة والتخطيط</h2>
+                <div class="grid-2">
+                    <div>
+                        <label>نوع الورقة</label>
+                        <select id="paperStyle" onchange="updateState('paperStyle', this.value)">
+                            <option value="classic">كشكول مسطر + هامش</option>
+                            <option value="clean">ورق أبيض ناصع</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>تخطيط الكروت</label>
+                        <select id="gridCols" onchange="updateState('gridCols', this.value)">
+                            <option value="2">عمودين (مقارنة)</option>
+                            <option value="1">عمود واحد</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showSpiral" checked onchange="updateState('showSpiral', this.checked)">
+                        سلك حلزوني
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="showDoodles" checked onchange="updateState('showDoodles', this.checked)">
+                        شُرط يدوية
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h2 style="color: #38bdf8;">🏷️ 2. العناوين الرئيسية</h2>
+                <div class="grid-2">
+                    <div>
+                        <label>التاج الأيمن (رقم الصفحة)</label>
+                        <input type="text" id="topLeftTag" oninput="updateState('topLeftTag', this.value)">
+                    </div>
+                    <div>
+                        <label>التاج الأيسر (التصنيف)</label>
+                        <input type="text" id="topRightTag" oninput="updateState('topRightTag', this.value)">
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div>
+                        <label>العنوان الرئيسي</label>
+                        <input type="text" id="mainTitle" oninput="updateState('mainTitle', this.value)">
+                    </div>
+                    <div>
+                        <label>لون العنوان</label>
+                        <select id="mainTitleColor" onchange="updateState('mainTitleColor', this.value)">
+                            <option value="#b91c1c">أحمر</option>
+                            <option value="#1e3a8a">أزرق</option>
+                            <option value="#0f172a">أسود</option>
+                            <option value="#6d28d9">بنفسجي</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div>
+                        <label>العنوان الفرعي</label>
+                        <input type="text" id="subTitle" oninput="updateState('subTitle', this.value)">
+                    </div>
+                    <div>
+                        <label>الهايلايتر</label>
+                        <select id="subTitleHighlight" onchange="updateState('subTitleHighlight', this.value)">
+                            <option value="hl-pink">بينك</option>
+                            <option value="hl-yellow">أصفر</option>
+                            <option value="hl-blue">لبني</option>
+                            <option value="hl-green">أخضر</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>ملاحظة اللمبة</label>
+                        <input type="text" id="bulbNote" oninput="updateState('bulbNote', this.value)">
+                    </div>
+                    <div>
+                        <label>ملاحظة جانبية</label>
+                        <input type="text" id="sideNote" oninput="updateState('sideNote', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h2 style="color: #34d399;">🗂️ 3. الكروت وشرح الدروس (<span id="cardsCount">2</span>)</h2>
+                    <button onclick="addCard()" style="padding: 4px 10px; background: #059669; color: #fff; border: none; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">+ كارت</button>
+                </div>
+                <div id="cardsEditorList" style="display: flex; flex-direction: column; gap: 12px;"></div>
+            </div>
+
+            <div class="control-card">
+                <h2 style="color: #c084fc;">💡 4. الخلاصة والتوقيع</h2>
+                <div>
+                    <label>صندوق الخلاصة</label>
+                    <input type="text" id="bottomSummary" oninput="updateState('bottomSummary', this.value)">
+                </div>
+                <div>
+                    <label>شريط المعلومة الإضافية</label>
+                    <input type="text" id="bottomBar" oninput="updateState('bottomBar', this.value)">
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label>اسمك / البراند</label>
+                        <input type="text" id="authorName" oninput="updateState('authorName', this.value)">
+                    </div>
+                    <div>
+                        <label>عبارة ختامية</label>
+                        <input type="text" id="footerQuote" oninput="updateState('footerQuote', this.value)">
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- المعاينة الحية -->
+        <section class="preview-panel">
+            <div style="width: 100%; max-width: 620px; display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 11px; color: #94a3b8;">
+                <span style="display: flex; align-items: center; gap: 6px;"><span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></span> معاينة الكشكول (يمين)</span>
+                <span>مقاس النشر: 620px</span>
+            </div>
+
+            <div id="notebookCanvas" class="notebook-paper">
+                <div id="spiralContainer" class="spiral-binding"></div>
+
+                <div id="paperInner" class="paper-inner">
+                    
+                    <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
+                        <span id="viewTopLeft" class="font-en-hand" style="color: #1e3a8a; font-size: 16px;">4/8</span>
+                        <span id="viewTopRight" class="font-en-hand" style="color: #1e3a8a; border-bottom: 2px solid rgba(30,58,138,0.6); padding: 0 4px;">Computer Basics</span>
+                    </div>
+
+                    <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                        <div id="viewBulbBox" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 70px;">
+                            <svg style="width: 28px; height: 28px; color: #1e3a8a;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/><path d="M12 2v1"/></svg>
+                            <span id="viewBulbNote" class="font-ar-hand-body" style="font-size: 10px; font-weight: bold; color: #1e3a8a;"></span>
+                        </div>
+
+                        <div style="text-align: center; flex: 1;">
+                            <h1 id="viewMainTitle" class="hand-underline" style="font-size: 28px; font-weight: 800; display: inline-block;"></h1>
+                        </div>
+
+                        <div id="viewSideNoteBox" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 80px;">
+                            <span id="viewSideNote" class="font-ar-hand-body" style="font-size: 10px; font-weight: bold; color: #334155; transform: rotate(3deg);"></span>
+                            <span style="font-size: 12px;">😊</span>
+                        </div>
+                    </div>
+
+                    <div id="viewSubTitleWrapper" style="text-align: center;">
+                        <div style="display: inline-flex; align-items: center; gap: 8px;">
+                            <span class="doodle-mark" style="color: #1e3a8a; font-weight: bold; font-size: 16px;">ミ</span>
+                            <div id="viewSubTitle" class="hl-pink font-ar-hand-title" style="font-size: 18px; font-weight: bold; color: #020617;"></div>
+                            <span class="doodle-mark" style="color: #1e3a8a; font-weight: bold; font-size: 16px;">彡</span>
+                        </div>
+                    </div>
+
+                    <div id="viewCardsGrid" class="cards-grid-2"></div>
+
+                    <div id="viewBottomSummaryBox">
+                        <div class="hand-box-dashed">
+                            <span id="viewBottomSummary" class="hl-yellow font-ar-hand-title" style="font-size: 14px; font-weight: bold; color: #0f172a;"></span>
+                        </div>
+                    </div>
+
+                    <div id="viewBottomBarBox">
+                        <div class="hand-box-green">
+                            <span id="viewBottomBar" class="font-ar-hand-body" style="font-size: 12px; font-weight: bold; color: #1e293b; width: 100%; text-align: center;"></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-end; justify-content: space-between; border-top: 1px solid rgba(148,163,184,0.4); padding-top: 8px; font-size: 11px;">
+                        <div id="viewFooterQuote" class="font-en-note" style="font-size: 14px; font-weight: bold; color: #1e3a8a; transform: rotate(2deg);"></div>
+                        <div id="viewAuthorName" class="font-ar-hand-title" style="font-size: 12px; font-weight: bold; color: #0f172a; border-bottom: 2px solid rgba(30,58,138,0.4); padding-bottom: 2px;"></div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const SKETCH_ICONS = {
+            none: { label: 'بدون رسمة', svg: '' },
+            ram: {
+                label: 'شريحة RAM',
+                svg: `<svg style="width: 110px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 140 70" fill="none"><g transform="rotate(-12 70 35)"><rect x="15" y="18" width="110" height="32" rx="3" fill="#16a34a" stroke="#0f172a" stroke-width="2.5"/><rect x="23" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/><rect x="43" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/><rect x="63" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/><rect x="83" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/><rect x="103" y="24" width="14" height="18" rx="1" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/><path d="M20 50v5M26 50v5M32 50v5M38 50v5M44 50v5M50 50v5M56 50v5M68 50v5M74 50v5M80 50v5M86 50v5M92 50v5M98 50v5M104 50v5M110 50v5M116 50v5" stroke="#eab308" stroke-width="2.5"/></g></svg>`
+            },
+            ssd: {
+                label: 'هارد SSD / HDD',
+                svg: `<svg style="width: 110px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 140 70" fill="none"><rect x="18" y="14" width="44" height="46" rx="4" transform="rotate(-10 18 14)" fill="#475569" stroke="#0f172a" stroke-width="2.5"/><text x="27" y="40" transform="rotate(-10 27 40)" fill="#f8fafc" font-family="sans-serif" font-size="13" font-weight="bold">SSD</text><rect x="70" y="8" width="48" height="54" rx="4" transform="rotate(8 70 8)" fill="#cbd5e1" stroke="#0f172a" stroke-width="2.5"/><circle cx="92" cy="30" r="13" fill="#f8fafc" stroke="#0f172a" stroke-width="2"/><circle cx="92" cy="30" r="4" fill="#64748b" stroke="#0f172a" stroke-width="1.5"/></svg>`
+            },
+            book: {
+                label: 'كتاب مفتوح',
+                svg: `<svg style="width: 90px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 100 65" fill="none"><path d="M12 16C25 12 42 15 50 22C58 15 75 12 88 16V52C75 48 58 51 50 58C42 51 25 48 12 52V16Z" fill="#fff" stroke="#0f172a" stroke-width="2.5"/><path d="M50 22V58" stroke="#0f172a" stroke-width="2"/><path d="M20 25H42M20 33H42M58 25H80M58 33H80" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/></svg>`
+            },
+            map: {
+                label: 'خريطة',
+                svg: `<svg style="width: 90px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 100 65" fill="none"><path d="M15 24L38 18L62 24L85 18V52L62 58L38 52L15 58V24Z" fill="#bbf7d0" stroke="#0f172a" stroke-width="2.2"/><circle cx="62" cy="18" r="4" fill="#ef4444" stroke="#0f172a" stroke-width="2"/></svg>`
+            },
+            clock: {
+                label: 'ساعة',
+                svg: `<svg style="width: 80px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 80 65" fill="none"><circle cx="40" cy="33" r="24" fill="#60a5fa" stroke="#0f172a" stroke-width="2.5"/><circle cx="40" cy="33" r="18" fill="#fff" stroke="#0f172a" stroke-width="2"/><path d="M40 20V33L49 33" stroke="#dc2626" stroke-width="2.8" stroke-linecap="round"/></svg>`
+            },
+            person: {
+                label: 'شخص',
+                svg: `<svg style="width: 80px; height: 50px; margin: 0 auto; display: block;" viewBox="0 0 80 65" fill="none"><circle cx="40" cy="26" r="15" fill="#fed7aa" stroke="#0f172a" stroke-width="2.2"/><path d="M22 58C22 46 58 46 58 58" fill="#3b82f6" stroke="#0f172a" stroke-width="2.2"/></svg>`
+            }
+        };
+
+        let appState = {
+            paperStyle: 'classic',
+            gridCols: '2',
+            showSpiral: true,
+            showDoodles: true,
+            topLeftTag: '4/8',
+            topRightTag: 'Computer Basics',
+            mainTitle: 'Memory & Storage',
+            mainTitleColor: '#b91c1c',
+            subTitle: 'الرام مش هي الهارد!',
+            subTitleHighlight: 'hl-pink',
+            bulbNote: 'معلومة بفرق',
+            sideNote: 'معلومة أوضح للمستقبل',
+            bottomSummary: 'مساحة شغلك = RAM   |   دولاب ملفاتك = Storage',
+            bottomBar: 'ROM — ذاكرة غير متطايرة؛ بتحتفظ بمحتواها بدون كهرباء.',
+            authorName: 'محمود منصور',
+            footerQuote: 'Small Steps, Big Knowledge ♥',
+            cards: [
+                {
+                    id: 1, title: 'RAM', titleColor: '#b91c1c', highlight: 'hl-blue', borderStyle: 'hand-box', icon: 'ram', customImg: '',
+                    bullets: ['سريعة ومؤقتة.', 'بتحتفظ ببيانات البرامج أثناء تشغيلها.', 'محتواها بيضيع لما الكهرباء تتقطع.'], example: ''
+                },
+                {
+                    id: 2, title: 'SSD / HDD', titleColor: '#b91c1c', highlight: 'hl-blue', borderStyle: 'hand-box', icon: 'ssd', customImg: '',
+                    bullets: ['لتخزين ملفاتك وبرامجك.', 'البيانات بتفضل محفوظة من غير كهرباء.'], example: ''
+                }
+            ]
+        };
+
+        const PRESETS = {
+            ram_ssd: { ...appState },
+            english_wh: {
+                paperStyle: 'clean', gridCols: '2', showSpiral: true, showDoodles: true,
+                topLeftTag: 'English', topRightTag: 'Grammar', mainTitle: 'Question Words', mainTitleColor: '#1e3a8a',
+                subTitle: 'كلمات السؤال في الإنجليزية', subTitleHighlight: 'hl-yellow', bulbNote: 'Ask & Learn!', sideNote: 'Important',
+                bottomSummary: 'Learn  •  Practice  •  Excel', bottomBar: 'تحدي: _____ is your name?', authorName: 'مستر السيد', footerQuote: 'English is fun ♥',
+                cards: [
+                    { id: 101, title: 'What ?', titleColor: '#0f172a', highlight: 'hl-yellow', borderStyle: 'hand-box', icon: 'book', customImg: '', bullets: ['تستخدم للسؤال عن (شيء).'], example: 'What is this?' },
+                    { id: 102, title: 'Where ?', titleColor: '#0f172a', highlight: 'hl-yellow', borderStyle: 'hand-box-teal', icon: 'map', customImg: '', bullets: ['تستخدم للسؤال عن (مكان).'], example: 'Where do you live?' }
+                ]
+            },
+            networks: {
+                paperStyle: 'classic', gridCols: '2', showSpiral: true, showDoodles: true,
+                topLeftTag: 'Part 4', topRightTag: 'Networks', mainTitle: 'Types of Networks', mainTitleColor: '#b91c1c',
+                subTitle: 'أنواع شبكات الكمبيوتر', subTitleHighlight: 'hl-blue', bulbNote: 'معلومة', sideNote: 'نطاق جغرافي',
+                bottomSummary: 'هل شبكة البيت LAN أم WAN؟', bottomBar: 'الراوتر المنزلي يربط كـ LAN ويصل للإنترنت كـ WAN.', authorName: 'محمود منصور', footerQuote: 'Swipe →',
+                cards: [
+                    { id: 201, title: 'LAN', titleColor: '#1e3a8a', highlight: 'hl-pink', borderStyle: 'hand-box-dashed', icon: 'book', customImg: '', bullets: ['شبكة محلية في نطاق محدود.', 'زي شبكة البيت أو المكتب.'], example: 'أجهزة معمل' },
+                    { id: 202, title: 'WAN', titleColor: '#1e3a8a', highlight: 'hl-pink', borderStyle: 'hand-box-dashed', icon: 'map', customImg: '', bullets: ['تربط شبكات عبر مسافات كبيرة.', 'الإنترنت أشهر مثال.'], example: 'Cairo ↔ London' }
+                ]
+            }
+        };
+
+        function showToast(msg, icon = '✅') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').textContent = msg;
+            document.getElementById('toastIcon').textContent = icon;
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+            setTimeout(() => {
+                toast.style.transform = 'translateY(80px)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        function updateState(key, value) {
+            appState[key] = value;
+            renderPreview();
+        }
+
+        function loadPreset(key) {
+            appState = JSON.parse(JSON.stringify(PRESETS[key]));
+            syncFormInputs();
+            renderCardsEditor();
+            renderPreview();
+            showToast('تم تحميل القالب بنجاح!', '🎨');
+        }
+
+        function syncFormInputs() {
+            document.getElementById('paperStyle').value = appState.paperStyle;
+            document.getElementById('gridCols').value = appState.gridCols;
+            document.getElementById('showSpiral').checked = appState.showSpiral;
+            document.getElementById('showDoodles').checked = appState.showDoodles;
+            document.getElementById('topLeftTag').value = appState.topLeftTag;
+            document.getElementById('topRightTag').value = appState.topRightTag;
+            document.getElementById('mainTitle').value = appState.mainTitle;
+            document.getElementById('mainTitleColor').value = appState.mainTitleColor;
+            document.getElementById('subTitle').value = appState.subTitle;
+            document.getElementById('subTitleHighlight').value = appState.subTitleHighlight;
+            document.getElementById('bulbNote').value = appState.bulbNote;
+            document.getElementById('sideNote').value = appState.sideNote;
+            document.getElementById('bottomSummary').value = appState.bottomSummary;
+            document.getElementById('bottomBar').value = appState.bottomBar;
+            document.getElementById('authorName').value = appState.authorName;
+            document.getElementById('footerQuote').value = appState.footerQuote;
+        }
+
+        function addCard() {
+            appState.cards.push({
+                id: Date.now(), title: 'عنوان جديد', titleColor: '#1e3a8a', highlight: 'hl-yellow', borderStyle: 'hand-box', icon: 'book', customImg: '',
+                bullets: ['اكتب نقطة الشرح الأولى هنا.'], example: ''
+            });
+            renderCardsEditor();
+            renderPreview();
+        }
+
+        function removeCard(idx) {
+            if (appState.cards.length <= 1) { showToast('يجب أن يبقى كارت واحد على الأقل', '⚠️'); return; }
+            appState.cards.splice(idx, 1);
+            renderCardsEditor();
+            renderPreview();
+        }
+
+        function updateCard(idx, field, val) {
+            appState.cards[idx][field] = val;
+            renderPreview();
+        }
+
+        function addBullet(cIdx) {
+            appState.cards[cIdx].bullets.push('نقطة جديدة...');
+            renderCardsEditor();
+            renderPreview();
+        }
+
+        function updateBullet(cIdx, bIdx, val) {
+            appState.cards[cIdx].bullets[bIdx] = val;
+            renderPreview();
+        }
+
+        function removeBullet(cIdx, bIdx) {
+            appState.cards[cIdx].bullets.splice(bIdx, 1);
+            renderCardsEditor();
+            renderPreview();
+        }
+
+        function handleCustomImage(cIdx, e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                appState.cards[cIdx].customImg = evt.target.result;
+                renderPreview();
+                showToast('تم رفع الصورة!', '🖼️');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderCardsEditor() {
+            const container = document.getElementById('cardsEditorList');
+            document.getElementById('cardsCount').textContent = appState.cards.length;
+            container.innerHTML = '';
+
+            appState.cards.forEach((card, cIdx) => {
+                const iconOpts = Object.entries(SKETCH_ICONS).map(([k, it]) => `<option value="${k}" ${card.icon === k ? 'selected' : ''}>${it.label}</option>`).join('');
+                const bulletsHtml = card.bullets.map((b, bIdx) => `
+                    <div style="display: flex; gap: 6px; margin-bottom: 4px;">
+                        <input type="text" value="${b.replace(/"/g, '&quot;')}" oninput="updateBullet(${cIdx}, ${bIdx}, this.value)" style="flex:1;">
+                        <button onclick="removeBullet(${cIdx}, ${bIdx})" style="background: #7f1d1d; color: #fca5a5; border:none; border-radius:6px; padding:2px 8px; cursor:pointer;">✕</button>
+                    </div>
+                `).join('');
+
+                const html = `
+                    <div style="background: #020617; border: 1px solid #334155; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">
+                            <span style="font-size: 11px; font-weight: bold; color: #34d399;">كارت #${cIdx + 1}</span>
+                            <button onclick="removeCard(${cIdx})" style="font-size: 11px; color: #f87171; background:none; border:none; cursor:pointer;">🗑️ حذف</button>
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <label>عنوان الكارت</label>
+                                <input type="text" value="${card.title.replace(/"/g, '&quot;')}" oninput="updateCard(${cIdx}, 'title', this.value)">
+                            </div>
+                            <div>
+                                <label>الهايلايتر</label>
+                                <select onchange="updateCard(${cIdx}, 'highlight', this.value)">
+                                    <option value="hl-blue" ${card.highlight === 'hl-blue' ? 'selected' : ''}>لبني</option>
+                                    <option value="hl-yellow" ${card.highlight === 'hl-yellow' ? 'selected' : ''}>أصفر</option>
+                                    <option value="hl-pink" ${card.highlight === 'hl-pink' ? 'selected' : ''}>بينك</option>
+                                    <option value="hl-green" ${card.highlight === 'hl-green' ? 'selected' : ''}>أخضر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid-2">
+                            <div>
+                                <label>الإطار اليدوي</label>
+                                <select onchange="updateCard(${cIdx}, 'borderStyle', this.value)">
+                                    <option value="hand-box" ${card.borderStyle === 'hand-box' ? 'selected' : ''}>أزرق</option>
+                                    <option value="hand-box-purple" ${card.borderStyle === 'hand-box-purple' ? 'selected' : ''}>بنفسجي</option>
+                                    <option value="hand-box-teal" ${card.borderStyle === 'hand-box-teal' ? 'selected' : ''}>تركواز</option>
+                                    <option value="hand-box-dashed" ${card.borderStyle === 'hand-box-dashed' ? 'selected' : ''}>أحمر متقطع</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>رسمة جاهزة</label>
+                                <select onchange="updateCard(${cIdx}, 'icon', this.value); updateCard(${cIdx}, 'customImg', '')">${iconOpts}</select>
+                            </div>
+                        </div>
+                        <div>
+                            <label>أو ارفع صورة</label>
+                            <input type="file" accept="image/*" onchange="handleCustomImage(${cIdx}, event)" style="font-size: 10px; color: #94a3b8;">
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label>نقاط الشرح</label>
+                                <button onclick="addBullet(${cIdx})" style="font-size: 10px; color: #34d399; background:none; border:none; cursor:pointer;">+ إضافة نقطة</button>
+                            </div>
+                            ${bulletsHtml}
+                        </div>
+                        <div>
+                            <label>صندوق مثال / ترجمة</label>
+                            <input type="text" value="${(card.example || '').replace(/"/g, '&quot;')}" oninput="updateCard(${cIdx}, 'example', this.value)">
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function renderSpiral() {
+            const container = document.getElementById('spiralContainer');
+            const inner = document.getElementById('paperInner');
+            if (!appState.showSpiral) {
+                container.style.display = 'none';
+                inner.style.paddingRight = '0px';
+                return;
+            }
+            container.style.display = 'flex';
+            inner.style.paddingRight = '24px';
+            let html = '';
+            for (let i = 0; i < 24; i++) {
+                html += `<div class="spiral-ring"><div class="spiral-wire"></div><div class="spiral-hole"></div></div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function renderPreview() {
+            const canvas = document.getElementById('notebookCanvas');
+            canvas.className = appState.paperStyle === 'clean' ? 'notebook-paper-clean' : 'notebook-paper';
+            renderSpiral();
+
+            document.getElementById('viewTopLeft').textContent = appState.topLeftTag;
+            document.getElementById('viewTopRight').textContent = appState.topRightTag;
+
+            const titleEl = document.getElementById('viewMainTitle');
+            titleEl.textContent = appState.mainTitle;
+            titleEl.style.color = appState.mainTitleColor;
+            const isEn = /^[A-Za-z0-9\s&?!.,'-]+$/.test(appState.mainTitle.trim());
+            titleEl.className = (isEn ? 'font-en-hand' : 'font-ar-hand-title') + ' hand-underline';
+            titleEl.style.fontSize = isEn ? '36px' : '30px';
+
+            const bulbBox = document.getElementById('viewBulbBox');
+            bulbBox.style.display = appState.bulbNote.trim() ? 'flex' : 'none';
+            document.getElementById('viewBulbNote').textContent = appState.bulbNote;
+
+            const sideBox = document.getElementById('viewSideNoteBox');
+            sideBox.style.display = appState.sideNote.trim() ? 'flex' : 'none';
+            document.getElementById('viewSideNote').textContent = appState.sideNote;
+
+            const subWrap = document.getElementById('viewSubTitleWrapper');
+            const subEl = document.getElementById('viewSubTitle');
+            if (appState.subTitle.trim()) {
+                subWrap.style.display = 'block';
+                subEl.textContent = appState.subTitle;
+                subEl.className = appState.subTitleHighlight + ' font-ar-hand-title';
+            } else {
+                subWrap.style.display = 'none';
+            }
+
+            document.querySelectorAll('.doodle-mark').forEach(el => {
+                el.style.display = appState.showDoodles ? 'inline' : 'none';
+            });
+
+            const grid = document.getElementById('viewCardsGrid');
+            grid.className = appState.gridCols === '1' ? 'cards-grid-1' : 'cards-grid-2';
+            grid.innerHTML = '';
+
+            appState.cards.forEach(card => {
+                const isEnCard = /^[A-Za-z0-9\s&?!.,()/+-]+$/.test(card.title.trim());
+                const visual = card.customImg ? `<img src="${card.customImg}" style="max-height: 60px; margin: 0 auto; display: block; border-radius:6px;">` : (SKETCH_ICONS[card.icon] ? SKETCH_ICONS[card.icon].svg : '');
+                const bullets = card.bullets.map(b => `
+                    <div class="bullet-item">
+                        <span class="bullet-dot">•</span>
+                        <span class="bullet-text">${b}</span>
+                    </div>
+                `).join('');
+
+                const exHtml = card.example && card.example.trim() ? `
+                    <div style="margin-top: 8px; padding-top: 6px; border-top: 1px dashed rgba(100,116,139,0.5); text-align: center;">
+                        <span style="background: rgba(254,240,138,0.9); border: 1px solid rgba(234,179,8,0.7); padding: 2px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; font-family: cursive;">${card.example}</span>
+                    </div>
+                ` : '';
+
+                const cardHtml = `
+                    <div class="${card.borderStyle}" style="display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="text-align: center; margin-bottom: 8px;">
+                                <span class="${card.highlight} ${isEnCard ? 'font-en-hand' : 'font-ar-hand-title'}" style="font-size: ${isEnCard ? '22px' : '18px'}; font-weight: 800; color: ${card.titleColor};">${card.title}</span>
+                            </div>
+                            ${visual ? `<div style="margin: 6px 0;">${visual}</div>` : ''}
+                            <div style="margin-top: 4px;">${bullets}</div>
+                        </div>
+                        ${exHtml}
+                    </div>
+                `;
+                grid.insertAdjacentHTML('beforeend', cardHtml);
+            });
+
+            const sumBox = document.getElementById('viewBottomSummaryBox');
+            if (appState.bottomSummary.trim()) {
+                sumBox.style.display = 'block';
+                document.getElementById('viewBottomSummary').textContent = appState.bottomSummary;
+            } else { sumBox.style.display = 'none'; }
+
+            const barBox = document.getElementById('viewBottomBarBox');
+            if (appState.bottomBar.trim()) {
+                barBox.style.display = 'block';
+                document.getElementById('viewBottomBar').textContent = appState.bottomBar;
+            } else { barBox.style.display = 'none'; }
+
+            document.getElementById('viewAuthorName').textContent = appState.authorName;
+            document.getElementById('viewFooterQuote').textContent = appState.footerQuote;
+        }
+
+        function saveToLocal() {
+            try {
+                localStorage.setItem('sketchnote_v2', JSON.stringify(appState));
+                showToast('تم حفظ تصميمك بنجاح!', '💾');
+            } catch(e) {
+                showToast('حجم البيانات كبير جداً', '⚠️');
+            }
+        }
+
+        async function exportImage() {
+            const btn = document.getElementById('exportBtn');
+            btn.textContent = '⏳ جاري التصدير...';
+            btn.disabled = true;
+            try {
+                const target = document.getElementById('notebookCanvas');
+                const canvas = await html2canvas(target, { scale: 2.5, useCORS: true, backgroundColor: null });
+                const link = document.createElement('a');
+                link.download = `${(appState.mainTitle || 'infographic').replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '_')}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                showToast('تم تحميل الصورة بنجاح!', '🎉');
+            } catch (err) {
+                showToast('خطأ أثناء التصدير', '❌');
+            } finally {
+                btn.textContent = '📥 تحميل PNG';
+                btn.disabled = false;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('sketchnote_v2');
+            if (saved) {
+                try { appState = JSON.parse(saved); } catch(e) {}
+            }
+            syncFormInputs();
+            renderCardsEditor();
+            renderPreview();
+        });
+    </script>
+</body>
+</html>

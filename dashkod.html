@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Ali | Admin Panel v2.5</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --accent: #4facfe;
+            --danger: #ff4b5c;
+            --success: #00e676;
+            --glass: rgba(255, 255, 255, 0.05);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+        
+        body {
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            color: #e2e8f0;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .dashboard { max-width: 1000px; margin: 0 auto; }
+
+        header {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        h1 { font-size: 20px; background: linear-gradient(to right, var(--primary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* الكروت العلوية */
+        .stats { display: flex; gap: 8px; margin-bottom: 15px; }
+        .stat-card { 
+            flex: 1; 
+            background: var(--glass); 
+            padding: 10px 5px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            text-align: center;
+        }
+        .stat-card h4 { font-size: 10px; color: #94a3b8; margin-bottom: 3px; }
+        .stat-card p { font-size: 16px; font-weight: bold; }
+
+        /* منطقة الإدخال والبحث */
+        .control-panel {
+            background: var(--glass);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+        }
+
+        .input-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: white;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .btn-main { background: linear-gradient(45deg, var(--accent), var(--primary)); border: none; border-radius: 8px; padding: 10px; color: #0f172a; font-weight: bold; cursor: pointer; width: 100%; margin-bottom: 15px; }
+        .btn-gen { background: rgba(255,255,255,0.1); border: 1px solid var(--border); color: white; border-radius: 8px; padding: 0 15px; cursor: pointer; }
+
+        .search-box input {
+            width: 100%;
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 10px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        /* الجدول والنسخ */
+        .table-container {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: rgba(0, 105, 217, 0.7); color: white; padding: 10px; font-size: 12px; }
+        td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-size: 12px; }
+
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .copy-btn:active { transform: scale(0.9); background: var(--primary); color: #000; }
+
+        .status { padding: 3px 7px; border-radius: 5px; font-size: 10px; font-weight: bold; }
+        .status-on { background: rgba(0, 230, 118, 0.2); color: var(--success); }
+        .status-off { background: rgba(255, 75, 92, 0.2); color: var(--danger); }
+
+        .btn-reset { background: transparent; border: 1px solid var(--danger); color: var(--danger); padding: 3px 6px; border-radius: 5px; cursor: pointer; font-size: 11px; }
+
+        /* Toast Alert */
+        #toast {
+            visibility: hidden;
+            min-width: 200px;
+            background-color: var(--success);
+            color: #000;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+            position: fixed;
+            z-index: 100;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 1.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+<div id="toast">تم نسخ الكود بنجاح! 📋</div>
+
+<div class="dashboard">
+    <header>
+        <h1>💎 إدارة اشتراكات Quiz Ali</h1>
+    </header>
+
+    <div class="stats">
+        <div class="stat-card"><h4>الإجمالي</h4><p id="totalCodes">0</p></div>
+        <div class="stat-card"><h4>مفعل</h4><p id="activeCodes" style="color: var(--success)">0</p></div>
+        <div class="stat-card"><h4>متاح</h4><p id="availableCodes" style="color: var(--danger)">0</p></div>
+    </div>
+
+    <div class="control-panel">
+        <div class="input-row">
+            <input type="text" id="newCode" placeholder="أدخل كود أو استخدم النرد 🎲">
+            <button class="btn-gen" onclick="autoGenerate()">🎲</button>
+        </div>
+        <button class="btn-main" onclick="addCode()">إضافة كود جديد</button>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="🔍 ابحث بالاسم، الموبايل، أو الكود...">
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>الكود</th>
+                    <th>الحالة</th>
+                    <th>الاسم</th>
+                    <th>الموبايل</th>
+                    <th>الإجراء</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    const firebaseConfig = {
+  apiKey: "AIzaSyBTgGaMFO0LfpEq_OZlx1UCJf-BprT6zAg",
+  authDomain: "sales-tools-39b23.firebaseapp.com",
+  databaseURL: "https://sales-tools-39b23.firebaseio.com",
+  projectId: "sales-tools-39b23",
+  storageBucket: "sales-tools-39b23.appspot.com",
+  messagingSenderId: "151741711178",
+  appId: "1:151741711178:web:d624c32354d26a35eb37b3"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let allData = [];
+
+    function autoGenerate() {
+        const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+        const segment = () => {
+            let str = "";
+            for (let i = 0; i < 4; i++) str += chars.charAt(Math.floor(Math.random() * chars.length));
+            return str;
+        };
+        document.getElementById('newCode').value = `ALI-${segment()}-${segment()}-${segment()}`;
+    }
+
+    function addCode() {
+        const code = document.getElementById('newCode').value.trim().toUpperCase();
+        if (!code) return alert("أدخل كود أولاً!");
+        db.ref('Subscribers/' + code).once('value', (snap) => {
+            if (snap.exists()) alert("❌ الكود مضاف بالفعل!");
+            else db.ref('Subscribers/' + code).set({device_id: "", name: "", phone: ""});
+        });
+    }
+
+    db.ref('Subscribers').on('value', (snapshot) => {
+        allData = [];
+        snapshot.forEach((child) => { allData.push({ key: child.key, ...child.val() }); });
+        displayData(allData);
+    });
+
+    function displayData(data) {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = "";
+        let total = 0, active = 0, available = 0;
+
+        data.forEach((item) => {
+            const isActivated = item.device_id !== "";
+            total++; isActivated ? active++ : available++;
+
+            const row = `
+                <tr>
+                    <td style="color: var(--primary); font-weight: bold; font-family: monospace;">
+                        <button class="copy-btn" onclick="copyToClipboard('${item.key}')">📋</button>
+                        ${item.key}
+                    </td>
+                    <td><span class="status ${isActivated ? 'status-on' : 'status-off'}">${isActivated ? 'مفعل' : 'متاح'}</span></td>
+                    <td>${item.name || '---'}</td>
+                    <td>${item.phone || '---'}</td>
+                    <td>
+                        ${isActivated ? `<button class="btn-reset" onclick="resetCode('${item.key}')">ضبط</button>` : '---'}
+                    </td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+        document.getElementById('totalCodes').innerText = total;
+        document.getElementById('activeCodes').innerText = active;
+        document.getElementById('availableCodes').innerText = available;
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const toast = document.getElementById("toast");
+            toast.className = "show";
+            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2000);
+        });
+    }
+
+    function filterTable() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = allData.filter(item => 
+            (item.name && item.name.toLowerCase().includes(query)) || 
+            (item.phone && item.phone.includes(query)) ||
+            (item.key.toLowerCase().includes(query))
+        );
+        displayData(filtered);
+    }
+
+    function resetCode(code) {
+        if (confirm("إعادة ضبط الكود؟")) {
+            db.ref('Subscribers/' + code).update({ device_id: "", name: "", phone: "" });
+        }
+    }
+</script>
+
+</body>
+</html>
