@@ -1,0 +1,2955 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استوديو الكشكول التعليمي المتطور - صانع الإنفوجرافيك الدراسي</title>
+
+    <!-- Google Fonts with local cursive/sans-serif fallbacks -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Lalezar&family=Marhey:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;500;600;700&family=Patrick+Hand&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+    <!-- Export Libraries (html2canvas + jsPDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* =====================================================================
+           1. PURE INTERNAL CSS (100% OFFLINE-SAFE & MOBILE RESPONSIVE)
+           ===================================================================== */
+        :root {
+            --bg-app: #0b1120;
+            --bg-panel: #162032;
+            --bg-card: #1e293b;
+            --bg-input: #0f172a;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --amber: #f59e0b;
+            --emerald: #10b981;
+            --sky: #0ea5e9;
+            --rose: #f43f5e;
+            --purple: #a855f7;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Cairo', 'Tajawal', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Handwritten & Arabic Fonts */
+        .font-marhey  { font-family: 'Marhey', 'Patrick Hand', 'Comic Sans MS', cursive, sans-serif; }
+        .font-cairo   { font-family: 'Cairo', 'Patrick Hand', sans-serif; }
+        .font-tajawal { font-family: 'Tajawal', 'Patrick Hand', sans-serif; }
+        .font-lalezar { font-family: 'Lalezar', 'Patrick Hand', cursive, sans-serif; }
+        .font-amiri { font-family: 'Amiri', serif; }
+        .font-almarai { font-family: 'Almarai', sans-serif; }
+        .font-ibm { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+        .font-naskh { font-family: 'Noto Naskh Arabic', serif; }
+
+        /* =====================================================================
+           2. TOP HEADER & MOBILE SWITCHER
+           ===================================================================== */
+        .app-header {
+            background: #060a12;
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .brand-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #fbbf24, #ea580c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-size: 15.5px;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .badge-v2 {
+            font-size: 10.5px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            padding: 1px 8px;
+            border-radius: 99px;
+            font-weight: 800;
+        }
+
+        .header-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .btn {
+            border: 1px solid var(--border-color);
+            background: var(--bg-card);
+            color: #fff;
+            border-radius: 9px;
+            padding: 7px 12px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.16s ease;
+        }
+
+        .btn:hover:not(:disabled) { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn:active:not(:disabled) { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-emerald { background: linear-gradient(135deg, #10b981, #059669); border-color: #059669; }
+        .btn-rose    { background: linear-gradient(135deg, #f43f5e, #e11d48); border-color: #e11d48; }
+        .btn-sky     { background: linear-gradient(135deg, #0ea5e9, #0284c7); border-color: #0284c7; }
+        .btn-amber   { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: #d97706; color: #0f172a; }
+        .btn-danger  { background: rgba(244, 63, 94, 0.16); color: #fda4af; border-color: rgba(244, 63, 94, 0.4); }
+        .btn-sm      { padding: 5px 9px; font-size: 11px; border-radius: 7px; }
+        .btn-icon    { padding: 4px 7px; font-size: 11.5px; border-radius: 7px; }
+
+        .form-control, .form-select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 6px 9px;
+            font-family: inherit;
+            font-size: 12px;
+            color: #f8fafc;
+            outline: none;
+        }
+
+        .form-control:focus, .form-select:focus { border-color: var(--amber); }
+        textarea.form-control { resize: vertical; line-height: 1.5; }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 3px;
+        }
+
+        /* Mobile Switcher */
+        .mobile-tabs {
+            display: flex;
+            background: #060a12;
+            padding: 6px 12px;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-tab {
+            flex: 1;
+            padding: 9px;
+            border-radius: 9px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-panel);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .mobile-tab.active {
+            background: var(--amber);
+            color: #0f172a;
+            border-color: var(--amber);
+        }
+
+        @media (min-width: 1024px) {
+            .mobile-tabs { display: none; }
+        }
+
+        /* =====================================================================
+           3. WORKSPACE SPLIT LAYOUT
+           ===================================================================== */
+        .workspace {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .editor-sidebar {
+            width: 100%;
+            background: var(--bg-panel);
+            border-left: 1px solid var(--border-color);
+            padding: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .preview-stage {
+            width: 100%;
+            background: #111827;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        @media (max-width: 1023px) {
+            .hidden-mobile { display: none !important; }
+            .editor-sidebar, .preview-stage { min-height: calc(100vh - 110px); }
+        }
+
+        @media (min-width: 1024px) {
+            .editor-sidebar {
+                width: 485px;
+                flex-shrink: 0;
+                height: calc(100vh - 59px);
+            }
+            .preview-stage {
+                flex: 1;
+                height: calc(100vh - 59px);
+                padding: 24px;
+            }
+        }
+
+        .panel-box {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 13px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11.5px;
+            color: #cbd5e1;
+            cursor: pointer;
+            user-select: none;
+        }
+        .checkbox-label input { accent-color: var(--amber); width: 14px; height: 14px; }
+
+        /* Page Pills */
+        .page-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+        .page-pill {
+            padding: 5px 11px;
+            border-radius: 8px;
+            font-size: 11.5px;
+            font-weight: 800;
+            background: var(--bg-card);
+            color: #cbd5e1;
+            border: 1px solid #475569;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .page-pill.active { background: var(--amber); color: #0f172a; border-color: var(--amber); }
+
+        /* Add Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+        @media (min-width: 420px) {
+            .tools-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        .tool-btn {
+            background: var(--bg-card);
+            border: 1px dashed #64748b;
+            border-radius: 10px;
+            padding: 8px 6px;
+            color: #f1f5f9;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            text-align: center;
+            transition: all 0.15s;
+        }
+        .tool-btn:hover {
+            border-color: var(--amber);
+            background: rgba(245, 158, 11, 0.14);
+            color: #fcd34d;
+        }
+
+        /* Block Editor Card */
+        .block-card {
+            background: var(--bg-card);
+            border: 1px solid #475569;
+            border-radius: 12px;
+            padding: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .block-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 6px;
+            gap: 6px;
+        }
+
+        .block-tag {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .sub-box {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+
+        /* Full-bleed front/back covers */
+        .special-cover-view { position:absolute; inset:0; z-index:40; display:none; overflow:hidden; background:#f8fafc; }
+        .special-cover-view.active { display:flex; }
+        .special-cover-view img.cover-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+        .cover-overlay { position:relative; z-index:2; width:100%; min-height:100%; padding:9%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:18px; white-space:pre-wrap; }
+        .cover-title { font-size:clamp(28px,5vw,54px); font-weight:900; line-height:1.5; text-shadow:0 2px 8px rgba(0,0,0,.12); }
+        .cover-subtitle { font-size:clamp(15px,2.3vw,25px); font-weight:800; line-height:1.7; }
+        .cover-author { font-size:clamp(13px,1.8vw,20px); font-weight:800; margin-top:24px; }
+        .free-shapes-layer { position:absolute; inset:0; z-index:30; pointer-events:none; }
+        .free-shape { position:absolute; display:flex; align-items:center; justify-content:center; overflow:hidden; pointer-events:auto; touch-action:none; cursor:move; border:2px solid #1e293b; user-select:none; }
+        .free-shape.circle { border-radius:50%; }
+        .free-shape.rect { border-radius:4px; }
+        .free-shape.rounded { border-radius:18px; }
+        .free-shape.triangle { border:0 !important; background:transparent !important; overflow:visible; }
+        .free-shape.triangle::before { content:''; position:absolute; inset:0; background:var(--shape-bg); clip-path:polygon(50% 0, 0 100%, 100% 100%); border:0; }
+        .free-shape .shape-content { position:relative; z-index:1; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:8px; gap:4px; overflow:hidden; white-space:pre-wrap; }
+        .free-shape .shape-content img { display:block; max-width:100%; max-height:100%; object-fit:contain; flex:none; }
+        .free-shape .shape-resize { position:absolute; z-index:5; width:9px; height:9px; bottom:1px; left:1px; background:rgba(245,158,11,.48); border:1px solid rgba(255,255,255,.7); border-radius:50%; cursor:nwse-resize; opacity:.28; transition:opacity .15s,transform .15s; }
+        .free-shape:hover .shape-resize, .free-shape:focus-within .shape-resize { opacity:.9; transform:scale(1.12); }
+        .cover-mode-note { color:#cbd5e1; font-size:11px; line-height:1.7; }
+
+        /* =====================================================================
+           4. NOTEBOOK CANVAS & CRISP DATA-URI PAPER PATTERNS (EXPORT-SAFE!)
+           ===================================================================== */
+        .notebook-wrapper {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .notebook-sheet {
+            position: relative;
+            width: 100%;
+            min-height: 1040px;
+            background-color: #fdfcf8;
+            color: #0f172a;
+            border-radius: 22px 6px 6px 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
+            border: 1px solid #cbd5e1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Crisp SVG Data-URI Patterns so html2canvas & jsPDF ALWAYS render lines */
+        .paper-lined {
+            background-color: #fdfcf8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='32'%3E%3Cline x1='0' y1='31' x2='100' y2='31' stroke='%23cbd5e1' stroke-width='1.3'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-position: 0 12px;
+        }
+
+        .paper-grid {
+            background-color: #fdfcf8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Cpath d='M 26 0 L 0 0 0 26' fill='none' stroke='%23cbd5e1' stroke-width='1'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+        }
+
+        .paper-dotted {
+            background-color: #fdfcf8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22'%3E%3Ccircle cx='3' cy='3' r='1.3' fill='%2394a3b8'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+        }
+
+        .paper-cream {
+            background-color: #fbf8ef;
+            background-image: none;
+        }
+
+        /* Spiral Rings (Right Edge for Arabic RTL) */
+        .spiral-column {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 36px;
+            background-color: rgba(226, 232, 240, 0.35);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 0;
+            pointer-events: none;
+        }
+
+        .spiral-unit { position: relative; height: 18px; }
+        .spiral-hole {
+            width: 13px;
+            height: 13px;
+            background: #1e293b;
+            border-radius: 50%;
+            position: absolute;
+            right: 11px;
+            top: 2px;
+        }
+        .spiral-wire {
+            width: 25px;
+            height: 8px;
+            background: linear-gradient(180deg, #94a3b8 0%, #ffffff 45%, #475569 85%, #0f172a 100%);
+            border-radius: 8px;
+            position: absolute;
+            right: -5px;
+            top: 4px;
+            transform: rotate(-8deg);
+        }
+
+        /* Red Margin Line */
+        .red-margin {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 52px;
+            width: 2px;
+            background-color: rgba(244, 63, 94, 0.65);
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Sheet Inner Padding */
+        .sheet-inner {
+            position: relative;
+            z-index: 15;
+            padding: 24px 66px 26px 28px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .sheet-inner.no-spiral { padding-right: 28px; }
+
+        /* Hand-Drawn Borders & Highlighters */
+        .sketch-border     { border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; }
+        .sketch-border-alt { border-radius: 16px 235px 14px 245px / 235px 14px 240px 16px; }
+        .sketch-pill       { border-radius: 45px 18px 50px 20px / 20px 45px 18px 50px; }
+
+        .hl-yellow { background-color: #fef08a; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .hl-pink   { background-color: #fbcfe8; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .hl-green  { background-color: #bbf7d0; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .hl-blue   { background-color: #bae6fd; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .hl-purple { background-color: #e9d5ff; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+        .hl-orange { background-color: #fed7aa; padding: 2px 10px; border-radius: 8px 4px 10px 5px; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+
+        /* Top Bar & Logo */
+        .sheet-top-bar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .top-right-tag {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #78350f;
+            padding: 4px 13px;
+            font-size: 13px;
+            font-weight: 800;
+            transform: rotate(1.5deg);
+        }
+
+        .top-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-right: auto;
+        }
+
+        .page-number-badge {
+            background: #ffffff;
+            border: 2px solid #1e293b;
+            color: #1e293b;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 8px;
+            box-shadow: 2px 2px 0 #1e293b;
+            direction: ltr;
+        }
+
+        .logo-frame {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: #ffffff;
+            border: 2.5px solid #1e293b;
+            box-shadow: 3px 3px 0 rgba(30, 41, 59, 0.85);
+            flex-shrink: 0;
+        }
+        .logo-frame.circle   { border-radius: 50%; }
+        .logo-frame.rounded  { border-radius: 14px; }
+        .logo-frame.noborder { border: none; box-shadow: none; background: transparent; }
+        .logo-frame img      { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* Title Banner */
+        .sheet-header-center { text-align: center; margin: 2px 0 4px; }
+        .sheet-kicker { font-size: 16px; font-weight: 800; color: #312e81; margin-bottom: 4px; }
+        .sheet-main-title { font-size: 29px; font-weight: 900; color: #0f172a; line-height: 1.45; display: inline; }
+        .sheet-subtitle-wrap { margin-top: 8px; }
+        .sheet-subtitle {
+            display: inline-block;
+            background: #e0f2fe;
+            border: 2px solid #0369a1;
+            color: #0c4a6e;
+            font-size: 14.5px;
+            font-weight: 800;
+            padding: 5px 18px;
+            box-shadow: 2px 2px 0 rgba(3, 105, 161, 0.25);
+        }
+
+        /* =====================================================================
+           5. CONTENT BLOCKS ON THE NOTEBOOK SHEET
+           ===================================================================== */
+        .sheet-blocks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            flex: 1;
+        }
+
+        /* A. Standard Section */
+        .nb-section-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+        .nb-badge-circle {
+            width: 34px; height: 34px; border-radius: 50%; border: 2px solid #0f172a;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 15px; flex-shrink: 0; box-shadow: 2px 2px 0 #0f172a;
+        }
+        .nb-section-title { font-size: 19.5px; font-weight: 900; color: #0f172a; }
+        .nb-section-desc { font-size: 15.5px; font-weight: 700; color: #1e293b; line-height: 1.75; padding-right: 8px; }
+        .nb-example-row { margin-top: 7px; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 9px; }
+        .nb-example-tag { background: #fff; border: 2px dashed #e11d48; color: #be123c; font-size: 13px; font-weight: 900; padding: 4px 12px; flex-shrink: 0; }
+        .nb-example-box { flex: 1; min-width: 210px; border: 2px solid; padding: 9px 14px; }
+        .nb-example-list { list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 14.5px; font-weight: 800; color: #0f172a; }
+        .nb-example-list li { display: flex; align-items: flex-start; gap: 7px; }
+
+        /* B. Ordered Steps Block (خطوات مرتبة طولية) */
+        .nb-steps-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .nb-steps-heading {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            margin-bottom: 2px;
+        }
+        .nb-step-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2.5px solid;
+            padding: 10px 14px;
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.14);
+        }
+        .nb-step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            font-weight: 900;
+            flex-shrink: 0;
+            box-shadow: 2px 2px 0 #0f172a;
+        }
+        .nb-step-content { flex: 1; }
+        .nb-step-title { font-size: 16.5px; font-weight: 900; line-height: 1.3; }
+        .nb-step-desc { font-size: 14px; font-weight: 700; color: #1e293b; margin-top: 2px; line-height: 1.5; }
+        .nb-step-connector {
+            text-align: center;
+            line-height: 1;
+            margin: -4px 0;
+            color: #475569;
+            font-weight: 900;
+            font-size: 16px;
+        }
+
+        /* C. Grid Cards Block (1-4 Columns) */
+        .nb-cards-grid { display: grid; gap: 11px; }
+        .nb-cards-cols-1 { grid-template-columns: 1fr; }
+        .nb-cards-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .nb-cards-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .nb-cards-cols-4 { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 600px) {
+            .nb-cards-cols-3, .nb-cards-cols-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+        .nb-info-card {
+            border: 2.5px solid;
+            padding: 11px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.14);
+        }
+        .nb-card-top { display: flex; align-items: center; gap: 7px; }
+        .nb-card-icon { font-size: 20px; line-height: 1; }
+        .nb-card-title { font-size: 15.5px; font-weight: 900; line-height: 1.3; }
+        .nb-card-body { font-size: 13.8px; font-weight: 700; line-height: 1.55; color: #1e293b; white-space: pre-line; }
+
+        /* D. Image + Side Explanation Block */
+        .nb-media-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+        .nb-media-block.align-center { align-items: center; }
+        .nb-media-block.align-right  { align-items: flex-start; } /* RTL start = Right */
+        .nb-media-block.align-left   { align-items: flex-end; }   /* RTL end = Left */
+
+        .nb-media-side-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+        }
+        .nb-media-side-row.img-left {
+            flex-direction: row-reverse;
+        }
+        .nb-image-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .nb-image-frame {
+            overflow: hidden;
+            background: #ffffff;
+            padding: 5px;
+            width: 100%;
+        }
+        .nb-image-frame.framed {
+            border: 2.5px solid #1e293b;
+            border-radius: 15px;
+            box-shadow: 4px 4px 0 rgba(30, 41, 59, 0.8);
+        }
+        .nb-image-frame img { width: 100%; height: auto; display: block; border-radius: 10px; }
+        .nb-image-caption {
+            background: #fef9c3; border: 1.5px solid #ca8a04; color: #713f12;
+            font-size: 13px; font-weight: 800; padding: 2px 12px; text-align: center;
+        }
+        .nb-side-text-box {
+            flex: 1;
+            min-width: 200px;
+            border: 2.5px solid;
+            padding: 12px 15px;
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.14);
+        }
+        .nb-side-text-title {
+            font-size: 17px;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        .nb-side-text-body {
+            font-size: 14.5px;
+            font-weight: 700;
+            line-height: 1.7;
+            color: #1e293b;
+            white-space: pre-line;
+        }
+
+        /* E. Icon Card Block (كارت أيقونة + شرح جانبي اختياري) */
+        .nb-icon-card-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            width: 100%;
+        }
+        .nb-icon-card-wrap.pos-center { justify-content: center; }
+        .nb-icon-card-wrap.pos-right  { justify-content: flex-start; } /* RTL Right */
+        .nb-icon-card-wrap.pos-left   { justify-content: flex-end; }   /* RTL Left */
+
+        .nb-icon-sticker {
+            border: 2.5px solid;
+            padding: 12px 16px;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.2);
+            flex-shrink: 0;
+            text-align: center;
+        }
+        .nb-icon-sticker-label {
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        /* F. Hand-Drawn Table */
+        .nb-table-wrap { width: 100%; overflow-x: auto; }
+        .nb-table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            border: 2.5px solid #1e293b; border-radius: 12px; overflow: hidden;
+            background: rgba(255, 255, 255, 0.92); box-shadow: 3px 3px 0 rgba(30, 41, 59, 0.2);
+        }
+        .nb-table th {
+            padding: 8px 11px; font-size: 14.5px; font-weight: 900; text-align: center;
+            border-bottom: 2.5px solid #1e293b; border-left: 2px solid #1e293b;
+        }
+        .nb-table th:last-child, .nb-table td:last-child { border-left: none; }
+        .nb-table td {
+            padding: 7px 11px; font-size: 14px; font-weight: 700; text-align: center;
+            color: #0f172a; border-bottom: 1.5px solid #94a3b8; border-left: 2px solid #1e293b;
+        }
+        .nb-table tr:last-child td { border-bottom: none; }
+        .nb-table tr:nth-child(even) td { background-color: rgba(241, 245, 249, 0.6); }
+
+        /* G. Hand-Drawn Arrows Block (أسهم توضيحية) */
+        .nb-arrow-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 2px 0;
+        }
+        .nb-arrow-flow-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .nb-flow-pill {
+            border: 2px solid;
+            padding: 6px 14px;
+            font-size: 14.5px;
+            font-weight: 900;
+            box-shadow: 2px 2px 0 rgba(15, 23, 42, 0.15);
+        }
+        .nb-arrow-label {
+            font-size: 13px;
+            font-weight: 900;
+            padding: 1px 10px;
+            border-radius: 99px;
+            background: #ffffff;
+            border: 1.5px dashed currentColor;
+        }
+
+        /* H. Banner Box */
+        .nb-banner-box {
+            border: 2.5px solid;
+            padding: 11px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-align: center;
+            font-size: 15.5px;
+            font-weight: 900;
+            box-shadow: 3px 3px 0 rgba(15, 23, 42, 0.15);
+        }
+
+        /* Sheet Footer */
+        .sheet-footer {
+            margin-top: 6px;
+            padding-top: 9px;
+            border-top: 2px dashed #94a3b8;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #334155;
+        }
+
+        /* Color Themes */
+        .theme-green-bg     { background-color: #ecfdf5; border-color: #059669; color: #064e3b; }
+        .theme-green-badge  { background-color: #10b981; color: #ffffff; }
+        .theme-green-stroke { color: #059669; }
+
+        .theme-pink-bg      { background-color: #fff1f2; border-color: #e11d48; color: #881337; }
+        .theme-pink-badge   { background-color: #f43f5e; color: #ffffff; }
+        .theme-pink-stroke  { color: #e11d48; }
+
+        .theme-yellow-bg    { background-color: #fefce8; border-color: #d97706; color: #78350f; }
+        .theme-yellow-badge { background-color: #fbbf24; color: #0f172a; }
+        .theme-yellow-stroke{ color: #d97706; }
+
+        .theme-blue-bg      { background-color: #f0f9ff; border-color: #0284c7; color: #0c4a6e; }
+        .theme-blue-badge   { background-color: #0ea5e9; color: #ffffff; }
+        .theme-blue-stroke  { color: #0284c7; }
+
+        .theme-purple-bg    { background-color: #faf5ff; border-color: #9333ea; color: #581c87; }
+        .theme-purple-badge { background-color: #a855f7; color: #ffffff; }
+        .theme-purple-stroke{ color: #9333ea; }
+
+        .theme-orange-bg    { background-color: #fff7ed; border-color: #ea580c; color: #7c2d12; }
+        .theme-orange-badge { background-color: #f97316; color: #ffffff; }
+        .theme-orange-stroke{ color: #ea580c; }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            background: #0f172a;
+            color: #ffffff;
+            border: 1px solid #475569;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55);
+            z-index: 999;
+            transform: translateY(130%);
+            opacity: 0;
+            transition: all 0.28s ease;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        @media print {
+            body { background: #fff !important; }
+            .app-header, .mobile-tabs, .editor-sidebar, .toast, .preview-nav { display: none !important; }
+            .workspace, .preview-stage { display: block !important; padding: 0 !important; height: auto !important; overflow: visible !important; background: #fff !important; }
+            .notebook-wrapper { max-width: 100% !important; }
+            .notebook-sheet { box-shadow: none !important; border: none !important; border-radius: 0 !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="app-header">
+        <div class="brand-wrap">
+            <div class="brand-logo">📓</div>
+            <div>
+                <div class="brand-title">
+                    استوديو الكشكول التعليمي
+                    <span class="badge-v2"> </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="btn btn-emerald" onclick="saveProjectSnapshot()">💾 حفظ المشروع</button>
+            <button class="btn btn-sky" onclick="restoreProjectSnapshot()">↩️ استرجاع آخر نسخة</button>
+            <select id="preset-select" class="form-select" style="width: auto; padding: 6px 10px;" onchange="applyPreset(this.value)">
+                <option value="showcase_v2">✨ نموذج شامل (خطوات + أسهم + أيقونة + كروت)</option>
+                <option value="computer_steps">💻 نموذج: خطوات عمل الكمبيوتر بالأسهم</option>
+                <option value="arabic_grammar">📝 نموذج: المذكر والمؤنث (عربي)</option>
+                <option value="english_phrasal">🔤 نموذج: Phrasal Verbs (إنجليزي)</option>
+            </select>
+
+            <button class="btn btn-emerald" id="btn-export-png" onclick="exportCurrentPagePNG()">
+                <span>🖼️</span>
+                <span>حفظ الصفحة صورة</span>
+            </button>
+
+            <button class="btn btn-rose" id="btn-export-pdf" onclick="exportAllPagesPDF()">
+                <span>📄</span>
+                <span>حفظ الكل PDF</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MOBILE VIEW TABS -->
+    <div class="mobile-tabs">
+        <button class="mobile-tab active" id="tab-editor-btn" onclick="switchMobileView('editor')">✏️ أدوات التعديل والصفحات</button>
+        <button class="mobile-tab" id="tab-preview-btn" onclick="switchMobileView('preview')">👁️ معاينة الكشكول (<span id="mobile-page-badge">1/1</span>)</button>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="workspace">
+
+        <!-- SIDEBAR EDITOR -->
+        <aside class="editor-sidebar" id="editor-panel">
+
+            <!-- 1. MULTI-PAGE MANAGER -->
+            <div class="panel-box" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #475569;">
+                <div class="panel-header">
+                    <span class="panel-title" style="color: #fbbf24;">📑 إدارة الصفحات (<span id="page-counter-text">صفحة 1 من 1</span>)</span>
+                    <div style="display: flex; gap: 5px;">
+                        <button class="btn btn-amber btn-sm" onclick="addNewPage()">+ صفحة</button>
+                        <button class="btn btn-sm" onclick="duplicateCurrentPage()" title="نسخ الصفحة">📋 نسخ</button>
+                        <button class="btn btn-danger btn-sm" id="btn-delete-page" onclick="deleteCurrentPage()" title="حذف الصفحة">🗑️</button>
+                    </div>
+                </div>
+                <div class="page-pills" id="page-pills-container"></div>
+                <div class="grid-2" style="margin-top:9px;">
+                    <button class="btn btn-amber" onclick="setSpecialPreview('cover')">📕 معاينة الغلاف الأمامي</button>
+                    <button class="btn btn-sky" onclick="setSpecialPreview('backCover')">📘 معاينة الغلاف الخلفي</button>
+                </div>
+            </div>
+
+            <!-- COVERS EDITOR -->
+            <div class="panel-box">
+                <span class="panel-title" style="color:#fbbf24;">📚 أغلفة المذكرة</span>
+                <div class="sub-box">
+                    <label class="checkbox-label"><input type="checkbox" id="include-front-cover" checked onchange="updateCoverEnabled('cover',this.checked)"><span>إظهار الغلاف الأمامي في ملف PDF</span></label>
+                    <strong style="display:block;font-size:12px;color:#f8fafc;margin-top:8px;">📕 الغلاف الأمامي</strong>
+                    <label class="form-label" style="margin-top:7px;">صورة الغلاف (تملأ الورقة بالكامل)</label>
+                    <input type="file" accept="image/*" class="form-control" onchange="handleCoverUpload(event,'cover')">
+                    <input type="file" accept="*/*" style="display:none" id="cover-file-fallback" onchange="handleCoverUpload(event,'cover')">
+                    <button class="btn btn-sky btn-sm" style="margin-top:5px;width:100%;" onclick="document.getElementById('cover-file-fallback').click()">📁 استعراض الملفات</button>
+                    <button class="btn btn-danger btn-sm" style="margin-top:6px;" onclick="removeCoverImage('cover')">إزالة صورة الغلاف</button>
+                </div>
+                <div class="sub-box">
+                    <label class="checkbox-label"><input type="checkbox" id="include-back-cover" checked onchange="updateCoverEnabled('backCover',this.checked)"><span>إظهار الغلاف الخلفي في ملف PDF</span></label>
+                    <strong style="display:block;font-size:12px;color:#f8fafc;margin-top:8px;">📘 الغلاف الخلفي</strong>
+                    <label class="form-label" style="margin-top:7px;">صورة الغلاف الخلفي (تملأ الورقة بالكامل)</label>
+                    <input type="file" accept="image/*" class="form-control" onchange="handleCoverUpload(event,'backCover')">
+                    <input type="file" accept="*/*" style="display:none" id="backcover-file-fallback" onchange="handleCoverUpload(event,'backCover')">
+                    <button class="btn btn-sky btn-sm" style="margin-top:5px;width:100%;" onclick="document.getElementById('backcover-file-fallback').click()">📁 استعراض الملفات</button>
+                    <button class="btn btn-danger btn-sm" style="margin-top:6px;" onclick="removeCoverImage('backCover')">إزالة صورة الغلاف الخلفي</button>
+                </div>
+                <div class="cover-mode-note">ارفع صورة جاهزة للغلاف، أو ألغِ التحديد إذا كنت ستصمم الغلاف كصفحة عادية داخل المذكرة.</div>
+            </div>
+
+            <!-- 2. PAPER STYLE & LOGO -->
+            <div class="panel-box">
+                <div class="panel-header">
+                    <span class="panel-title" style="color: #38bdf8;">🎨 شكل الورق والخط واللوجو</span>
+                    <button class="btn btn-sm" onclick="resetStorage()">🔄 الافتراضي</button>
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <label class="form-label">نوع ورق الكشكول</label>
+                        <select id="global-paper" class="form-select" onchange="updateGlobal('paperStyle', this.value)">
+                            <option value="paper-lined">مسطر (كشكول عادي)</option>
+                            <option value="paper-grid">مربعات (رسم بياني)</option>
+                            <option value="paper-dotted">منقّط (Bullet)</option>
+                            <option value="paper-cream">كريمي سادة</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">نوع الخط</label>
+                        <select id="global-font" class="form-select" onchange="updateGlobal('fontFamily', this.value)">
+                            <option value="font-marhey">خط مرح (Marhey - خط يد ✨)</option>
+                            <option value="font-cairo">خط كايرو (Cairo - عصري)</option>
+                            <option value="font-tajawal">خط تجوال (Tajawal - ناعم)</option>
+                            <option value="font-lalezar">خط لاليزار (Lalezar - عريض)</option>
+                            <option value="font-amiri">خط أميري (Amiri - كلاسيكي)</option>
+                            <option value="font-almarai">خط المراعي (Almarai - واضح)</option>
+                            <option value="font-ibm">IBM Plex Arabic</option>
+                            <option value="font-naskh">نسخ عربي (Noto Naskh)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="global-spiral" onchange="updateGlobal('showSpiral', this.checked)">
+                        <span>سلك الكشكول</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="global-margin" onchange="updateGlobal('showMargin', this.checked)">
+                        <span>الهامش الأحمر</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="global-pagenum" onchange="updateGlobal('showPageNumber', this.checked)">
+                        <span>ترقيم الصفحة</span>
+                    </label>
+                </div>
+
+                <!-- Top-Left Logo -->
+                <div class="sub-box">
+                    <div class="panel-header">
+                        <span class="form-label" style="margin: 0; color: #e2e8f0;">🖼️ لوجو أعلى اليسار</span>
+                        <button class="btn btn-danger btn-sm" id="btn-remove-logo" style="display: none;" onclick="removeLogo()">إزالة</button>
+                    </div>
+                    <div class="grid-3">
+                        <div>
+                            <input type="file" id="logo-file-input" accept="image/*" class="form-control" style="padding: 4px; font-size: 10.5px;" onchange="handleLogoUpload(event)">
+                            <input type="file" id="logo-file-fallback" accept="*/*" style="display:none;" onchange="handleLogoUpload(event)">
+                            <button type="button" class="btn btn-sky btn-sm" style="width:100%; margin-top:6px;" onclick="document.getElementById('logo-file-fallback').click()">📁 استعراض الملفات (بديل)</button>
+                        </div>
+                        <div>
+                            <select id="logo-shape" class="form-select" onchange="updateGlobal('logoShape', this.value)">
+                                <option value="circle">دائري</option>
+                                <option value="rounded">مربع ناعم</option>
+                                <option value="noborder">بدون إطار</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select id="logo-size" class="form-select" onchange="updateGlobal('logoSize', Number(this.value))">
+                                <option value="44">صغير (44px)</option>
+                                <option value="62">متوسط (62px)</option>
+                                <option value="84">كبير (84px)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PAGE HEADER & FOOTER -->
+            <div class="panel-box">
+                <span class="panel-title" style="color: #a855f7;">📌 عنوان الصفحة الحالية والتوقيع</span>
+                <div class="grid-2">
+                    <div>
+                        <label class="form-label">شعار أعلى اليمين</label>
+                        <input type="text" id="page-top-tag" class="form-control" oninput="updatePageField('topRightTag', this.value)">
+                    </div>
+                    <div>
+                        <label class="form-label">عنوان تمهيدي صغير</label>
+                        <input type="text" id="page-kicker" class="form-control" oninput="updatePageField('kicker', this.value)">
+                    </div>
+                </div>
+
+                <div class="grid-3">
+                    <div style="grid-column: span 2;">
+                        <label class="form-label">العنوان الرئيسي للصفحة</label>
+                        <input type="text" id="page-title" class="form-control" style="font-weight: 800;" oninput="updatePageField('title', this.value)">
+                    </div>
+                    <div>
+                        <label class="form-label">لون التظليل</label>
+                        <select id="page-highlight" class="form-select" onchange="updatePageField('titleHighlight', this.value)">
+                            <option value="hl-yellow">🟡 أصفر</option>
+                            <option value="hl-pink">🩷 وردي</option>
+                            <option value="hl-green">🟢 أخضر</option>
+                            <option value="hl-blue">🔵 أزرق</option>
+                            <option value="hl-purple">🟣 بنفسجي</option>
+                            <option value="hl-orange">🟠 برتقالي</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">العنوان الفرعي / الوصف</label>
+                    <input type="text" id="page-subtitle" class="form-control" oninput="updatePageField('subtitle', this.value)">
+                </div>
+
+                <div class="grid-2">
+                    <div>
+                        <label class="form-label">التوقيع السفلي (يمين)</label>
+                        <input type="text" id="global-footer-right" class="form-control" oninput="updateGlobal('footerRight', this.value)">
+                    </div>
+                    <div>
+                        <label class="form-label">الوصف السفلي (يسار)</label>
+                        <input type="text" id="global-footer-left" class="form-control" oninput="updateGlobal('footerLeft', this.value)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ADD CONTENT BLOCKS TOOLBAR -->
+            <div class="panel-box">
+                <span class="panel-title" style="color: #10b981;">➕ إضافة أداة جديدة للصفحة</span>
+                <div class="tools-grid">
+                    <button class="tool-btn" onclick="addBlock('section')">
+                        <span style="font-size: 18px;">📝</span>
+                        <span>فقرة شرح وأمثلة</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('steps')">
+                        <span style="font-size: 18px;">🔢</span>
+                        <span>خطوات مرتبة (1..N)</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('cards')">
+                        <span style="font-size: 18px;">🗂️</span>
+                        <span>كروت ملونة (1-4)</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('image')">
+                        <span style="font-size: 18px;">🖼️</span>
+                        <span>صورة + شرح جانبي</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('icon_card')">
+                        <span style="font-size: 18px;">⭐</span>
+                        <span>كارت أيقونة حر</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('arrows')">
+                        <span style="font-size: 18px;">➡️</span>
+                        <span>أسهم توضيحية</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('table')">
+                        <span style="font-size: 18px;">📊</span>
+                        <span>جدول بيانات</span>
+                    </button>
+                    <button class="tool-btn" onclick="addBlock('banner')">
+                        <span style="font-size: 18px;">🎯</span>
+                        <span>شريط هدف / ملاحظة</span>
+                    </button>
+                </div>
+                <div class="sub-box" style="margin-top:9px;">
+                    <strong style="font-size:12px;color:#f8fafc;">🖼️ صفحة صورة كاملة</strong>
+                    <button class="btn btn-sky" style="width:100%;margin-top:7px;" onclick="addFullImagePage()">＋ إضافة صفحة فارغة للصورة</button>
+                    <input type="file" accept="image/*" id="full-page-image-input" style="display:none" onchange="handleFullPageImage(event)">
+                    <button class="btn btn-sm" style="width:100%;margin-top:6px;" onclick="document.getElementById('full-page-image-input').click()">تحميل صورة للصفحة الحالية</button>
+                    <button class="btn btn-danger btn-sm" style="width:100%;margin-top:6px;" onclick="removeFullPageImage()">إزالة صورة الصفحة</button>
+                    <div class="cover-mode-note">الصورة تظهر وحدها وتملأ مساحة الورقة بالكامل دون عناصر أو هوامش.</div>
+                </div>
+            </div>
+
+            <!-- FREE SHAPES TOOL -->
+            <div class="panel-box">
+                <span class="panel-title" style="color:#c084fc;">🔷 الأشكال الحرة داخل الصفحة</span>
+                <div class="tools-grid">
+                    <button class="tool-btn" onclick="addFreeShape('rect')">▭ مستطيل</button>
+                    <button class="tool-btn" onclick="addFreeShape('square')">◻️ مربع</button>
+                    <button class="tool-btn" onclick="addFreeShape('circle')">⚪ دائرة</button>
+                    <button class="tool-btn" onclick="addFreeShape('triangle')">🔺 مثلث</button>
+                    <button class="tool-btn" onclick="addFreeShape('rounded')">▢ مستطيل دائري</button>
+                </div>
+                <div id="free-shapes-editor" style="display:flex;flex-direction:column;gap:8px;margin-top:9px;"></div>
+            </div>
+
+            <!-- 5. ACTIVE BLOCKS EDITORS -->
+            <div style="display: flex; flex-direction: column; gap: 10px;" id="blocks-editor-container"></div>
+
+        </aside>
+
+        <!-- PREVIEW STAGE -->
+        <main class="preview-stage hidden-mobile" id="preview-panel">
+            <!-- Quick Page Navigation -->
+            <div class="preview-nav" style="display: flex; align-items: center; gap: 10px; background: #1e293b; padding: 6px 14px; border-radius: 99px; border: 1px solid #334155;">
+                <button class="btn btn-sm" id="btn-prev-page" onclick="setContentPreview(); goToPage(state.currentPageIndex - 1)">◀ السابقة</button>
+                <span style="font-size: 12.5px; font-weight: 800; color: #f8fafc;" id="preview-nav-label">صفحة 1 من 1</span>
+                <button class="btn btn-sm" id="btn-next-page" onclick="setContentPreview(); goToPage(state.currentPageIndex + 1)">التالية ▶</button>
+            </div>
+
+            <!-- NOTEBOOK SHEET -->
+            <div class="notebook-wrapper">
+                <div id="notebook-sheet" class="notebook-sheet paper-lined font-marhey">
+                    <div class="spiral-column" id="sheet-spiral"></div>
+                    <div class="red-margin" id="sheet-margin"></div>
+                    <div class="special-cover-view" id="special-cover-view"></div>
+                    <div class="free-shapes-layer" id="free-shapes-layer"></div>
+
+                    <div class="sheet-inner" id="sheet-inner">
+                        <!-- Top Row -->
+                        <div class="sheet-top-bar">
+                            <div id="render-top-tag" class="top-right-tag sketch-pill"></div>
+                            <div class="top-left-cluster">
+                                <div id="render-page-badge" class="page-number-badge">Page 1/1</div>
+                                <div id="render-logo-box" class="logo-frame circle" style="display: none; width: 62px; height: 62px;">
+                                    <img id="render-logo-img" src="" alt="Logo">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Header -->
+                        <div class="sheet-header-center">
+                            <div id="render-kicker" class="sheet-kicker"></div>
+                            <div>
+                                <span style="color: #f43f5e; font-weight: 900; font-size: 20px; margin-left: 6px;">ミ</span>
+                                <h1 id="render-title" class="sheet-main-title hl-yellow"></h1>
+                                <span style="color: #f43f5e; font-weight: 900; font-size: 20px; margin-right: 6px;">彡</span>
+                            </div>
+                            <div class="sheet-subtitle-wrap" id="render-subtitle-wrap">
+                                <span id="render-subtitle" class="sheet-subtitle sketch-border"></span>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Blocks -->
+                        <div class="sheet-blocks-list" id="render-blocks-list"></div>
+
+                        <!-- Footer -->
+                        <footer class="sheet-footer">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <span>✍️</span>
+                                <span id="render-footer-right" style="color: #1e1b4b; font-weight: 900;"></span>
+                            </div>
+                            <div id="render-footer-left" style="color: #475569;"></div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"><span id="toast-text">تم بنجاح</span></div>
+
+    <script>
+        /* =====================================================================
+           1. THEMES & PRESETS
+           ===================================================================== */
+        const THEMES = {
+            green:  { label: '🟢 أخضر',   bgClass: 'theme-green-bg',  badgeClass: 'theme-green-badge',  strokeClass: 'theme-green-stroke',  hlClass: 'hl-green' },
+            pink:   { label: '🩷 وردي',   bgClass: 'theme-pink-bg',   badgeClass: 'theme-pink-badge',   strokeClass: 'theme-pink-stroke',   hlClass: 'hl-pink' },
+            yellow: { label: '🟡 أصفر',   bgClass: 'theme-yellow-bg', badgeClass: 'theme-yellow-badge', strokeClass: 'theme-yellow-stroke', hlClass: 'hl-yellow' },
+            blue:   { label: '🔵 أزرق',   bgClass: 'theme-blue-bg',   badgeClass: 'theme-blue-badge',   strokeClass: 'theme-blue-stroke',   hlClass: 'hl-blue' },
+            purple: { label: '🟣 بنفسجي', bgClass: 'theme-purple-bg', badgeClass: 'theme-purple-badge', strokeClass: 'theme-purple-stroke', hlClass: 'hl-purple' },
+            orange: { label: '🟠 برتقالي', bgClass: 'theme-orange-bg', badgeClass: 'theme-orange-badge', strokeClass: 'theme-orange-stroke', hlClass: 'hl-orange' }
+        };
+
+        const PRESETS = {
+            showcase_v2: {
+                global: {
+                    paperStyle: 'paper-lined',
+                    fontFamily: 'font-marhey',
+                    showSpiral: true,
+                    showMargin: true,
+                    showPageNumber: true,
+                    logoDataUrl: '',
+                    logoShape: 'circle',
+                    logoSize: 62,
+                    footerRight: 'تصميم م. على عادل مروان',
+                    footerLeft: 'خطوات صغيرة نحو النجاح ⭐'
+                },
+                currentPageIndex: 0,
+                pages: [
+                    {
+                        id: 'p_show_1',
+                        topRightTag: 'اسئلة الجهاز المركزى للتنظيم والإدارة ✨',
+                        kicker: 'كيف تتعلم أي مهارة جديدة بنجاح؟',
+                        title: 'خطوات التعلم الذكي الفعّال',
+                        titleHighlight: 'hl-yellow',
+                        subtitle: 'منهجية عملية من 3 خطوات مرتبة لتثبيت المعلومات',
+                        blocks: [
+                            {
+                                id: 'blk_steps_1',
+                                type: 'steps',
+                                heading: 'مسار الفهم والتطبيق:',
+                                showArrows: true,
+                                items: [
+                                    { id: 'st1', title: 'فهم الفكرة الأساسية (Understand)', desc: 'اقرأ الدرس بتركيز واربط المعلومات الجديدة بما تعرفه مسبقاً.', color: 'blue' },
+                                    { id: 'st2', title: 'التلخيص بالرسوم والكروت (Summarize)', desc: 'حوّل الفقرات الطويلة إلى نقاط مرقمة وألوان تسهل على العين تذكرها.', color: 'green' },
+                                    { id: 'st3', title: 'التطبيق وحل التمارين (Practice)', desc: 'اختبر نفسك بأمثلة عملية مباشرة لتثبيت المعلومة في الذاكرة طويلة المدى.', color: 'purple' }
+                                ]
+                            },
+                            {
+                                id: 'blk_arrow_1',
+                                type: 'arrows',
+                                style: 'flow',
+                                color: 'pink',
+                                fromText: 'المذاكرة المنظمة',
+                                label: 'تؤدي دائماً إلى ➔',
+                                toText: 'التفوق والثقة بالنفس 🏆'
+                            },
+                            {
+                                id: 'blk_icon_1',
+                                type: 'icon_card',
+                                icon: '💡',
+                                iconSize: 44,
+                                label: 'نصيحة ذهبية',
+                                color: 'yellow',
+                                align: 'right',
+                                sideTitle: 'قاعدة الـ 20 دقيقة:',
+                                sideText: 'مراجعة الدرس لمدة 20 دقيقة في نفس اليوم ترفع نسبة التذكر لأكثر من 85%!'
+                            }
+                        ]
+                    },
+                    {
+                        id: 'p_show_2',
+                        topRightTag: 'الصفحة الثانية: الجداول والكروت 📊',
+                        kicker: 'مقارنة سريعة ومنظمة:',
+                        title: 'أدوات عرض البيانات في الكشكول',
+                        titleHighlight: 'hl-blue',
+                        subtitle: 'متى نستخدم الجداول ومتى نستخدم الكروت الملونة؟',
+                        blocks: [
+                            {
+                                id: 'blk_cards_2',
+                                type: 'cards',
+                                columns: 3,
+                                cards: [
+                                    { id: 'c1', icon: '🗂️', title: 'الكروت الملونة', body: 'مثالية لتقسيم المفاهيم المتوازية (2 أو 3 أو 4 عناصر).', color: 'green' },
+                                    { id: 'c2', icon: '📊', title: 'الجداول المرسومة', body: 'ممتازة للمقارنة المباشرة بين الأرقام والتعريفات.', color: 'blue' },
+                                    { id: 'c3', icon: '🖼️', title: 'الصور التوضيحية', body: 'توضع يمين أو يسار الشرح لتقريب المعنى بصرياً.', color: 'orange' }
+                                ]
+                            },
+                            {
+                                id: 'blk_tbl_2',
+                                type: 'table',
+                                headerColor: 'purple',
+                                headers: ['الأداة', 'الاستخدام الأفضل', 'النتيجة البصرية'],
+                                rows: [
+                                    ['الخطوات المرتبة', 'شرح المراحل المتسلسلة (1، 2، 3)', 'وضوح الترتيب المنطقي'],
+                                    ['الأسهم التوضيحية', 'الربط بين السبب والنتيجة', 'تتبع سهل لحركة الفكرة'],
+                                    ['الشرح بجانب الصورة', 'استغلال مساحة الورقة بذكاء', 'توازن بين النص والرسم']
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            computer_steps: {
+                global: {
+                    paperStyle: 'paper-grid',
+                    fontFamily: 'font-cairo',
+                    showSpiral: true,
+                    showMargin: false,
+                    showPageNumber: true,
+                    logoDataUrl: '',
+                    logoShape: 'rounded',
+                    logoSize: 62,
+                    footerRight: 'تصميم م. على عادل مروان',
+                    footerLeft: 'خطوات صغيرة نحو النجاح'
+                },
+                currentPageIndex: 0,
+                pages: [
+                    {
+                        id: 'pc1',
+                        topRightTag: 'أسئلة الجهاز المركزى للتنظيم والإدارة 💻',
+                        kicker: 'من ضغطة زر... لنتيجة قدامك:',
+                        title: 'كيف يعمل الكمبيوتر؟ (How a Computer Works)',
+                        titleHighlight: 'hl-blue',
+                        subtitle: 'دورة معالجة البيانات في 4 مراحل متتالية',
+                        blocks: [
+                            {
+                                id: 'bcs1',
+                                type: 'steps',
+                                heading: 'مراحل معالجة البيانات بالترتيب:',
+                                showArrows: true,
+                                items: [
+                                    { id: 's1', title: '1. الإدخال (Input)', desc: 'إدخال البيانات والأوامر للجهاز عبر الكيبورد أو الماوس.', color: 'blue' },
+                                    { id: 's2', title: '2. المعالجة (Processing)', desc: 'يقوم المعالج (CPU) بتحليل البيانات وتنفيذ العمليات الحسابية.', color: 'yellow' },
+                                    { id: 's3', title: '3. الإخراج (Output)', desc: 'عرض النتيجة النهائية على الشاشة أو عبر السماعات.', color: 'green' },
+                                    { id: 's4', title: '4. التخزين (Storage)', desc: 'حفظ الملفات على القرص الصلب للرجوع إليها لاحقاً.', color: 'pink' }
+                                ]
+                            },
+                            {
+                                id: 'bcs2',
+                                type: 'arrows',
+                                style: 'flow',
+                                color: 'green',
+                                fromText: 'تكتب 2 + 3',
+                                label: 'CPU يعالجها',
+                                toText: 'تظهر النتيجة 5'
+                            }
+                        ]
+                    }
+                ]
+            },
+            arabic_grammar: {
+                global: {
+                    paperStyle: 'paper-lined',
+                    fontFamily: 'font-marhey',
+                    showSpiral: true,
+                    showMargin: true,
+                    showPageNumber: true,
+                    logoDataUrl: '',
+                    logoShape: 'circle',
+                    logoSize: 62,
+                    footerRight: 'أكاديمية اللغة العربية',
+                    footerLeft: 'خطوات صغيرة نحو التميز ⭐'
+                },
+                currentPageIndex: 0,
+                pages: [
+                    {
+                        id: 'pa1',
+                        topRightTag: 'اللغة العربية أسهل ❤️',
+                        kicker: 'درس خاص ومبسط:',
+                        title: 'المذكر والمؤنث في اللغة العربية',
+                        titleHighlight: 'hl-green',
+                        subtitle: 'الفرق بين المذكر والمؤنث وعلامات التأنيث الأساسية',
+                        blocks: [
+                            {
+                                id: 'ba1',
+                                type: 'section',
+                                badge: '1',
+                                color: 'green',
+                                title: 'المذكر (Masculine)',
+                                description: 'يستخدم للذكور أو الأشياء التي تعامل كمذكر.',
+                                exampleLabel: 'مثال:',
+                                examples: ['أسماء الأشخاص: محمد، رجل', 'أسماء الأشياء: قمر، قلم']
+                            },
+                            {
+                                id: 'ba2',
+                                type: 'section',
+                                badge: '2',
+                                color: 'pink',
+                                title: 'المؤنث (Feminine)',
+                                description: 'يستخدم للإناث أو الأشياء التي تعامل كمؤنث.',
+                                exampleLabel: 'مثال:',
+                                examples: ['أسماء الأشخاص: عائشة، امرأة', 'أسماء الأشياء: شمس، مدرسة']
+                            },
+                            {
+                                id: 'ba3',
+                                type: 'cards',
+                                columns: 2,
+                                cards: [
+                                    { id: 'ca1', icon: '🍎', title: 'التاء المربوطة (ة)', body: 'تفاحة ، زهرة ، حديقة', color: 'purple' },
+                                    { id: 'ca2', icon: '🏥', title: 'الألف المقصورة (ى)', body: 'سلوى ، مستشفى ، كبرى', color: 'orange' }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            english_phrasal: {
+                global: {
+                    paperStyle: 'paper-lined',
+                    fontFamily: 'font-marhey',
+                    showSpiral: true,
+                    showMargin: true,
+                    showPageNumber: true,
+                    logoDataUrl: '',
+                    logoShape: 'circle',
+                    logoSize: 62,
+                    footerRight: 'مايسترو اللغة الإنجليزية',
+                    footerLeft: 'Better English, Brighter Future'
+                },
+                currentPageIndex: 0,
+                pages: [
+                    {
+                        id: 'pe1',
+                        topRightTag: 'Better English ❤️',
+                        kicker: 'أفعال مركبة تستخدم في الحياة اليومية',
+                        title: 'Phrasal Verbs for Everyday Life',
+                        titleHighlight: 'hl-yellow',
+                        subtitle: 'Verb + Particle = New Meaning',
+                        blocks: [
+                            {
+                                id: 'be1',
+                                type: 'cards',
+                                columns: 3,
+                                cards: [
+                                    { id: 'cp1', icon: '🔍', title: '1. Look up', body: 'يبحث عن معلومة\nI look up new words.', color: 'blue' },
+                                    { id: 'cp2', icon: '🕵️', title: '2. Find out', body: 'يكتشف الحقيقة\nLet’s find out the answer.', color: 'green' },
+                                    { id: 'cp3', icon: '🏔️', title: '3. Give up', body: 'يستسلم\nNever give up on your dream.', color: 'purple' },
+                                    { id: 'cp4', icon: '⏰', title: '4. Put off', body: 'يؤجل\nDon’t put off your homework.', color: 'orange' },
+                                    { id: 'cp5', icon: '👋', title: '5. Run into', body: 'يقابل بالصدفة\nI ran into my teacher.', color: 'pink' },
+                                    { id: 'cp6', icon: '📚', title: '6. Carry on', body: 'يستمر\nCarry on with your work.', color: 'yellow' }
+                                ]
+                            },
+                            {
+                                id: 'be2',
+                                type: 'banner',
+                                color: 'blue',
+                                icon: '🎯',
+                                text: 'Remember: لا تعتمد على المعنى الحرفي للكلمات (give up ≠ give + up)'
+                            }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let state = null;
+
+        /* =====================================================================
+           2. INIT & STORAGE
+           ===================================================================== */
+        function initApp() {
+            generateSpiralRings();
+            const saved = localStorage.getItem('notebook_studio_pro_v3');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                    if (!state || !Array.isArray(state.pages) || state.pages.length === 0) throw new Error();
+                } catch (e) {
+                    state = JSON.parse(JSON.stringify(PRESETS.showcase_v2));
+                }
+            } else {
+                state = JSON.parse(JSON.stringify(PRESETS.showcase_v2));
+            }
+            ensureExtendedState();
+            syncFormWithState();
+            renderAll();
+        }
+
+        function ensureExtendedState() {
+            if (!state.cover) state.cover = { image:'', bg:'#fef3c7', enabled:true };
+            if (!state.backCover) state.backCover = { image:'', bg:'#e0f2fe', enabled:true };
+            if (state.cover.enabled === undefined) state.cover.enabled = true;
+            if (state.backCover.enabled === undefined) state.backCover.enabled = true;
+            state.pages.forEach(pg => { if (!Array.isArray(pg.freeShapes)) pg.freeShapes = []; });
+            if (!state.previewMode) state.previewMode = 'content';
+        }
+
+        function saveState() {
+            try { localStorage.setItem('notebook_studio_pro_v3', JSON.stringify(state)); }
+            catch (e) { console.warn('تعذر الحفظ التلقائي؛ قد تكون مساحة التخزين ممتلئة', e); }
+        }
+
+        function openProjectBackupDB() {
+            return new Promise((resolve, reject) => {
+                if (!('indexedDB' in window)) return reject(new Error('IndexedDB غير متاح'));
+                const request = indexedDB.open('NotebookStudioBackups', 1);
+                request.onupgradeneeded = () => { if (!request.result.objectStoreNames.contains('projects')) request.result.createObjectStore('projects'); };
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        async function saveProjectSnapshot() {
+            try {
+                const db = await openProjectBackupDB();
+                await new Promise((resolve, reject) => {
+                    const tx = db.transaction('projects', 'readwrite');
+                    tx.objectStore('projects').put(JSON.stringify(state), 'lastProject');
+                    tx.oncomplete = resolve; tx.onerror = () => reject(tx.error);
+                });
+                db.close();
+                showToast('💾 تم حفظ نسخة كاملة من المشروع على هذا الجهاز');
+            } catch (e) {
+                try { localStorage.setItem('notebook_studio_last_project_v1', JSON.stringify(state)); showToast('💾 تم حفظ نسخة احتياطية في ذاكرة المتصفح'); }
+                catch (err) { showToast('⚠️ تعذر الحفظ؛ مساحة التخزين غير كافية.'); }
+            }
+        }
+
+        async function restoreProjectSnapshot() {
+            let saved = null;
+            try {
+                const db = await openProjectBackupDB();
+                saved = await new Promise((resolve, reject) => {
+                    const tx = db.transaction('projects', 'readonly');
+                    const request = tx.objectStore('projects').get('lastProject');
+                    request.onsuccess = () => resolve(request.result || null); request.onerror = () => reject(request.error);
+                });
+                db.close();
+            } catch (e) {}
+            saved = saved || localStorage.getItem('notebook_studio_last_project_v1') || localStorage.getItem('notebook_studio_pro_v3');
+            if (!saved) { showToast('لا توجد نسخة محفوظة لاسترجاعها بعد'); return; }
+            try {
+                const restored = typeof saved === 'string' ? JSON.parse(saved) : saved;
+                if (!restored || !Array.isArray(restored.pages) || !restored.pages.length) throw new Error('نسخة غير صالحة');
+                state = restored; ensureExtendedState(); saveState(); syncFormWithState(); renderAll();
+                showToast('↩️ تم استرجاع آخر نسخة محفوظة بالكامل');
+            } catch (e) { showToast('⚠️ تعذر قراءة النسخة المحفوظة'); }
+        }
+
+        window.addEventListener('beforeunload', () => { if (state) saveState(); });
+
+        function applyPreset(key) {
+            if (!PRESETS[key]) return;
+            const logo = state?.global?.logoDataUrl || '';
+            state = JSON.parse(JSON.stringify(PRESETS[key]));
+            ensureExtendedState();
+            if (logo) state.global.logoDataUrl = logo;
+            saveState();
+            syncFormWithState();
+            renderAll();
+            showToast('✅ تم تحميل القالب بنجاح');
+        }
+
+        function resetStorage() {
+            localStorage.removeItem('notebook_studio_pro_v3');
+            state = JSON.parse(JSON.stringify(PRESETS.showcase_v2));
+            ensureExtendedState();
+            syncFormWithState();
+            renderAll();
+            showToast('🔄 تمت استعادة القالب الافتراضي');
+        }
+
+        function getCurrentPage() {
+            if (state.currentPageIndex >= state.pages.length) {
+                state.currentPageIndex = Math.max(0, state.pages.length - 1);
+            }
+            return state.pages[state.currentPageIndex];
+        }
+
+        /* =====================================================================
+           3. MULTI-PAGE MANAGEMENT
+           ===================================================================== */
+        function addNewPage() {
+            state.previewMode = 'content';
+            const num = state.pages.length + 1;
+            state.pages.push({
+                id: 'p_' + Date.now(),
+                topRightTag: `صفحة رقم ${num} ✨`,
+                kicker: 'عنوان تمهيدي:',
+                title: `عنوان الصفحة رقم ${num}`,
+                titleHighlight: 'hl-blue',
+                subtitle: 'وصف مختصر لمحتوى هذه الصفحة',
+                blocks: [
+                    {
+                        id: 'b_' + Date.now(),
+                        type: 'steps',
+                        heading: 'الخطوات الأساسية:',
+                        showArrows: true,
+                        items: [
+                            { id: 's_' + Date.now() + '1', title: 'الخطوة الأولى', desc: 'اكتب شرح الخطوة الأولى هنا.', color: 'blue' },
+                            { id: 's_' + Date.now() + '2', title: 'الخطوة الثانية', desc: 'اكتب شرح الخطوة الثانية هنا.', color: 'green' }
+                        ]
+                    }
+                ]
+            });
+            state.currentPageIndex = state.pages.length - 1;
+            saveState();
+            syncFormWithState();
+            renderAll();
+            showToast(`📑 تم إضافة الصفحة ${num}`);
+        }
+
+        function duplicateCurrentPage() {
+            state.previewMode = 'content';
+            const copy = JSON.parse(JSON.stringify(getCurrentPage()));
+            copy.id = 'p_' + Date.now();
+            copy.title += ' (نسخة)';
+            state.pages.splice(state.currentPageIndex + 1, 0, copy);
+            state.currentPageIndex += 1;
+            saveState();
+            syncFormWithState();
+            renderAll();
+            showToast('📋 تم نسخ الصفحة');
+        }
+
+        function deleteCurrentPage() {
+            state.previewMode = 'content';
+            if (state.pages.length <= 1) {
+                showToast('⚠️ لا يمكن حذف الصفحة الوحيدة');
+                return;
+            }
+            state.pages.splice(state.currentPageIndex, 1);
+            if (state.currentPageIndex >= state.pages.length) state.currentPageIndex = state.pages.length - 1;
+            saveState();
+            syncFormWithState();
+            renderAll();
+            showToast('🗑️ تم حذف الصفحة');
+        }
+
+        function goToPage(idx) {
+            if (idx < 0 || idx >= state.pages.length) return;
+            state.previewMode = 'content';
+            state.currentPageIndex = idx;
+            saveState();
+            syncFormWithState();
+            renderAll();
+        }
+
+        function setSpecialPreview(mode) {
+            state.previewMode = mode;
+            renderNotebookSheet();
+            if (window.innerWidth <= 1023) switchMobileView('preview');
+            const label = mode === 'cover' ? 'الغلاف الأمامي' : 'الغلاف الخلفي';
+            document.getElementById('preview-nav-label').textContent = `معاينة ${label}`;
+            showToast(`👁️ معاينة ${label}`);
+        }
+
+        function setContentPreview() {
+            state.previewMode = 'content';
+            renderNotebookSheet();
+        }
+
+        function updateCoverEnabled(which, enabled) {
+            ensureExtendedState(); state[which].enabled = !!enabled; saveState();
+        }
+
+        function addFullImagePage() {
+            const n = state.pages.length + 1;
+            state.pages.push({ id:'image_page_' + Date.now(), topRightTag:'', kicker:'', title:'', titleHighlight:'hl-blue', subtitle:'', blocks:[], freeShapes:[], fullPageImage:'' });
+            state.currentPageIndex = state.pages.length - 1; state.previewMode = 'content';
+            saveState(); syncFormWithState(); renderAll();
+            document.getElementById('full-page-image-input').click();
+            showToast(`🖼️ تمت إضافة صفحة فارغة رقم ${n} — اختر صورتها`);
+        }
+
+        function handleFullPageImage(event) {
+            const file = event.target.files && event.target.files[0]; if (!file) return;
+            readImageFile(file, dataUrl => { getCurrentPage().fullPageImage = dataUrl; saveState(); renderNotebookSheet(); showToast('🖼️ تم وضع الصورة على كامل الصفحة'); });
+            event.target.value = '';
+        }
+
+        function removeFullPageImage() {
+            getCurrentPage().fullPageImage = ''; saveState(); renderNotebookSheet(); showToast('تمت إزالة صورة الصفحة');
+        }
+
+        function updateCoverField(which, key, value) {
+            ensureExtendedState();
+            state[which][key] = value;
+            saveState();
+            if (state.previewMode === which) renderNotebookSheet();
+        }
+
+        function handleCoverUpload(event, which) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            readImageFile(file, dataUrl => {
+                state[which].image = dataUrl;
+                saveState();
+                if (which === 'cover') setSpecialPreview('cover'); else setSpecialPreview('backCover');
+                showToast('🖼️ تم تحميل صورة الغلاف');
+            });
+            event.target.value = '';
+        }
+
+        function removeCoverImage(which) {
+            state[which].image = '';
+            saveState();
+            renderNotebookSheet();
+            showToast('تمت إزالة صورة الغلاف');
+        }
+
+        function addFreeShape(type) {
+            const p = getCurrentPage();
+            if (!Array.isArray(p.freeShapes)) p.freeShapes = [];
+            const n = p.freeShapes.length + 1;
+            const isSquare = type === 'square';
+            p.freeShapes.push({ id:'shape_' + Date.now(), type:type === 'square' ? 'rect' : type, x:12 + (n%4)*4, y:20 + (n%5)*5, w:isSquare?18:28, h:isSquare?13.8:18, bg:'#fde68a', border:'#334155', color:'#111827', text:'اكتب هنا', fontSize:18, image:'', imageW:100, imageH:65, imageFit:'contain', imagePosition:'center' });
+            state.previewMode = 'content';
+            saveState(); renderAll();
+            showToast('🔷 تمت إضافة الشكل — اسحبه لمكانه داخل الورقة');
+        }
+
+        function updateFreeShape(index, key, value) {
+            const p = getCurrentPage();
+            if (!p.freeShapes || !p.freeShapes[index]) return;
+            p.freeShapes[index][key] = value;
+            saveState(); renderFreeShapes();
+        }
+
+        function deleteFreeShape(index) {
+            getCurrentPage().freeShapes.splice(index,1);
+            saveState(); renderBlocksEditor(); renderFreeShapes();
+        }
+
+        function handleFreeShapeImage(event, index) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            readImageFile(file, dataUrl => updateFreeShape(index,'image',dataUrl));
+            event.target.value = '';
+        }
+
+        function renderFreeShapes() {
+            const layer = document.getElementById('free-shapes-layer');
+            if (!layer) return;
+            const p = getCurrentPage();
+            layer.innerHTML = (p.freeShapes || []).map((sh, i) => {
+                const shapeClass = sh.type === 'circle' ? 'circle' : sh.type === 'triangle' ? 'triangle' : sh.type === 'rounded' ? 'rounded' : 'rect';
+                const style = `left:${sh.x}%;top:${sh.y}%;width:${sh.w}%;height:${sh.h}%;background:${sh.type==='triangle'?'transparent':sh.bg};border-color:${sh.border};color:${sh.color};font-size:${sh.fontSize||18}px;--shape-bg:${sh.bg};`;
+                return `<div class="free-shape ${shapeClass}" data-shape-index="${i}" style="${style}" onpointerdown="startShapeDrag(event,${i})"><div class="shape-content">${sh.image?`<img src="${sh.image}" alt="" style="width:${sh.imageW||100}%;height:${sh.imageH||65}%;object-fit:${sh.imageFit||'contain'};object-position:center ${sh.imagePosition||'center'};">`:''}<span>${esc(sh.text||'')}</span></div><span class="shape-resize" onpointerdown="startShapeResize(event,${i})"></span></div>`;
+            }).join('');
+        }
+
+        let activeShapePointer = null;
+        function startShapeDrag(event, index) {
+            if (event.target.classList.contains('shape-resize')) return;
+            if (state.previewMode !== 'content') return;
+            event.preventDefault();
+            const shape = getCurrentPage().freeShapes[index];
+            const sheet = document.getElementById('notebook-sheet').getBoundingClientRect();
+            activeShapePointer = { index, mode:'move', startX:event.clientX, startY:event.clientY, x:shape.x, y:shape.y, sheetW:sheet.width, sheetH:sheet.height };
+            document.addEventListener('pointermove', moveActiveShape);
+            document.addEventListener('pointerup', stopActiveShape, {once:true});
+        }
+        function startShapeResize(event, index) {
+            event.preventDefault(); event.stopPropagation();
+            const shape = getCurrentPage().freeShapes[index];
+            const sheet = document.getElementById('notebook-sheet').getBoundingClientRect();
+            activeShapePointer = { index, mode:'resize', startX:event.clientX, startY:event.clientY, w:shape.w, h:shape.h, sheetW:sheet.width, sheetH:sheet.height };
+            document.addEventListener('pointermove', moveActiveShape);
+            document.addEventListener('pointerup', stopActiveShape, {once:true});
+        }
+        function moveActiveShape(event) {
+            if (!activeShapePointer) return;
+            const a = activeShapePointer, sh = getCurrentPage().freeShapes[a.index];
+            const dx = (event.clientX-a.startX)/a.sheetW*100, dy=(event.clientY-a.startY)/a.sheetH*100;
+            if (a.mode === 'move') { sh.x=Math.max(0,Math.min(95,a.x+dx)); sh.y=Math.max(0,Math.min(95,a.y+dy)); }
+            else { sh.w=Math.max(8,Math.min(100-a.x,a.w+dx)); sh.h=Math.max(6,Math.min(100-a.y,a.h+dy)); }
+            renderFreeShapes();
+        }
+        function stopActiveShape() { if(activeShapePointer){ saveState(); activeShapePointer=null; } document.removeEventListener('pointermove',moveActiveShape); }
+
+        /* =====================================================================
+           4. FORM SYNC & GLOBAL UPDATES
+           ===================================================================== */
+        function syncFormWithState() {
+            const g = state.global;
+            const p = getCurrentPage();
+
+            document.getElementById('global-paper').value = g.paperStyle;
+            document.getElementById('global-font').value = g.fontFamily;
+            document.getElementById('global-spiral').checked = g.showSpiral;
+            document.getElementById('global-margin').checked = g.showMargin;
+            document.getElementById('global-pagenum').checked = g.showPageNumber;
+            document.getElementById('logo-shape').value = g.logoShape || 'circle';
+            document.getElementById('logo-size').value = g.logoSize || 62;
+            document.getElementById('btn-remove-logo').style.display = g.logoDataUrl ? 'inline-flex' : 'none';
+
+            document.getElementById('global-footer-right').value = g.footerRight || '';
+            document.getElementById('global-footer-left').value = g.footerLeft || '';
+
+            document.getElementById('page-top-tag').value = p.topRightTag || '';
+            document.getElementById('page-kicker').value = p.kicker || '';
+            document.getElementById('page-title').value = p.title || '';
+            document.getElementById('page-highlight').value = p.titleHighlight || 'hl-yellow';
+            document.getElementById('page-subtitle').value = p.subtitle || '';
+            ensureExtendedState();
+            document.getElementById('include-front-cover').checked = state.cover.enabled !== false;
+            document.getElementById('include-back-cover').checked = state.backCover.enabled !== false;
+        }
+
+        function updateGlobal(key, val) {
+            state.global[key] = val;
+            saveState();
+            renderNotebookSheet();
+        }
+
+        function updatePageField(key, val) {
+            getCurrentPage()[key] = val;
+            saveState();
+            renderNotebookSheet();
+        }
+
+        function isSupportedImageFile(file) {
+            if (!file) return false;
+            const imageMime = typeof file.type === 'string' && file.type.startsWith('image/');
+            const imageExtension = /\.(png|jpe?g|gif|webp|bmp|heic|heif|avif)$/i.test(file.name || '');
+            return imageMime || imageExtension;
+        }
+
+        function readImageFile(file, onLoaded) {
+            if (!isSupportedImageFile(file)) {
+                showToast('⚠️ اختَر ملف صورة فقط (JPG أو PNG أو WEBP)');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (typeof e.target.result !== 'string') {
+                    showToast('تعذر قراءة الصورة، جرّب ملفاً آخر');
+                    return;
+                }
+                onLoaded(e.target.result);
+            };
+            reader.onerror = function() { showToast('تعذر فتح الصورة من الجهاز'); };
+            reader.readAsDataURL(file);
+        }
+
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            readImageFile(file, function(dataUrl) {
+                state.global.logoDataUrl = dataUrl;
+                document.getElementById('btn-remove-logo').style.display = 'inline-flex';
+                saveState();
+                renderNotebookSheet();
+                showToast('🖼️ تم رفع اللوجو');
+            });
+            event.target.value = '';
+        }
+
+        function removeLogo() {
+            state.global.logoDataUrl = '';
+            document.getElementById('logo-file-input').value = '';
+            document.getElementById('btn-remove-logo').style.display = 'none';
+            saveState();
+            renderNotebookSheet();
+        }
+
+        /* =====================================================================
+           5. CONTENT BLOCKS CRUD
+           ===================================================================== */
+        function addBlock(type) {
+            const p = getCurrentPage();
+            const uid = 'blk_' + Date.now();
+            let blk = null;
+
+            if (type === 'section') {
+                blk = {
+                    id: uid,
+                    type: 'section',
+                    badge: String(p.blocks.filter(b => b.type === 'section').length + 1),
+                    color: 'green',
+                    title: 'عنوان الفقرة الجديدة',
+                    description: 'اكتب هنا الشرح أو القاعدة بأسلوب واضح ومبسط.',
+                    exampleLabel: 'مثال:',
+                    examples: ['المثال الأول يكتب هنا', 'المثال الثاني يكتب هنا']
+                };
+            } else if (type === 'steps') {
+                blk = {
+                    id: uid,
+                    type: 'steps',
+                    heading: 'خطوات مرتبة:',
+                    showArrows: true,
+                    items: [
+                        { id: 'st_' + Date.now() + '1', title: 'الخطوة الأولى', desc: 'تفاصيل الخطوة الأولى تكتب هنا.', color: 'blue' },
+                        { id: 'st_' + Date.now() + '2', title: 'الخطوة الثانية', desc: 'تفاصيل الخطوة الثانية تكتب هنا.', color: 'green' },
+                        { id: 'st_' + Date.now() + '3', title: 'الخطوة الثالثة', desc: 'تفاصيل الخطوة الثالثة تكتب هنا.', color: 'purple' }
+                    ]
+                };
+            } else if (type === 'cards') {
+                blk = {
+                    id: uid,
+                    type: 'cards',
+                    columns: 2,
+                    cards: [
+                        { id: 'c_' + Date.now() + '1', icon: '⭐', title: 'الكارت الأول', body: 'محتوى الكارت الأول.', color: 'yellow' },
+                        { id: 'c_' + Date.now() + '2', icon: '💡', title: 'الكارت الثاني', body: 'محتوى الكارت الثاني.', color: 'blue' }
+                    ]
+                };
+            } else if (type === 'image') {
+                blk = {
+                    id: uid,
+                    type: 'image',
+                    dataUrl: '',
+                    widthPercent: 45,
+                    align: 'right',
+                    framed: true,
+                    caption: 'توضيح الصورة',
+                    sideEnabled: true,
+                    sideTitle: 'شرح بجانب الصورة:',
+                    sideText: 'يمكنك كتابة الشرح هنا ليظهر بجانب الصورة مباشرة ويوفر مساحة الصفحة!',
+                    sideColor: 'blue'
+                };
+            } else if (type === 'icon_card') {
+                blk = {
+                    id: uid,
+                    type: 'icon_card',
+                    icon: '🚀',
+                    iconSize: 48,
+                    label: 'معلومة سريعة',
+                    color: 'orange',
+                    align: 'right',
+                    sideTitle: 'ملاحظة هامة بجانب الأيقونة:',
+                    sideText: 'اكتب هنا الشرح أو التنبيه الذي يظهر بجوار كارت الأيقونة.'
+                };
+            } else if (type === 'arrows') {
+                blk = {
+                    id: uid,
+                    type: 'arrows',
+                    style: 'flow',
+                    color: 'pink',
+                    fromText: 'البداية / السبب',
+                    label: 'يؤدي إلى ➔',
+                    toText: 'النتيجة النهائية'
+                };
+            } else if (type === 'table') {
+                blk = {
+                    id: uid,
+                    type: 'table',
+                    headerColor: 'blue',
+                    headers: ['العنصر', 'الشرح', 'مثال'],
+                    rows: [
+                        ['الصف الأول', 'تفاصيل البيان الأول', 'مثال 1'],
+                        ['الصف الثاني', 'تفاصيل البيان الثاني', 'مثال 2']
+                    ]
+                };
+            } else if (type === 'banner') {
+                blk = {
+                    id: uid,
+                    type: 'banner',
+                    color: 'pink',
+                    icon: '🎯',
+                    text: 'الخلاصة: اكتب هنا أهم نقطة يجب تذكرها!'
+                };
+            }
+
+            if (blk) {
+                p.blocks.push(blk);
+                saveState();
+                renderBlocksEditor();
+                renderNotebookSheet();
+                showToast('✅ تمت إضافة الأداة للصفحة');
+            }
+        }
+
+        function deleteBlock(idx) {
+            getCurrentPage().blocks.splice(idx, 1);
+            saveState();
+            renderBlocksEditor();
+            renderNotebookSheet();
+        }
+
+        function moveBlock(idx, dir) {
+            const p = getCurrentPage();
+            const target = idx + dir;
+            if (target < 0 || target >= p.blocks.length) return;
+            const tmp = p.blocks[idx];
+            p.blocks[idx] = p.blocks[target];
+            p.blocks[target] = tmp;
+            saveState();
+            renderBlocksEditor();
+            renderNotebookSheet();
+        }
+
+        function updateBlockProp(idx, prop, val) {
+            getCurrentPage().blocks[idx][prop] = val;
+            saveState();
+            renderNotebookSheet();
+        }
+
+        // Section Examples
+        function addSectionExample(blkIdx) {
+            getCurrentPage().blocks[blkIdx].examples.push('مثال إضافي...');
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function updateSectionExample(blkIdx, exIdx, val) {
+            getCurrentPage().blocks[blkIdx].examples[exIdx] = val;
+            saveState(); renderNotebookSheet();
+        }
+        function removeSectionExample(blkIdx, exIdx) {
+            getCurrentPage().blocks[blkIdx].examples.splice(exIdx, 1);
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+
+        // Ordered Steps Helpers
+        function addStepItem(blkIdx) {
+            const colors = ['blue', 'green', 'purple', 'orange', 'pink', 'yellow'];
+            const items = getCurrentPage().blocks[blkIdx].items;
+            items.push({
+                id: 'st_' + Date.now(),
+                title: `الخطوة رقم ${items.length + 1}`,
+                desc: 'اكتب تفاصيل هذه الخطوة هنا.',
+                color: colors[items.length % colors.length]
+            });
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function updateStepItem(blkIdx, sIdx, prop, val) {
+            getCurrentPage().blocks[blkIdx].items[sIdx][prop] = val;
+            saveState(); renderNotebookSheet();
+        }
+        function removeStepItem(blkIdx, sIdx) {
+            getCurrentPage().blocks[blkIdx].items.splice(sIdx, 1);
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+
+        // Grid Cards Helpers
+        function addCardToGrid(blkIdx) {
+            const colors = ['yellow', 'blue', 'green', 'pink', 'purple', 'orange'];
+            const cards = getCurrentPage().blocks[blkIdx].cards;
+            cards.push({
+                id: 'c_' + Date.now(),
+                icon: '✨',
+                title: `كارت ${cards.length + 1}`,
+                body: 'محتوى الكارت يكتب هنا.',
+                color: colors[cards.length % colors.length]
+            });
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function updateCardProp(blkIdx, cIdx, prop, val) {
+            getCurrentPage().blocks[blkIdx].cards[cIdx][prop] = val;
+            saveState(); renderNotebookSheet();
+        }
+        function removeCardFromGrid(blkIdx, cIdx) {
+            getCurrentPage().blocks[blkIdx].cards.splice(cIdx, 1);
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+
+        // Table Helpers
+        function addTableCol(blkIdx) {
+            const tbl = getCurrentPage().blocks[blkIdx];
+            tbl.headers.push(`عمود ${tbl.headers.length + 1}`);
+            tbl.rows.forEach(r => r.push('بيان'));
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function removeTableCol(blkIdx) {
+            const tbl = getCurrentPage().blocks[blkIdx];
+            if (tbl.headers.length <= 1) return;
+            tbl.headers.pop();
+            tbl.rows.forEach(r => r.pop());
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function addTableRow(blkIdx) {
+            const tbl = getCurrentPage().blocks[blkIdx];
+            tbl.rows.push(new Array(tbl.headers.length).fill('بيان جديد'));
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function removeTableRow(blkIdx, rIdx) {
+            const tbl = getCurrentPage().blocks[blkIdx];
+            if (tbl.rows.length <= 1) return;
+            tbl.rows.splice(rIdx, 1);
+            saveState(); renderBlocksEditor(); renderNotebookSheet();
+        }
+        function updateTableHeader(blkIdx, cIdx, val) {
+            getCurrentPage().blocks[blkIdx].headers[cIdx] = val;
+            saveState(); renderNotebookSheet();
+        }
+        function updateTableCell(blkIdx, rIdx, cIdx, val) {
+            getCurrentPage().blocks[blkIdx].rows[rIdx][cIdx] = val;
+            saveState(); renderNotebookSheet();
+        }
+
+        // Image Upload: supports the gallery picker and the Android file-browser fallback.
+        function handleBlockImageUpload(event, blkIdx) {
+            const file = event.target.files[0];
+            if (!file) return;
+            readImageFile(file, function(dataUrl) {
+                const block = getCurrentPage().blocks[blkIdx];
+                if (!block || block.type !== 'image') return;
+                block.dataUrl = dataUrl;
+                saveState(); renderBlocksEditor(); renderNotebookSheet();
+                showToast('🖼️ تم إدراج الصورة');
+            });
+            event.target.value = '';
+        }
+
+        /* =====================================================================
+           6. RENDER SIDEBAR EDITORS & LIVE NOTEBOOK SHEET
+           ===================================================================== */
+        function renderAll() {
+            renderPageNavigation();
+            renderBlocksEditor();
+            renderNotebookSheet();
+        }
+
+        function renderPageNavigation() {
+            const total = state.pages.length;
+            const curr = state.currentPageIndex + 1;
+            document.getElementById('page-counter-text').textContent = `صفحة ${curr} من ${total}`;
+            if (state.previewMode === 'content') document.getElementById('preview-nav-label').textContent = `صفحة ${curr} من ${total}`;
+            document.getElementById('mobile-page-badge').textContent = `${curr}/${total}`;
+            document.getElementById('btn-delete-page').disabled = total <= 1;
+            document.getElementById('btn-prev-page').disabled = curr <= 1;
+            document.getElementById('btn-next-page').disabled = curr >= total;
+
+            document.getElementById('page-pills-container').innerHTML = state.pages.map((pg, idx) => `
+                <button class="page-pill ${idx === state.currentPageIndex ? 'active' : ''}" onclick="goToPage(${idx})">
+                    صفحة ${idx + 1}
+                </button>
+            `).join('');
+        }
+
+        function colorOptionsHTML(selected) {
+            return Object.keys(THEMES).map(k =>
+                `<option value="${k}" ${selected === k ? 'selected' : ''}>${THEMES[k].label}</option>`
+            ).join('');
+        }
+
+        function getBlockLabel(type, idx) {
+            const labels = {
+                section: '📝 فقرة شرح وأمثلة',
+                steps: '🔢 خطوات مرتبة (1..N)',
+                cards: '🗂️ شبكة كروت ملونة',
+                image: '🖼️ صورة + شرح جانبي',
+                icon_card: '⭐ كارت أيقونة حر',
+                arrows: '➡️ أسهم توضيحية',
+                table: '📊 جدول بيانات',
+                banner: '🎯 شريط هدف / ملاحظة'
+            };
+            return `#${idx + 1} ${labels[type] || type}`;
+        }
+
+        function renderBlocksEditor() {
+            const container = document.getElementById('blocks-editor-container');
+            const p = getCurrentPage();
+
+            if (!p.blocks || p.blocks.length === 0) {
+                container.innerHTML = `<div class="panel-box" style="text-align:center; color:#94a3b8; font-size:12px; padding:22px;">هذه الصفحة فارغة حالياً. أضف أي أداة من الأعلى!</div>`;
+            } else {
+            container.innerHTML = p.blocks.map((blk, idx) => {
+                const topBar = `
+                    <div class="block-card-top">
+                        <span class="block-tag">${getBlockLabel(blk.type, idx)}</span>
+                        <div style="display:flex; gap:4px;">
+                            <button class="btn btn-icon" onclick="moveBlock(${idx}, -1)" ${idx === 0 ? 'disabled' : ''}>⬆️</button>
+                            <button class="btn btn-icon" onclick="moveBlock(${idx}, 1)" ${idx === p.blocks.length - 1 ? 'disabled' : ''}>⬇️</button>
+                            <button class="btn btn-danger btn-icon" onclick="deleteBlock(${idx})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+
+                if (blk.type === 'section') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-3">
+                                <div><label class="form-label">الرقم</label><input type="text" class="form-control" value="${esc(blk.badge)}" oninput="updateBlockProp(${idx}, 'badge', this.value)"></div>
+                                <div><label class="form-label">اللون</label><select class="form-select" onchange="updateBlockProp(${idx}, 'color', this.value)">${colorOptionsHTML(blk.color)}</select></div>
+                                <div><label class="form-label">عنوان الأمثلة</label><input type="text" class="form-control" value="${esc(blk.exampleLabel)}" oninput="updateBlockProp(${idx}, 'exampleLabel', this.value)"></div>
+                            </div>
+                            <div><label class="form-label">عنوان الفقرة</label><input type="text" class="form-control" style="font-weight:700;" value="${esc(blk.title)}" oninput="updateBlockProp(${idx}, 'title', this.value)"></div>
+                            <div><label class="form-label">الشرح</label><textarea rows="2" class="form-control" oninput="updateBlockProp(${idx}, 'description', this.value)">${esc(blk.description)}</textarea></div>
+                            <div class="sub-box">
+                                <div class="panel-header">
+                                    <span class="form-label" style="margin:0;">الأمثلة</span>
+                                    <button class="btn btn-emerald btn-sm" onclick="addSectionExample(${idx})">+ مثال</button>
+                                </div>
+                                ${blk.examples.map((ex, exIdx) => `
+                                    <div style="display:flex; gap:5px;">
+                                        <input type="text" class="form-control" value="${esc(ex)}" oninput="updateSectionExample(${idx}, ${exIdx}, this.value)">
+                                        <button class="btn btn-danger btn-icon" onclick="removeSectionExample(${idx}, ${exIdx})">✕</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'steps') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">عنوان مجموعة الخطوات</label>
+                                    <input type="text" class="form-control" value="${esc(blk.heading)}" oninput="updateBlockProp(${idx}, 'heading', this.value)">
+                                </div>
+                                <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:6px;">
+                                    <label class="checkbox-label" style="padding-bottom:6px;">
+                                        <input type="checkbox" ${blk.showArrows ? 'checked' : ''} onchange="updateBlockProp(${idx}, 'showArrows', this.checked)">
+                                        <span>أسهم بين الخطوات</span>
+                                    </label>
+                                    <button class="btn btn-emerald btn-sm" onclick="addStepItem(${idx})">+ خطوة</button>
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:7px;">
+                                ${blk.items.map((st, sIdx) => `
+                                    <div class="sub-box">
+                                        <div class="panel-header">
+                                            <span style="font-size:11px; font-weight:800; color:#38bdf8;">خطوة #${sIdx + 1}</span>
+                                            <button class="btn btn-danger btn-icon" onclick="removeStepItem(${idx}, ${sIdx})">✕</button>
+                                        </div>
+                                        <div class="grid-3">
+                                            <div>
+                                                <select class="form-select" onchange="updateStepItem(${idx}, ${sIdx}, 'color', this.value)">${colorOptionsHTML(st.color)}</select>
+                                            </div>
+                                            <div style="grid-column: span 2;">
+                                                <input type="text" class="form-control" style="font-weight:700;" value="${esc(st.title)}" placeholder="عنوان الخطوة" oninput="updateStepItem(${idx}, ${sIdx}, 'title', this.value)">
+                                            </div>
+                                        </div>
+                                        <textarea rows="2" class="form-control" placeholder="شرح الخطوة..." oninput="updateStepItem(${idx}, ${sIdx}, 'desc', this.value)">${esc(st.desc)}</textarea>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'cards') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">عدد الكروت في الصف</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'columns', Number(this.value))">
+                                        <option value="1" ${blk.columns === 1 ? 'selected' : ''}>1 كارت في الصف</option>
+                                        <option value="2" ${blk.columns === 2 ? 'selected' : ''}>2 كارت في الصف</option>
+                                        <option value="3" ${blk.columns === 3 ? 'selected' : ''}>3 كروت في الصف</option>
+                                        <option value="4" ${blk.columns === 4 ? 'selected' : ''}>4 كروت في الصف</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex; align-items:flex-end;">
+                                    <button class="btn btn-emerald" style="width:100%;" onclick="addCardToGrid(${idx})">+ إضافة كارت</button>
+                                </div>
+                            </div>
+                            ${blk.cards.map((c, cIdx) => `
+                                <div class="sub-box">
+                                    <div class="panel-header">
+                                        <span style="font-size:11px; font-weight:800; color:#38bdf8;">كارت #${cIdx + 1}</span>
+                                        <button class="btn btn-danger btn-icon" onclick="removeCardFromGrid(${idx}, ${cIdx})">✕</button>
+                                    </div>
+                                    <div class="grid-3">
+                                        <div><input type="text" class="form-control" style="text-align:center;" value="${esc(c.icon)}" oninput="updateCardProp(${idx}, ${cIdx}, 'icon', this.value)"></div>
+                                        <div><select class="form-select" onchange="updateCardProp(${idx}, ${cIdx}, 'color', this.value)">${colorOptionsHTML(c.color)}</select></div>
+                                        <div><input type="text" class="form-control" value="${esc(c.title)}" oninput="updateCardProp(${idx}, ${cIdx}, 'title', this.value)"></div>
+                                    </div>
+                                    <textarea rows="2" class="form-control" oninput="updateCardProp(${idx}, ${cIdx}, 'body', this.value)">${esc(c.body)}</textarea>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'image') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div>
+                                <label class="form-label">اختر صورة من جهازك</label>
+                                <input type="file" accept="image/*" class="form-control" style="padding:4px;" onchange="handleBlockImageUpload(event, ${idx})">
+                                <input type="file" id="block-image-fallback-${idx}" accept="*/*" style="display:none;" onchange="handleBlockImageUpload(event, ${idx})">
+                                <button type="button" class="btn btn-sky btn-sm" style="width:100%; margin-top:6px;" onclick="document.getElementById('block-image-fallback-${idx}').click()">📁 استعراض الملفات (بديل)</button>
+                                <small style="display:block; color:#94a3b8; margin-top:5px; line-height:1.6;">لو الصور الجديدة مش ظاهرة في المعرض، افتح استعراض الملفات ثم مجلد الصور أو WhatsApp أو Downloads.</small>
+                            </div>
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">مكان الصورة (محاذاة)</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'align', this.value)">
+                                        <option value="right" ${blk.align === 'right' ? 'selected' : ''}>يمين الصفحة (مع شرح يسار)</option>
+                                        <option value="left" ${blk.align === 'left' ? 'selected' : ''}>يسار الصفحة (مع شرح يمين)</option>
+                                        <option value="center" ${blk.align === 'center' ? 'selected' : ''}>في المنتصف</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">حجم الصورة (${blk.widthPercent}%)</label>
+                                    <input type="range" min="15" max="100" step="5" value="${blk.widthPercent}" style="width:100%; accent-color:#f59e0b; margin-top:6px;" oninput="updateBlockProp(${idx}, 'widthPercent', Number(this.value)); this.previousElementSibling.textContent='حجم الصورة ('+this.value+'%)'">
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">تعليق أسفل الصورة</label>
+                                    <input type="text" class="form-control" value="${esc(blk.caption)}" oninput="updateBlockProp(${idx}, 'caption', this.value)">
+                                </div>
+                                <div style="display:flex; flex-direction:column; justify-content:center; gap:5px; padding-top:12px;">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" ${blk.framed ? 'checked' : ''} onchange="updateBlockProp(${idx}, 'framed', this.checked)">
+                                        <span>إطار مرسوم وظل</span>
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" ${blk.sideEnabled ? 'checked' : ''} onchange="updateBlockProp(${idx}, 'sideEnabled', this.checked); renderBlocksEditor();">
+                                        <span>تفعيل شرح جانبي بجوار الصورة</span>
+                                    </label>
+                                </div>
+                            </div>
+                            ${blk.sideEnabled ? `
+                                <div class="sub-box">
+                                    <div class="grid-3">
+                                        <div style="grid-column: span 2;">
+                                            <label class="form-label">عنوان الشرح الجانبي</label>
+                                            <input type="text" class="form-control" value="${esc(blk.sideTitle)}" oninput="updateBlockProp(${idx}, 'sideTitle', this.value)">
+                                        </div>
+                                        <div>
+                                            <label class="form-label">لون الصندوق</label>
+                                            <select class="form-select" onchange="updateBlockProp(${idx}, 'sideColor', this.value)">${colorOptionsHTML(blk.sideColor)}</select>
+                                        </div>
+                                    </div>
+                                    <textarea rows="3" class="form-control" placeholder="اكتب الشرح الذي يظهر بجانب الصورة..." oninput="updateBlockProp(${idx}, 'sideText', this.value)">${esc(blk.sideText)}</textarea>
+                                </div>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'icon_card') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-3">
+                                <div>
+                                    <label class="form-label">الأيقونة / الإيموجي</label>
+                                    <input type="text" class="form-control" style="text-align:center; font-size:16px;" value="${esc(blk.icon)}" oninput="updateBlockProp(${idx}, 'icon', this.value)">
+                                </div>
+                                <div>
+                                    <label class="form-label">حجم الأيقونة (${blk.iconSize}px)</label>
+                                    <input type="range" min="24" max="96" step="4" value="${blk.iconSize}" style="width:100%; accent-color:#f59e0b; margin-top:7px;" oninput="updateBlockProp(${idx}, 'iconSize', Number(this.value)); this.previousElementSibling.textContent='حجم الأيقونة ('+this.value+'px)'">
+                                </div>
+                                <div>
+                                    <label class="form-label">الموضع</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'align', this.value)">
+                                        <option value="right" ${blk.align === 'right' ? 'selected' : ''}>يمين (مع شرح يسار)</option>
+                                        <option value="left" ${blk.align === 'left' ? 'selected' : ''}>يسار (مع شرح يمين)</option>
+                                        <option value="center" ${blk.align === 'center' ? 'selected' : ''}>في المنتصف</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">تسمية تحت الأيقونة</label>
+                                    <input type="text" class="form-control" value="${esc(blk.label)}" oninput="updateBlockProp(${idx}, 'label', this.value)">
+                                </div>
+                                <div>
+                                    <label class="form-label">لون كارت الأيقونة</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'color', this.value)">${colorOptionsHTML(blk.color)}</select>
+                                </div>
+                            </div>
+                            <div class="sub-box">
+                                <label class="form-label">شرح جانبي بجوار الأيقونة (اتركه فارغاً لإظهار الأيقونة فقط)</label>
+                                <input type="text" class="form-control" style="font-weight:700;" placeholder="عنوان جانبي..." value="${esc(blk.sideTitle)}" oninput="updateBlockProp(${idx}, 'sideTitle', this.value)">
+                                <textarea rows="2" class="form-control" placeholder="نص الشرح بجوار الأيقونة..." oninput="updateBlockProp(${idx}, 'sideText', this.value)">${esc(blk.sideText)}</textarea>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'arrows') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-2">
+                                <div>
+                                    <label class="form-label">نمط السهم</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'style', this.value); renderBlocksEditor();">
+                                        <option value="flow" ${blk.style === 'flow' ? 'selected' : ''}>مسار ربط (من ➔ إلى)</option>
+                                        <option value="down" ${blk.style === 'down' ? 'selected' : ''}>سهم نزول لأسفل (⬇)</option>
+                                        <option value="curved" ${blk.style === 'curved' ? 'selected' : ''}>سهم منحني للانتقال (⤵)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">لون السهم</label>
+                                    <select class="form-select" onchange="updateBlockProp(${idx}, 'color', this.value)">${colorOptionsHTML(blk.color)}</select>
+                                </div>
+                            </div>
+                            ${blk.style === 'flow' ? `
+                                <div class="grid-3">
+                                    <div>
+                                        <label class="form-label">نقطة البداية</label>
+                                        <input type="text" class="form-control" value="${esc(blk.fromText)}" oninput="updateBlockProp(${idx}, 'fromText', this.value)">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">نص فوق السهم</label>
+                                        <input type="text" class="form-control" value="${esc(blk.label)}" oninput="updateBlockProp(${idx}, 'label', this.value)">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">النتيجة / النهاية</label>
+                                        <input type="text" class="form-control" value="${esc(blk.toText)}" oninput="updateBlockProp(${idx}, 'toText', this.value)">
+                                    </div>
+                                </div>
+                            ` : `
+                                <div>
+                                    <label class="form-label">نص توضيحي بجانب السهم (اختياري)</label>
+                                    <input type="text" class="form-control" value="${esc(blk.label)}" oninput="updateBlockProp(${idx}, 'label', this.value)">
+                                </div>
+                            `}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'table') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div style="display:flex; flex-wrap:wrap; gap:6px; justify-content:space-between;">
+                                <select class="form-select" style="width:auto;" onchange="updateBlockProp(${idx}, 'headerColor', this.value)">${colorOptionsHTML(blk.headerColor)}</select>
+                                <div style="display:flex; gap:4px;">
+                                    <button class="btn btn-sky btn-sm" onclick="addTableCol(${idx})">+ عمود</button>
+                                    <button class="btn btn-sm" onclick="removeTableCol(${idx})">- عمود</button>
+                                    <button class="btn btn-emerald btn-sm" onclick="addTableRow(${idx})">+ صف</button>
+                                </div>
+                            </div>
+                            <div class="sub-box" style="overflow-x:auto;">
+                                <div style="display:grid; grid-template-columns: repeat(${blk.headers.length}, minmax(70px, 1fr)); gap:4px;">
+                                    ${blk.headers.map((h, hIdx) => `<input type="text" class="form-control" style="font-weight:800; text-align:center; padding:4px;" value="${esc(h)}" oninput="updateTableHeader(${idx}, ${hIdx}, this.value)">`).join('')}
+                                </div>
+                                ${blk.rows.map((row, rIdx) => `
+                                    <div style="display:flex; gap:4px; align-items:center;">
+                                        <div style="flex:1; display:grid; grid-template-columns: repeat(${blk.headers.length}, minmax(70px, 1fr)); gap:4px;">
+                                            ${row.map((cell, cIdx) => `<input type="text" class="form-control" style="padding:4px; font-size:11.5px;" value="${esc(cell)}" oninput="updateTableCell(${idx}, ${rIdx}, ${cIdx}, this.value)">`).join('')}
+                                        </div>
+                                        <button class="btn btn-danger btn-icon" onclick="removeTableRow(${idx}, ${rIdx})">✕</button>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'banner') {
+                    return `
+                        <div class="block-card">
+                            ${topBar}
+                            <div class="grid-3">
+                                <div><label class="form-label">أيقونة</label><input type="text" class="form-control" style="text-align:center;" value="${esc(blk.icon)}" oninput="updateBlockProp(${idx}, 'icon', this.value)"></div>
+                                <div style="grid-column: span 2;"><label class="form-label">اللون</label><select class="form-select" onchange="updateBlockProp(${idx}, 'color', this.value)">${colorOptionsHTML(blk.color)}</select></div>
+                            </div>
+                            <div><label class="form-label">النص</label><input type="text" class="form-control" value="${esc(blk.text)}" oninput="updateBlockProp(${idx}, 'text', this.value)"></div>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+            }
+            const shapeEditor = document.getElementById('free-shapes-editor');
+            if (shapeEditor) shapeEditor.innerHTML = (p.freeShapes || []).map((sh, i) => `
+                <div class="sub-box">
+                    <div class="panel-header"><strong style="font-size:11px;color:#f8fafc;">شكل ${i+1}</strong><button class="btn btn-danger btn-icon" onclick="deleteFreeShape(${i})">حذف</button></div>
+                    <input class="form-control" value="${esc(sh.text||'')}" placeholder="النص داخل الشكل" oninput="updateFreeShape(${i},'text',this.value)">
+                    <div class="grid-2" style="margin-top:6px;">
+                        <div><label class="form-label">لون الخلفية</label><input type="color" value="${sh.bg||'#fde68a'}" onchange="updateFreeShape(${i},'bg',this.value)" style="width:100%;height:34px;"></div>
+                        <div><label class="form-label">لون النص</label><input type="color" value="${sh.color||'#111827'}" onchange="updateFreeShape(${i},'color',this.value)" style="width:100%;height:34px;"></div>
+                    </div>
+                    <div class="grid-2" style="margin-top:6px;">
+                        <div><label class="form-label">العرض %</label><input type="number" min="8" max="100" class="form-control" value="${sh.w}" onchange="updateFreeShape(${i},'w',Math.max(8,Math.min(100,Number(this.value))))"></div>
+                        <div><label class="form-label">الارتفاع %</label><input type="number" min="6" max="100" class="form-control" value="${sh.h}" onchange="updateFreeShape(${i},'h',Math.max(6,Math.min(100,Number(this.value))))"></div>
+                    </div>
+                    <label class="form-label" style="margin-top:6px;">إضافة صورة داخل الشكل</label><input type="file" accept="image/*" class="form-control" onchange="handleFreeShapeImage(event,${i})">
+                    <div class="grid-2" style="margin-top:6px;">
+                        <div><label class="form-label">عرض الصورة %</label><input type="number" min="5" max="100" class="form-control" value="${sh.imageW||100}" onchange="updateFreeShape(${i},'imageW',Math.max(5,Math.min(100,Number(this.value))))"></div>
+                        <div><label class="form-label">ارتفاع الصورة %</label><input type="number" min="5" max="100" class="form-control" value="${sh.imageH||65}" onchange="updateFreeShape(${i},'imageH',Math.max(5,Math.min(100,Number(this.value))))"></div>
+                    </div>
+                    <div class="grid-2" style="margin-top:6px;">
+                        <div><label class="form-label">طريقة عرض الصورة</label><select class="form-select" onchange="updateFreeShape(${i},'imageFit',this.value)"><option value="contain" ${(sh.imageFit||'contain')==='contain'?'selected':''}>كاملة دون قص</option><option value="cover" ${sh.imageFit==='cover'?'selected':''}>ملء مع قص</option></select></div>
+                        <div><label class="form-label">موضع الصورة</label><select class="form-select" onchange="updateFreeShape(${i},'imagePosition',this.value)"><option value="center" ${(sh.imagePosition||'center')==='center'?'selected':''}>المنتصف</option><option value="top" ${sh.imagePosition==='top'?'selected':''}>أعلى</option><option value="bottom" ${sh.imagePosition==='bottom'?'selected':''}>أسفل</option></select></div>
+                    </div>
+                    <label class="form-label" style="margin-top:6px;">حجم النص</label><input type="range" min="10" max="42" value="${sh.fontSize||18}" oninput="updateFreeShape(${i},'fontSize',Number(this.value))" style="width:100%;">
+                </div>`).join('');
+        }
+
+        function renderNotebookSheet() {
+            const g = state.global;
+            const p = getCurrentPage();
+            const sheet = document.getElementById('notebook-sheet');
+            const inner = document.getElementById('sheet-inner');
+            const coverLayer = document.getElementById('special-cover-view');
+            const shapesLayer = document.getElementById('free-shapes-layer');
+            if (state.previewMode === 'cover' || state.previewMode === 'backCover') {
+                const c = state[state.previewMode] || {};
+                sheet.className = 'notebook-sheet'; sheet.style.background = c.bg || '#ffffff';
+                inner.style.display = 'none'; shapesLayer.style.display = 'none';
+                document.getElementById('sheet-spiral').style.display = 'none'; document.getElementById('sheet-margin').style.display = 'none';
+                coverLayer.className = 'special-cover-view active'; coverLayer.style.background = c.bg || '#ffffff';
+                coverLayer.innerHTML = c.image ? `<img class="cover-image" src="${c.image}" alt="غلاف المذكرة">` : '';
+                return;
+            }
+            coverLayer.className = 'special-cover-view';
+            coverLayer.innerHTML = '';
+            if (p.fullPageImage) {
+                sheet.className = 'notebook-sheet'; sheet.style.background = '#ffffff';
+                inner.style.display = 'none'; shapesLayer.style.display = 'none';
+                document.getElementById('sheet-spiral').style.display = 'none'; document.getElementById('sheet-margin').style.display = 'none';
+                coverLayer.className = 'special-cover-view active'; coverLayer.style.background = '#ffffff';
+                coverLayer.innerHTML = `<img class="cover-image" src="${p.fullPageImage}" alt="صورة الصفحة">`;
+                return;
+            }
+            inner.style.display = 'flex';
+            shapesLayer.style.display = 'block';
+            sheet.style.background = '';
+            sheet.className = `notebook-sheet ${g.paperStyle} ${g.fontFamily}`;
+            document.getElementById('sheet-spiral').style.display = g.showSpiral ? 'flex' : 'none';
+            inner.classList.toggle('no-spiral', !g.showSpiral);
+            document.getElementById('sheet-margin').style.display = g.showMargin ? 'block' : 'none';
+
+            const badgeEl = document.getElementById('render-page-badge');
+            badgeEl.style.display = g.showPageNumber ? 'block' : 'none';
+            badgeEl.textContent = `Page ${state.currentPageIndex + 1}/${state.pages.length}`;
+
+            const logoBox = document.getElementById('render-logo-box');
+            const logoImg = document.getElementById('render-logo-img');
+            if (g.logoDataUrl) {
+                logoBox.style.display = 'flex';
+                logoBox.style.width = `${g.logoSize}px`;
+                logoBox.style.height = `${g.logoSize}px`;
+                logoBox.className = `logo-frame ${g.logoShape || 'circle'}`;
+                logoImg.src = g.logoDataUrl;
+            } else {
+                logoBox.style.display = 'none';
+            }
+
+            const topTagEl = document.getElementById('render-top-tag');
+            topTagEl.textContent = p.topRightTag || '';
+            topTagEl.style.display = p.topRightTag ? 'inline-block' : 'none';
+
+            document.getElementById('render-kicker').textContent = p.kicker || '';
+            const titleEl = document.getElementById('render-title');
+            titleEl.textContent = p.title || '';
+            titleEl.className = `sheet-main-title ${p.titleHighlight || 'hl-yellow'}`;
+
+            const subWrap = document.getElementById('render-subtitle-wrap');
+            document.getElementById('render-subtitle').textContent = p.subtitle || '';
+            subWrap.style.display = p.subtitle ? 'block' : 'none';
+
+            // Render Blocks
+            const listEl = document.getElementById('render-blocks-list');
+            listEl.innerHTML = (p.blocks || []).map((blk, bIdx) => {
+                const borderShape = bIdx % 2 === 0 ? 'sketch-border' : 'sketch-border-alt';
+
+                if (blk.type === 'section') {
+                    const th = THEMES[blk.color] || THEMES.green;
+                    const exHTML = (blk.examples && blk.examples.length > 0) ? `
+                        <div class="nb-example-row">
+                            ${blk.exampleLabel ? `<span class="nb-example-tag sketch-pill">${esc(blk.exampleLabel)}</span>` : ''}
+                            <div class="nb-example-box ${th.bgClass} ${borderShape}">
+                                <ul class="nb-example-list">
+                                    ${blk.examples.map(ex => `<li><span style="color:#e11d48;">✦</span><span>${esc(ex)}</span></li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    ` : '';
+                    return `
+                        <section>
+                            <div class="nb-section-header">
+                                <span class="nb-badge-circle ${th.badgeClass}">${esc(blk.badge)}</span>
+                                <h2 class="nb-section-title"><span class="${th.hlClass}">${esc(blk.title)}</span></h2>
+                                <span style="color:#e11d48; font-weight:900;">↩</span>
+                            </div>
+                            ${blk.description ? `<p class="nb-section-desc">${esc(blk.description)}</p>` : ''}
+                            ${exHTML}
+                        </section>
+                    `;
+                }
+
+                if (blk.type === 'steps') {
+                    return `
+                        <div class="nb-steps-wrapper">
+                            ${blk.heading ? `<div class="nb-steps-heading"><span class="hl-yellow">${esc(blk.heading)}</span></div>` : ''}
+                            ${(blk.items || []).map((st, sIdx) => {
+                                const th = THEMES[st.color] || THEMES.blue;
+                                const stepShape = sIdx % 2 === 0 ? 'sketch-border' : 'sketch-border-alt';
+                                const arrowHTML = (blk.showArrows && sIdx < blk.items.length - 1) ? `
+                                    <div class="nb-step-connector">
+                                        <svg width="26" height="22" viewBox="0 0 26 22" fill="none" stroke="#e11d48" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M13 2 V18 M7 13 L13 19 L19 13"/>
+                                        </svg>
+                                    </div>
+                                ` : '';
+                                return `
+                                    <div class="nb-step-row ${th.bgClass} ${stepShape}">
+                                        <div class="nb-step-num ${th.badgeClass}">${sIdx + 1}</div>
+                                        <div class="nb-step-content">
+                                            <div class="nb-step-title">${esc(st.title)}</div>
+                                            ${st.desc ? `<div class="nb-step-desc">${esc(st.desc)}</div>` : ''}
+                                        </div>
+                                    </div>
+                                    ${arrowHTML}
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'cards') {
+                    const cols = Math.min(4, Math.max(1, blk.columns || 2));
+                    return `
+                        <div class="nb-cards-grid nb-cards-cols-${cols}">
+                            ${(blk.cards || []).map((c, cIdx) => {
+                                const th = THEMES[c.color] || THEMES.yellow;
+                                const cardShape = cIdx % 2 === 0 ? 'sketch-border' : 'sketch-border-alt';
+                                return `
+                                    <div class="nb-info-card ${th.bgClass} ${cardShape}">
+                                        <div class="nb-card-top">
+                                            ${c.icon ? `<span class="nb-card-icon">${esc(c.icon)}</span>` : ''}
+                                            <div class="nb-card-title">${esc(c.title)}</div>
+                                        </div>
+                                        <div class="nb-card-body">${esc(c.body)}</div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'image') {
+                    const imgBoxHTML = blk.dataUrl ? `
+                        <div class="nb-image-frame ${blk.framed ? 'framed' : ''}">
+                            <img src="${blk.dataUrl}" alt="${esc(blk.caption)}">
+                        </div>
+                        ${blk.caption ? `<div class="nb-image-caption sketch-pill">${esc(blk.caption)}</div>` : ''}
+                    ` : `
+                        <div style="border:2px dashed #94a3b8; border-radius:12px; padding:18px; text-align:center; color:#64748b; font-size:13px; font-weight:800; width:100%;">
+                            🖼️ اختر صورة من لوحة التحكم
+                        </div>
+                    `;
+
+                    if (blk.sideEnabled && (blk.align === 'right' || blk.align === 'left')) {
+                        const th = THEMES[blk.sideColor] || THEMES.blue;
+                        const rowClass = blk.align === 'left' ? 'nb-media-side-row img-left' : 'nb-media-side-row';
+                        return `
+                            <div class="${rowClass}">
+                                <div class="nb-image-col" style="width: ${blk.widthPercent}%; max-width: 100%;">
+                                    ${imgBoxHTML}
+                                </div>
+                                <div class="nb-side-text-box ${th.bgClass} ${borderShape}">
+                                    ${blk.sideTitle ? `<div class="nb-side-text-title">${esc(blk.sideTitle)}</div>` : ''}
+                                    <div class="nb-side-text-body">${esc(blk.sideText)}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <div class="nb-media-block align-${blk.align || 'center'}">
+                            <div class="nb-image-col" style="width: ${blk.widthPercent}%; max-width: 100%;">
+                                ${imgBoxHTML}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'icon_card') {
+                    const th = THEMES[blk.color] || THEMES.orange;
+                    const hasSide = (blk.sideTitle && blk.sideTitle.trim()) || (blk.sideText && blk.sideText.trim());
+                    const stickerHTML = `
+                        <div class="nb-icon-sticker ${th.bgClass} sketch-border">
+                            <span style="font-size: ${blk.iconSize || 48}px; line-height: 1.1;">${esc(blk.icon)}</span>
+                            ${blk.label ? `<span class="nb-icon-sticker-label">${esc(blk.label)}</span>` : ''}
+                        </div>
+                    `;
+
+                    if (!hasSide) {
+                        return `<div class="nb-icon-card-wrap pos-${blk.align || 'center'}">${stickerHTML}</div>`;
+                    }
+
+                    const sideBoxHTML = `
+                        <div class="nb-side-text-box ${th.bgClass} sketch-border-alt" style="background-color: rgba(255,255,255,0.85);">
+                            ${blk.sideTitle ? `<div class="nb-side-text-title">${esc(blk.sideTitle)}</div>` : ''}
+                            ${blk.sideText ? `<div class="nb-side-text-body">${esc(blk.sideText)}</div>` : ''}
+                        </div>
+                    `;
+
+                    return `
+                        <div class="nb-icon-card-wrap" style="flex-direction: ${blk.align === 'left' ? 'row-reverse' : 'row'};">
+                            ${stickerHTML}
+                            ${sideBoxHTML}
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'arrows') {
+                    const th = THEMES[blk.color] || THEMES.pink;
+                    if (blk.style === 'flow') {
+                        return `
+                            <div class="nb-arrow-block">
+                                <div class="nb-arrow-flow-row">
+                                    <span class="nb-flow-pill ${th.bgClass} sketch-pill">${esc(blk.fromText)}</span>
+                                    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;" class="${th.strokeClass}">
+                                        ${blk.label ? `<span class="nb-arrow-label">${esc(blk.label)}</span>` : ''}
+                                        <svg width="64" height="22" viewBox="0 0 64 22" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M60 11 H6 M14 4 L5 11 L14 18"/>
+                                        </svg>
+                                    </div>
+                                    <span class="nb-flow-pill ${th.badgeClass} sketch-pill" style="border-color:#0f172a;">${esc(blk.toText)}</span>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    if (blk.style === 'curved') {
+                        return `
+                            <div class="nb-arrow-block ${th.strokeClass}">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <svg width="46" height="36" viewBox="0 0 46 36" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M38 4 C 16 4, 12 16, 12 30 M5 23 L12 31 L19 23"/>
+                                    </svg>
+                                    ${blk.label ? `<span class="nb-arrow-label">${esc(blk.label)}</span>` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return `
+                        <div class="nb-arrow-block ${th.strokeClass}">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <svg width="32" height="34" viewBox="0 0 32 34" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 3 V29 M8 21 L16 30 L24 21"/>
+                                </svg>
+                                ${blk.label ? `<span class="nb-arrow-label">${esc(blk.label)}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'table') {
+                    const th = THEMES[blk.headerColor] || THEMES.blue;
+                    return `
+                        <div class="nb-table-wrap">
+                            <table class="nb-table">
+                                <thead><tr>${(blk.headers || []).map(h => `<th class="${th.badgeClass}">${esc(h)}</th>`).join('')}</tr></thead>
+                                <tbody>${(blk.rows || []).map(r => `<tr>${r.map(c => `<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody>
+                            </table>
+                        </div>
+                    `;
+                }
+
+                if (blk.type === 'banner') {
+                    const th = THEMES[blk.color] || THEMES.pink;
+                    return `
+                        <div class="nb-banner-box ${th.bgClass} ${borderShape}">
+                            ${blk.icon ? `<span style="font-size:21px;">${esc(blk.icon)}</span>` : ''}
+                            <span>${esc(blk.text)}</span>
+                        </div>
+                    `;
+                }
+                return '';
+            }).join('');
+
+            document.getElementById('render-footer-right').textContent = g.footerRight || '';
+            document.getElementById('render-footer-left').textContent = g.footerLeft || '';
+            renderFreeShapes();
+        }
+
+        function generateSpiralRings() {
+            const el = document.getElementById('sheet-spiral');
+            let html = '';
+            for (let i = 0; i < 26; i++) {
+                html += `<div class="spiral-unit"><div class="spiral-hole"></div><div class="spiral-wire"></div></div>`;
+            }
+            el.innerHTML = html;
+        }
+
+        /* =====================================================================
+           7. EXPORT PNG & MULTI-PAGE PDF (WITH CRISP LINES)
+           ===================================================================== */
+        async function exportCurrentPagePNG() {
+            const btn = document.getElementById('btn-export-png');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<span>⏳</span><span>جاري الحفظ...</span>';
+
+            const previewPanel = document.getElementById('preview-panel');
+            const wasHidden = previewPanel.classList.contains('hidden-mobile');
+            if (wasHidden) previewPanel.classList.remove('hidden-mobile');
+
+            try {
+                if (typeof html2canvas === 'undefined') throw new Error('html2canvas missing');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+                const sheet = document.getElementById('notebook-sheet');
+                const canvas = await html2canvas(sheet, {
+                    scale: 2.2,
+                    useCORS: true,
+                    backgroundColor: '#fdfcf8',
+                    logging: false
+                });
+
+                const link = document.createElement('a');
+                link.download = state.previewMode === 'cover' ? 'notebook_front_cover.png' : state.previewMode === 'backCover' ? 'notebook_back_cover.png' : `notebook_page_${state.currentPageIndex + 1}.png`;
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+                showToast(state.previewMode === 'cover' ? '✅ تم حفظ الغلاف الأمامي' : state.previewMode === 'backCover' ? '✅ تم حفظ الغلاف الخلفي' : `✅ تم حفظ الصفحة (${state.currentPageIndex + 1}) بالسطور كاملة`);
+            } catch (e) {
+                console.error(e);
+                window.print();
+            } finally {
+                if (wasHidden) previewPanel.classList.add('hidden-mobile');
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        async function exportAllPagesPDF() {
+            const btn = document.getElementById('btn-export-pdf');
+            const orig = btn.innerHTML;
+            btn.disabled = true;
+
+            const previewPanel = document.getElementById('preview-panel');
+            const wasHidden = previewPanel.classList.contains('hidden-mobile');
+            if (wasHidden) previewPanel.classList.remove('hidden-mobile');
+
+            const origIndex = state.currentPageIndex;
+            const originalMode = state.previewMode || 'content';
+
+            try {
+                if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') throw new Error('PDF libs missing');
+                if (document.fonts && document.fonts.ready) await document.fonts.ready;
+
+                const { jsPDF } = window.jspdf;
+                const sheet = document.getElementById('notebook-sheet');
+                let pdf = null;
+                const exportItems = [...(state.cover.enabled !== false ? [{mode:'cover'}] : []), ...state.pages.map((_,i)=>({mode:'content',index:i})), ...(state.backCover.enabled !== false ? [{mode:'backCover'}] : [])];
+
+                for (let i = 0; i < exportItems.length; i++) {
+                    const item = exportItems[i];
+                    btn.innerHTML = `<span>⏳</span><span>صفحة ${i + 1}/${exportItems.length}...</span>`;
+                    state.previewMode = item.mode;
+                    if (item.mode === 'content') state.currentPageIndex = item.index;
+                    renderNotebookSheet();
+                    await new Promise(r => setTimeout(r, 180));
+
+                    const canvas = await html2canvas(sheet, { scale:2, useCORS:true, backgroundColor:'#fdfcf8', logging:false });
+                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                    if (i === 0) pdf = new jsPDF({ orientation:canvas.width>canvas.height?'landscape':'portrait', unit:'px', format:[canvas.width,canvas.height] });
+                    else pdf.addPage([canvas.width,canvas.height], canvas.width>canvas.height?'landscape':'portrait');
+                    pdf.addImage(imgData,'JPEG',0,0,canvas.width,canvas.height);
+                }
+
+                pdf.save('notebook_lessons_full.pdf');
+                showToast(`🎉 تم حفظ المذكرة كاملة (${exportItems.length} صفحات) بنجاح!`);
+                state.previewMode = originalMode;
+            } catch (e) {
+                console.error(e);
+                window.print();
+            } finally {
+                state.currentPageIndex = origIndex;
+                if (typeof originalMode !== 'undefined') state.previewMode = originalMode;
+                renderAll();
+                if (wasHidden) previewPanel.classList.add('hidden-mobile');
+                btn.disabled = false;
+                btn.innerHTML = orig;
+            }
+        }
+
+        /* =====================================================================
+           8. MOBILE TABS & HELPERS
+           ===================================================================== */
+        function switchMobileView(view) {
+            const editor = document.getElementById('editor-panel');
+            const preview = document.getElementById('preview-panel');
+            const eBtn = document.getElementById('tab-editor-btn');
+            const pBtn = document.getElementById('tab-preview-btn');
+
+            if (view === 'editor') {
+                editor.classList.remove('hidden-mobile');
+                preview.classList.add('hidden-mobile');
+                eBtn.classList.add('active');
+                pBtn.classList.remove('active');
+            } else {
+                editor.classList.add('hidden-mobile');
+                preview.classList.remove('hidden-mobile');
+                pBtn.classList.add('active');
+                eBtn.classList.remove('active');
+                renderNotebookSheet();
+            }
+        }
+
+        function esc(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-text').textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
